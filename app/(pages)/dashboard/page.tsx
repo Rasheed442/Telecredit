@@ -3,6 +3,7 @@
 import AirtimeVsDataChart from '@/components/DashboardCompo/AirtimeVsDataChart';
 import CustomerPanel from '@/components/DashboardCompo/CustomerPanel';
 import FraudPanel from '@/components/DashboardCompo/FraudPanel';
+import LoanRequestTable from '@/components/DashboardCompo/LoanRequestTable';
 import LoanRequestTrend from '@/components/DashboardCompo/LoanRequestTrend';
 import RiskPanel from '@/components/DashboardCompo/RiskPanel';
 import { arrowup, calender, cube, cube2, cube3, cube4, quicklink } from '@/constant'
@@ -118,6 +119,7 @@ function page() {
                     <FraudPanel/>
                     <CustomerPanel/>
                 </div>
+                <LoanRequestTable/>
 
         </div>
     )
