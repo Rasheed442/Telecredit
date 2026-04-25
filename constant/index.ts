@@ -9,6 +9,11 @@ import notification from "../assets/icons/headerIcon/notification.png"
 import Dashborad from "../assets/icons/NavIcons/dash.png"
 import Tel from "../assets/icons/NavIcons/tel.png"
 import caution from "../assets/icons/NavIcons/caution.png"
+import coll from "../assets/icons/NavIcons/collection.png"
+import archieve from "../assets/icons/NavIcons/archieve.png"
+import key from "../assets/icons/NavIcons/key.png"
+import setting from "../assets/icons/NavIcons/settings.png"
+import logout from "../assets/icons/NavIcons/exit.png"
 
 // Dashboard
 import calender from "../assets/icons/DashboardIcon/calender.png"
@@ -21,4 +26,4 @@ import quicklink from "../assets/Images/DashboardImages/quicklink.png"
 import speedo from "../assets/Images/DashboardImages/speedo.png"
 
 
-export { prodlogo, profile,arrowup, light,settings, notification, Dashborad, Tel,caution, calender, cube, quicklink, cube2, cube3, cube4, speedo }
+export { prodlogo, profile,arrowup, light,settings, notification, Dashborad, Tel,caution, calender, cube, quicklink, cube2, cube3, cube4, speedo, coll, archieve, key, setting, logout }
