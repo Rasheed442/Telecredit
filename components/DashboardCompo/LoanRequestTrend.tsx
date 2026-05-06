@@ -150,11 +150,11 @@ export default function LoanRequestTrend() {
   }, [hovered]);
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm">
+    <div className="bg-white rounded-sm p-6 shadow-sm">
       <div className="flex justify-between items-start mb-6 flex-wrap gap-3">
         <div>
-          <h2 className="font-ibm-plex-sans text-[20px] font-medium text-[#1F2937] mb-1">Loan Requests Trends</h2>
-          <p className="text-sm text-[#667085]">This shows loan request analysis over time.</p>
+          <h2 className="font-ibm-plex-sans text-[20px] font-medium text-[#1F2937] mb-1">Daily Loan vs Recovery Trend</h2>
+          <p className="text-sm text-[#667085]">This shows daily loan requests and recovery trends.</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           {(["airtime", "data"] as const).map((s) => (

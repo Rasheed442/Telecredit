@@ -6,8 +6,8 @@ import React from 'react'
 
 const Header = () => {
     return (
-        <div className='flex items-center justify-between border-b border-gray-200 shadow-lg px-6 h-[8vh]'>
-            <Image src={prodlogo} alt='logo' width={150} height={150} />
+        <div className='flex items-center justify-end border-b bg-white shadow border-gray-100 px-6 h-[8vh]'>
+            {/* <Image src={prodlogo} alt='logo' width={150} height={150} /> */}
             <div className='flex items-center gap-1'>
                 <div className='flex items-center gap-3'>
                     <Image src={light} alt='light' width={45} height={45} />

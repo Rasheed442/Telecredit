@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Mulish, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
+import "./fonts.css";
+
+// SF Pro and DM Serif Text will be loaded via CSS since they're not available on Google Fonts
 
 const mulish = Mulish({
   variable: "--font-mulish",

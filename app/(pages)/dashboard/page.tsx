@@ -6,13 +6,74 @@ import FraudPanel from '@/components/DashboardCompo/FraudPanel';
 import LoanRequestTable from '@/components/DashboardCompo/LoanRequestTable';
 import LoanRequestTrend from '@/components/DashboardCompo/LoanRequestTrend';
 import RiskPanel from '@/components/DashboardCompo/RiskPanel';
-import { arrowup, calender, cube, cube2, cube3, cube4, quicklink } from '@/constant'
+import MetricsCard from '@/components/DashboardCompo/MetricsCard';
+import { arrowup, calender, cube, cube2, cube3, cube4, quicklink, activeb, behav, blocked, deliquent, money, outstanding, profit, trending } from '@/constant'
 import Image from 'next/image'
 import React from 'react'
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { IoMdArrowDown, IoMdArrowUp } from "react-icons/io";
+import { AiOutlineDown } from 'react-icons/ai';
 
 function page() {
+    const metricsData = [
+                {
+            title: "Total Disbursed",
+            value: "1,296",
+            change: 8.2,
+            changeText: "vs Last Month",
+            icon: money
+        },
+        {
+            title: "Total Recoveries",
+            value: "987",
+            change: 12.5,
+            changeText: "vs Last Month",
+            icon: trending
+        },
+        {
+            title: "Outstanding Balance",
+            value: "₦12.3M",
+            change: 6.4,
+            changeText: "vs Last Month",
+            icon: outstanding
+        },
+        {
+            title: "Active Borrowers",
+            value: "542",
+            change: -5.8,
+            changeText: "vs Last Month",
+            icon: activeb
+        },
+        {
+            title: "Delinquent Borrowers",
+            value: "742",
+            change: 3.2,
+            changeText: "vs Last Month",
+            icon: deliquent
+        },
+        {
+            title: "Hard Block Customers",
+            value: "23",
+            change: 18.7,
+            changeText: "vs Last Month",
+            icon: blocked
+        },
+        {
+            title: "Portfolio Profit",
+            value: "₦45.3k",
+            change: 6.4,
+            changeText: "vs Last Month",
+            icon: profit
+        },
+        {
+            title: "Avg Behavioral Risk",
+            value: "15.2%",
+            change: 15.2,
+            changeText: "vs Last Month",
+            icon: behav
+        }
+    ];
+
     const LoansCredit = [
         {
             loan: `48.9`,
@@ -40,72 +101,36 @@ function page() {
         }
     ]
     return (
-        <div className='px-4'>
+        <div className='px-6 pt-5'>
             <div className='flex items-center justify-between'>
-                <div className='flex flex-col gap-1'>
-                    <p className='font-ibm-plex-sans text-[28px] text-[#1F2937] font-semibold '>Welcome back, Admin 👋</p>
+                <div className='flex flex-col'>
+                    <p className='font-sf-pro text-[28px] text-[#1F2937] font-semibold '>Welcome back, Admin 👋</p>
                     <span className='font-mulish text-[16px] font-normal text-[#667085]'>Monitor loan activity, manage airtime & data credits in real time.</span>
 
                 </div>
-                <div className='border-2 border-[#EBEBEB] flex items-center px-4 gap-2 rounded-full py-2'>
+                <div className='border border-[#EBEBEB] flex items-center px-4 gap-2 rounded-sm bg-white py-2 cursor-pointer'>
                     <Image src={calender} alt='calender' width={15} height={15} />
-                    <p className='text-[#344054] text-[14px] font-medium font-mulish'>This Year</p>
+                    <p className='text-gray-500 text-[14px] font-medium font-mulish'>This Year </p>
+                    <AiOutlineDown color='#344054' size={14}/>
                 </div>
             </div>
 
-            <div className='grid grid-cols-[55%_45%] pt-4 gap-4 pr-4'>
-                <div className='h-[400px] w-full bg-cover bg-center bg-top rounded-3xl flex items-end px-4 pb-2 relative transition-all hover:scale-[1.02] hover:brightness-110 group' style={{ backgroundImage: `url(${quicklink.src})` }}>
-                    <div className='flex flex-col'>
-                        <p className='text-[22px] font-ibm-plex-sans text-white font-medium'>Quick Links</p>
-                        <span className='text-[14px] font-normal font-ibm-plex-sans text-white'>Key actions helping admins complete tasks quickly and efficiently.</span>
-                        <div className='py-4 flex items-center gap-2'>
-                            <button
-                                className="flex items-center gap-2 relative overflow-hidden bg-white/10 backdrop-blur-md border border-white/30 text-white px-3  rounded-full font-mulish font-semibold text-[14px] transition-all hover:bg-white/20 hover:border-white/50 z-20 cursor-pointer before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/40 before:to-transparent before:-translate-x-[150%] group-hover:before:translate-x-[150%] before:transition-transform before:duration-700 animate-shadow-pulse"
-                            >
-                                Processed Loan
-                                <Image src={arrowup} alt='arrowup' width={35} height={35} className='pt-2' />
-                            </button>
-                            <button
-                                className="flex items-center gap-2 relative overflow-hidden bg-white/10 backdrop-blur-md border border-white/30 text-white px-3  rounded-full font-mulish font-semibold text-[14px] transition-all hover:bg-white/20 hover:border-white/50 z-20 cursor-pointer before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/40 before:to-transparent before:-translate-x-[150%] group-hover:before:translate-x-[150%] before:transition-transform before:duration-700 animate-shadow-pulse"
-                            >
-                                Add Data Plans
-                                <Image src={arrowup} alt='arrowup' width={35} height={35} className='pt-2' />
-                            </button>
-                            <button
-                                className="flex items-center gap-2 relative overflow-hidden bg-white/10 backdrop-blur-md border border-white/30 text-white px-3  rounded-full font-mulish font-semibold text-[14px] transition-all hover:bg-white/20 hover:border-white/50 z-20 cursor-pointer before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/40 before:to-transparent before:-translate-x-[150%] group-hover:before:translate-x-[150%] before:transition-transform before:duration-700 animate-shadow-pulse"
-                            >
-                                Send broadcast
-                                <Image src={arrowup} alt='arrowup' width={35} height={35} className='pt-2' />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div className=' grid grid-cols-2 gap-4'>
-                    {
-                        LoansCredit?.map((d, i) => {
-                            return <div key={i} className={`${i === 0 ? 'bg-[#9E97FF]' : i === 1 ? 'bg-[#4CBFFF]' : i === 2 ? 'bg-[#BEC9DA]' : i === 3 ? 'bg-[#FFC197]' : 'bg-[#BEC9DA]'} rounded-xl px-4 py-4 flex flex-col justify-between`}>
-                                <div className='flex items-center justify-between'>
-                                    <div className='flex items-center gap-2'>
-                                        <Image src={d?.image} alt='cube' width={40} height={40} />
-                                        <p className={`font-mulish font-semibold text-[17px]  ${i === 0 || i === 1 ? 'text-white' : 'text-[#1F2937]'}`}>{d?.name}</p>
-                                    </div>
-                                    <BsThreeDotsVertical size={24} />
-                                </div>
-                                <p className={`font-ibm-plex-sans font-medium ${i === 0 || i === 1 ? 'text-white' : 'text-[#1F2937]'}  text-[30px]`}> {i === 0 || i === 3 ? "₦" : ""}{d?.loan}{i === 0 || i === 3 ? "M" : i === 2 ? "%" : ""}</p>
-
-                                <div className='flex items-center justify-between'>
-                                    <p className={`flex items-center gap-1 text-[14px] ${d?.count >= 50 ? 'bg-[#ECFDF3]' : 'bg-[#E8F5E9]'} rounded-full px-3 py-1 ${d?.count >= 50 ? "text-[#039855]" : "text-[#B42318]"}`}>{d?.count >= 50 ? <IoMdArrowUp color='#027A48' size={15} /> : <IoMdArrowDown color='#FF6B6B' size={15} />}{d?.count}%</p>
-                                    <span className={`font-mulish font-medium text-[15px] ${i === 0 || i === 1 ? 'text-white' : 'text-[#1F2937]'}`}>VS Last Year</span>
-                                </div>
-                            </div>
-                        })
-                    }
-
-                    
-                </div>
-
+            {/* Metrics Section */}
+            <div className='grid grid-cols-4 gap-3 pt-6'>
+                {metricsData.map((metric, index) => (
+                    <MetricsCard
+                        key={index}
+                        title={metric.title}
+                        value={metric.value}
+                        change={metric.change}
+                        changeText={metric.changeText}
+                        icon={metric.icon}
+                    />
+                ))}
             </div>
-                <div className='grid grid-cols-[70%_30%] gap-4 py-6 pr-4'>
+
+          
+                <div className='grid grid-cols-[60%_40%] gap-4 py-6 pr-4'>
                     <div className=''>
                         <LoanRequestTrend />
                     </div>
