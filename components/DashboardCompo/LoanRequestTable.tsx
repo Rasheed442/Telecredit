@@ -4,62 +4,40 @@ import React, { useState } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { IoMdArrowDown } from "react-icons/io";
 
-const networks: Record<string, { bg: string; color: string; label: string }> = {
-  MTN:       { bg: "#FFC107", color: "#111", label: "MTN" },
-  Glo:       { bg: "#4CAF50", color: "#fff", label: "glo" },
-  Airtel:    { bg: "#E22226", color: "#fff", label: "A" },
-  "9 Mobile":{ bg: "#1a1a1a", color: "#fff", label: "9" },
-};
-
 const allRows = [
-  { phone:"08115322207", network:"MTN",      loanType:"Airtime", score:80, req:"₦250.00",  appr:"₦250.00",  date:"23/09/26, 09:11:04", status:"Approved", repay:0   },
-  { phone:"08108762779", network:"Glo",      loanType:"Data",    score:50, req:"₦750.00",  appr:"₦50.00",   date:"23/09/26, 09:11:04", status:"Rejected", repay:100 },
-  { phone:"09087622779", network:"9 Mobile", loanType:"Airtime", score:20, req:"₦200.00",  appr:"₦100.00",  date:"23/09/26, 09:11:04", status:"Pending",  repay:40  },
-  { phone:"07087627729", network:"Airtel",   loanType:"Data",    score:80, req:"₦150.00",  appr:"₦150.00",  date:"23/09/26, 09:11:04", status:"Pending",  repay:100 },
-  { phone:"08125322248", network:"MTN",      loanType:"Airtime", score:80, req:"₦250.09",  appr:"₦30.09",   date:"23/09/26, 09:11:04", status:"Approved", repay:40  },
-  { phone:"08115322017", network:"Glo",      loanType:"Data",    score:50, req:"₦1000.00", appr:"₦700.00",  date:"23/09/26, 09:11:04", status:"Approved", repay:0   },
-  { phone:"08108762779", network:"9 Mobile", loanType:"Data",    score:20, req:"₦950.00",  appr:"₦700.00",  date:"23/09/26, 09:11:04", status:"Rejected", repay:100 },
-  { phone:"08108762779", network:"Airtel",   loanType:"Airtime", score:80, req:"₦300.00",  appr:"₦300.00",  date:"23/09/26, 09:11:04", status:"Rejected", repay:0   },
-  { phone:"08108762779", network:"MTN",      loanType:"Data",    score:20, req:"₦200.00",  appr:"₦200.00",  date:"23/09/26, 09:11:04", status:"Approved", repay:40  },
-  { phone:"08108762779", network:"Glo",      loanType:"Data",    score:50, req:"₦250.00",  appr:"₦250.00",  date:"23/09/26, 09:11:04", status:"Pending",  repay:100 },
+  { event:"Loan", msisdn:"08115322207", telco:"MTN", amount:"₦500.00", status:"Failed", timestamp:"23/09/26, 09:11:04" },
+  { event:"Recovery", msisdn:"08108762779", telco:"Glo", amount:"₦750.00", status:"Success", timestamp:"23/09/26, 09:11:04" },
+  { event:"Loan", msisdn:"09087622779", telco:"9 Mobile", amount:"₦200.00", status:"Pending", timestamp:"23/09/26, 09:11:04" },
+  { event:"Recovery", msisdn:"07087627729", telco:"Airtel", amount:"₦150.00", status:"Success", timestamp:"23/09/26, 09:11:04" },
+  { event:"Loan", msisdn:"08125322248", telco:"MTN", amount:"₦250.00", status:"Failed", timestamp:"23/09/26, 09:11:04" },
+  { event:"Recovery", msisdn:"08115322017", telco:"Glo", amount:"₦1000.00", status:"Pending", timestamp:"23/09/26, 09:11:04" },
+  { event:"Loan", msisdn:"08108762779", telco:"9 Mobile", amount:"₦950.00", status:"Success", timestamp:"23/09/26, 09:11:04" },
+  { event:"Recovery", msisdn:"08108762779", telco:"Airtel", amount:"₦300.00", status:"Failed", timestamp:"23/09/26, 09:11:04" },
+  { event:"Loan", msisdn:"08108762779", telco:"MTN", amount:"₦200.00", status:"Success", timestamp:"23/09/26, 09:11:04" },
+  { event:"Recovery", msisdn:"08108762779", telco:"Glo", amount:"₦250.00", status:"Pending", timestamp:"23/09/26, 09:11:04" },
 ];
-
-function scoreColor(s: number) {
-  return s >= 70 ? "#22C55E" : s >= 40 ? "#F59E0B" : "#EF4444";
-}
-function repayColor(p: number) {
-  return p === 100 ? "#22C55E" : p === 0 ? "#EF4444" : "#F59E0B";
-}
-
-function RepayRing({ pct }: { pct: number }) {
-  const r = 14, cx = 17, cy = 17;
-  const circ = 2 * Math.PI * r;
-  const color = repayColor(pct);
-  const dash = circ * (pct / 100);
-  return (
-    <div className="relative w-9 h-9 inline-flex items-center justify-center">
-      <svg width="36" height="36" viewBox="0 0 34 34">
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke={color + "33"} strokeWidth="3" />
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth="3"
-          strokeDasharray={`${dash} ${circ - dash}`}
-          strokeLinecap="round"
-          transform={`rotate(-90 ${cx} ${cy})`} />
-      </svg>
-      <span className="absolute text-[8px] font-semibold" style={{ color }}>{pct}%</span>
-    </div>
-  );
-}
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    Approved: "bg-green-100 text-green-700",
-    Rejected: "bg-red-100 text-red-600",
-    Pending:  "bg-yellow-100 text-yellow-700",
+    Success: "bg-green-100 text-green-700",
+    Failed: "bg-red-100 text-red-600",
+    Pending: "bg-yellow-100 text-yellow-700",
   };
-  const icons: Record<string, string> = { Approved: "✓", Rejected: "✕", Pending: "↩" };
   return (
     <span className={`inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-1 rounded-full ${styles[status]}`}>
-      {icons[status]} {status}
+      {status}
+    </span>
+  );
+}
+
+function EventBadge({ event }: { event: string }) {
+  const styles: Record<string, string> = {
+    Loan: "bg-blue-100 text-blue-700",
+    Recovery: "bg-green-100 text-green-700",
+  };
+  return (
+    <span className={`inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-1 rounded-full ${styles[event]}`}>
+      {event}
     </span>
   );
 }
@@ -76,51 +54,29 @@ export default function LoanTable() {
   const totalPages = Math.ceil(total / perPage);
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-[#F3F4F6] mt-6">
+    <div className="bg-white rounded-sm shadow-sm overflow-hidden border border-[#F3F4F6] mt-6">
       <div className="overflow-x-auto">
         <table className="w-full text-[13px] border-collapse">
           <thead>
             <tr className="border-b border-[#F3F4F6]">
-              {["Phone Number","Network Type","Loan Type","Requested Amount","Approved Amount","Cred Score","Date","Loan Status","Repayment Status"].map((h) => (
-                <th key={h} className="px-3 py-3 text-left text-[12px] font-normal text-[#667085] whitespace-nowrap">
-                  {h} {h !== "Repayment Status" && <SortIcon />}
+              {["Event","MSISDN","Telco","Amount","Status","Timestamp"].map((h) => (
+                <th key={h} className="px-3 py-3 text-left text-[12px] font-normal text-[#667085] whitespace-nowrap border-r border-gray-200 last:border-r-0">
+                  {h} {h !== "Timestamp" && <SortIcon />}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {rows.map((row, i) => {
-              const net = networks[row.network] ?? { bg: "#ccc", color: "#000", label: "?" };
-              const sc = scoreColor(row.score);
-              return (
-                <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA] transition-colors text-[#667085">
-                  <td className="px-3 py-3 text-[#1F2937]">{row.phone}</td>
-                  <td className="px-3 py-3 text-[#667085">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full flex items-center justify-center font-bold flex-shrink-0"
-                        style={{ background: net.bg, color: net.color }}>
-                        {net.label}
-                      </div>
-                      <span className="text-[#667085]">{row.network}</span>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 text-[#667085]">{row.loanType}</td>
-                  <td className="px-3 py-3 text-[#667085]">{row.req}</td>
-                  <td className="px-3 py-3 text-[#667085]">{row.appr}</td>
-                  <td className="px-3 py-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-12 h-1.5 rounded-full bg-[#E5E7EB] overflow-hidden">
-                        <div className="h-full rounded-full" style={{ width: `${row.score}%`, background: sc }} />
-                      </div>
-                      <span className="font-medium text-[12px] text-[#667085" style={{ color: sc }}>{row.score}%</span>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 text-[#667085]">{row.date}</td>
-                  <td className="px-3 py-3 text-[#667085"><StatusBadge status={row.status} /></td>
-                  <td className="px-3 py-3 text-[#667085"><RepayRing pct={row.repay} /></td>
-                </tr>
-              );
-            })}
+            {rows.map((row, i) => (
+              <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA] transition-colors text-[#667085]">
+                <td className="px-3 py-3"><EventBadge event={row.event} /></td>
+                <td className="px-3 py-3 text-[#1F2937]">{row.msisdn}</td>
+                <td className="px-3 py-3 text-[#667085]">{row.telco}</td>
+                <td className="px-3 py-3 text-[#667085]">{row.amount}</td>
+                <td className="px-3 py-3"><StatusBadge status={row.status} /></td>
+                <td className="px-3 py-3 text-[#667085]">{row.timestamp}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

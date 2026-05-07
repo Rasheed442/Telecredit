@@ -11,10 +11,10 @@ import {
 
 Chart.register(LineElement, PointElement, LineController, CategoryScale, LinearScale, Filler, Tooltip);
 
-const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const airtime = [2000,2600,3000,2400,2200,3300,3700,4200,4800,4100,3300,3300];
-const dataLoan = [1400,1400,1400,2400,2800,1800,1300,2000,2800,2400,1800,1800];
-const HIGHLIGHT_IDX = 8; // Sep
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const airtime = [2000, 2600, 3000, 2400, 2200, 3300, 3700, 4200, 4800, 4100, 3300, 3300];
+const dataLoan = [1400, 1400, 1400, 2400, 2800, 1800, 1300, 2000, 2800, 2400, 1800, 1800];
+const HIGHLIGHT_IDX = 8;
 
 const bgBarsPlugin: Plugin<"line"> = {
   id: "bgBars",
@@ -96,6 +96,11 @@ export default function LoanRequestTrend() {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+          layout: {
+    padding: {
+      left: -16, 
+    },
+  },
         interaction: { mode: "index", intersect: false },
         plugins: {
           legend: { display: false },
@@ -115,17 +120,26 @@ export default function LoanRequestTrend() {
           x: {
             grid: { display: false },
             border: { display: false },
-            ticks: { font: { size: 12 }, color: "#9CA3AF", padding: 6, maxRotation: 0, autoSkip: false },
+            ticks: {
+              font: { size: 12 },
+              color: "#9CA3AF",
+              padding: 6,
+              maxRotation: 0,
+              autoSkip: false,
+            },
           },
           y: {
             min: 0,
             max: 5500,
             grid: { color: "rgba(0,0,0,0.055)", drawTicks: false },
             border: { display: false, dash: [4, 4] },
+            afterFit(scale) {
+              scale.width = 60; // ← forces a fixed width for the y-axis label area
+            },
             ticks: {
               font: { size: 11 },
               color: "#9CA3AF",
-              padding: 10,
+              padding: 16,
               maxTicksLimit: 6,
               callback: (v) => (Number(v) >= 1000 ? Number(v) / 1000 + "k" : v),
             },
@@ -151,32 +165,44 @@ export default function LoanRequestTrend() {
 
   return (
     <div className="bg-white rounded-sm p-6 shadow-sm">
+      {/* Header — title + calendar only */}
       <div className="flex justify-between items-start mb-6 flex-wrap gap-3">
         <div>
-          <h2 className="font-ibm-plex-sans text-[20px] font-medium text-[#1F2937] mb-1">Daily Loan vs Recovery Trend</h2>
-          <p className="text-sm text-[#667085]">This shows daily loan requests and recovery trends.</p>
+          <h2 className="font-ibm-plex-sans text-[20px] font-medium text-[#1F2937] mb-1">
+            Daily Loan vs Recovery Trend
+          </h2>
+          <p className="text-sm text-[#667085]">
+            This shows daily loan requests and recovery trends.
+          </p>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          {(["airtime", "data"] as const).map((s) => (
-            <div
-              key={s}
-              className={`flex items-center gap-2 cursor-pointer px-2 py-1 rounded-md text-sm text-[#667085] transition-opacity ${hovered !== null && hovered !== s ? "opacity-30" : ""}`}
-              onMouseEnter={() => setHovered(s)}
-              onMouseLeave={() => setHovered(null)}
-            >
-              <div className={`w-2.5 h-2.5 rounded-full ${s === "airtime" ? "bg-[#8B80F9]" : "bg-[#4CBFFF]"}`} />
-              {s === "airtime" ? "Airtime Loan" : "Data Loan"}
-            </div>
-          ))}
-          <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-full px-4 py-1.5 text-sm text-[#374151]">
-            <Image src={calender} alt="calendar" width={14} height={14} />
-            <span>This Year</span>
-          </div>
+        <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-full px-4 py-1.5 text-sm text-[#374151]">
+          <Image src={calender} alt="calendar" width={14} height={14} />
+          <span>This Year</span>
         </div>
       </div>
 
+      {/* Chart */}
       <div style={{ height: "280px" }}>
         <canvas ref={canvasRef} />
+      </div>
+
+      {/* Legend — now below the chart */}
+      <div className="flex justify-center items-center gap-6 mt-4">
+        {(["airtime", "data"] as const).map((s) => (
+          <div
+            key={s}
+            className={`flex items-center gap-2 cursor-pointer px-2 py-1 rounded-md text-sm text-[#667085] transition-opacity ${hovered !== null && hovered !== s ? "opacity-30" : ""
+              }`}
+            onMouseEnter={() => setHovered(s)}
+            onMouseLeave={() => setHovered(null)}
+          >
+            <div
+              className={`w-2.5 h-2.5 rounded-full ${s === "airtime" ? "bg-[#8B80F9]" : "bg-[#4CBFFF]"
+                }`}
+            />
+            {s === "airtime" ? "Airtime Loan" : "Data Loan"}
+          </div>
+        ))}
       </div>
     </div>
   );

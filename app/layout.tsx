@@ -31,6 +31,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${mulish.variable} ${ibmPlexSans.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="">{children}</body>
     </html>

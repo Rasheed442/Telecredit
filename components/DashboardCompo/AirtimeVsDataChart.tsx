@@ -4,10 +4,10 @@ import React from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
 
 const data = [
-  { name: "DPD 0",    value: 30, fill: "#16A34A" }, // wide
-  { name: "DPD 1-7",  value: 30, fill: "#3B82F6" }, // wide
-  { name: "DPD 8-30", value: 15, fill: "#F97316" }, // narrow
-  { name: "DPD 31+",  value: 25, fill: "#DC2626" }, // medium
+  { name: "DPD 0",    value: 30, fill: "#027A48" }, // wide
+  { name: "DPD 1-7",  value: 30, fill: "#175CD3" }, // wide
+  { name: "DPD 8-30", value: 15, fill: "#D76603" }, // narrow
+  { name: "DPD 31+",  value: 25, fill: "#B42318" }, // medium
 ];
 
 const RADIAN = Math.PI / 180;
@@ -59,11 +59,11 @@ const AgingBucketChart = () => {
       <h3 className="text-[18px] font-bold text-[#1F2937] mb-1">
         Portfolio by Aging Bucket
       </h3>
-      <p className="text-[13px] text-[#667085] mb-4">
+      <p className="text-[13px] text-[#667085] ">
         Loan exposure across delinquency stages.
       </p>
 
-      <div className="h-72 relative">
+      <div className="h-82 relative">
         {/* Center label */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
           <div className="text-center" style={{ marginTop: "-24px" }}>

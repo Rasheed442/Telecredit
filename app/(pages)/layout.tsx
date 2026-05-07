@@ -14,23 +14,21 @@ const MemoizedHeader = memo(Header);
 
 const layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div> 
-        <div className=' grid grid-cols-[1.7fr_9fr]'>
-      <Suspense fallback={<ComponentLoadingSpinner height="h-screen" />}>
-      
-        <Navbar/>
-      </Suspense>
-       
-        <div className="bg-[#F8FAFC] h-[92vh] overflow-hidden overflow-y-auto">
-                    <Header />
+    <div className="min-h-screen bg-gray-50"> 
+      <div className='grid grid-cols-[1.7fr_9fr]'>
+        <Suspense fallback={<ComponentLoadingSpinner height="h-screen" />}>
+          <Navbar/>
+        </Suspense>
+         
+        <div className="bg-[#F8FAFC] h-[100vh] overflow-hidden overflow-y-auto">
+          <Header />
 
           <Suspense >
             {children}
           </Suspense>
         </div>
-    </div>   
+      </div>   
     </div>
- 
   )
 }
 

@@ -1,6 +1,7 @@
 "use client";
 
-import AirtimeVsDataChart from '@/components/DashboardCompo/AirtimeVsDataChart';
+import AgingBucketChart from '@/components/DashboardCompo/AirtimeVsDataChart';
+import TelcoPerformance from '@/components/DashboardCompo/TelcoPerformance';
 import CustomerPanel from '@/components/DashboardCompo/CustomerPanel';
 import FraudPanel from '@/components/DashboardCompo/FraudPanel';
 import LoanRequestTable from '@/components/DashboardCompo/LoanRequestTable';
@@ -135,15 +136,17 @@ function page() {
                         <LoanRequestTrend />
                     </div>
                     <div className=''>
-                        <AirtimeVsDataChart />
+                        <AgingBucketChart />
                     </div>
                 </div>
 
-                <div className='grid grid-cols-[30%_35%_35%] gap-4 pr-8'>
-                    <RiskPanel/>
-                    <FraudPanel/>
-                    <CustomerPanel/>
+                {/* Telco Performance Section */}
+                <div className='py-4 pr-4'>
+                    <TelcoPerformance />
                 </div>
+
+                {/* Risk Panels Section */}
+                <RiskPanel/>
                 <LoanRequestTable/>
 
         </div>
