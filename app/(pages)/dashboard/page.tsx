@@ -141,7 +141,7 @@ function page() {
             </div>
 
             {/* Telco Performance Section */}
-            <div className='py-4 pr-4'>
+            <div className=' pb-6 pr-4'>
                 <TelcoPerformance />
             </div>
 

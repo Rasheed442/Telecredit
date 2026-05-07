@@ -175,8 +175,8 @@ export default function LoanRequestTrend() {
             Compares outbound lending and inbound recoveries over time.
           </p>
         </div>
-        <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-full px-4 py-1.5 text-sm text-[#374151]">
-          <Image src={calender} alt="calendar" width={14} height={14} />
+        <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-sm px-4 py-1.5 text-sm text-[#374151]">
+          <Image src={calender} alt="calendar" width={16} height={16} />
           <span>This Year</span>
         </div>
       </div>
