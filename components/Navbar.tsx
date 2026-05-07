@@ -10,6 +10,7 @@ import Link from 'next/link'
 function Navbar() {
     const route = useRouter();
     const pathname = usePathname();
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
 
     const navSections = [
         {
@@ -72,8 +73,16 @@ function Navbar() {
     }, [pathname, navSections]);
 
     const handleLogout = () => {
+        setShowLogoutModal(true);
+    };
+
+    const confirmLogout = () => {
         // Add logout logic here
         route.push('/');
+    };
+
+    const cancelLogout = () => {
+        setShowLogoutModal(false);
     };
 
     return (
@@ -131,6 +140,39 @@ function Navbar() {
                     <Image src={logout} alt="Arrow" width={12} height={12} className='rotate-180' />
                 </div>
             </div>
+
+            {/* Logout Confirmation Modal */}
+            {showLogoutModal && (
+                <div className='fixed inset-0 bg-gradient-to-b from-black/20 via-black/50 to-black/70 flex items-center justify-center z-50'>
+                    <div className='bg-white rounded-sm p-6 max-w-sm w-full mx-4'>
+                        <div className='flex items-center justify-center mb-4'>
+                            <div className='w-12 h-12 bg-red-100 rounded-full flex items-center justify-center'>
+                                <Image src={logout} alt="Logout" width={24} height={24} />
+                            </div>
+                        </div>
+                        <h3 className='text-[22px] font-medium font-ibm-plex-sans text-gray-900 text-center mb-2'>
+                            Confirm Log-out
+                        </h3>
+                        <p className='text-sm text-gray-600 text-center mb-6'>
+                            Are you sure you want to log out of your account?
+                        </p>
+                        <div className='flex gap-3 cursor-pointer'>
+                            <button
+                                onClick={cancelLogout}
+                                className='flex-1 px-4 py-2 border border-gray-300 rounded-sm text-gray-700 hover:bg-gray-50 transition-colors text-sm font-medium'
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmLogout}
+                                className='flex-1 px-4 py-2 bg-red-600 text-white rounded-sm hover:bg-red-700 transition-colors text-sm font-medium'
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
