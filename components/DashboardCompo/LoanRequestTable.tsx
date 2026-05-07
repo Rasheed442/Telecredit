@@ -3,18 +3,21 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { IoMdArrowDown } from "react-icons/io";
+import Image from "next/image";
+import { AiOutlineDown } from "react-icons/ai";
+import { calender } from "@/constant";
 
 const allRows = [
-  { event:"Loan", msisdn:"08115322207", telco:"MTN", amount:"₦500.00", status:"Failed", timestamp:"23/09/26, 09:11:04" },
-  { event:"Recovery", msisdn:"08108762779", telco:"Glo", amount:"₦750.00", status:"Success", timestamp:"23/09/26, 09:11:04" },
-  { event:"Loan", msisdn:"09087622779", telco:"9 Mobile", amount:"₦200.00", status:"Pending", timestamp:"23/09/26, 09:11:04" },
-  { event:"Recovery", msisdn:"07087627729", telco:"Airtel", amount:"₦150.00", status:"Success", timestamp:"23/09/26, 09:11:04" },
-  { event:"Loan", msisdn:"08125322248", telco:"MTN", amount:"₦250.00", status:"Failed", timestamp:"23/09/26, 09:11:04" },
-  { event:"Recovery", msisdn:"08115322017", telco:"Glo", amount:"₦1000.00", status:"Pending", timestamp:"23/09/26, 09:11:04" },
-  { event:"Loan", msisdn:"08108762779", telco:"9 Mobile", amount:"₦950.00", status:"Success", timestamp:"23/09/26, 09:11:04" },
-  { event:"Recovery", msisdn:"08108762779", telco:"Airtel", amount:"₦300.00", status:"Failed", timestamp:"23/09/26, 09:11:04" },
-  { event:"Loan", msisdn:"08108762779", telco:"MTN", amount:"₦200.00", status:"Success", timestamp:"23/09/26, 09:11:04" },
-  { event:"Recovery", msisdn:"08108762779", telco:"Glo", amount:"₦250.00", status:"Pending", timestamp:"23/09/26, 09:11:04" },
+  { event: "Loan", msisdn: "08115322207", telco: "MTN", amount: "₦500.00", status: "Failed", timestamp: "23/09/26, 09:11:04" },
+  { event: "Recovery", msisdn: "08108762779", telco: "Glo", amount: "₦750.00", status: "Success", timestamp: "23/09/26, 09:11:04" },
+  { event: "Loan", msisdn: "09087622779", telco: "9 Mobile", amount: "₦200.00", status: "Pending", timestamp: "23/09/26, 09:11:04" },
+  { event: "Recovery", msisdn: "07087627729", telco: "Airtel", amount: "₦150.00", status: "Success", timestamp: "23/09/26, 09:11:04" },
+  { event: "Loan", msisdn: "08125322248", telco: "MTN", amount: "₦250.00", status: "Failed", timestamp: "23/09/26, 09:11:04" },
+  { event: "Recovery", msisdn: "08115322017", telco: "Glo", amount: "₦1000.00", status: "Pending", timestamp: "23/09/26, 09:11:04" },
+  { event: "Loan", msisdn: "08108762779", telco: "9 Mobile", amount: "₦950.00", status: "Success", timestamp: "23/09/26, 09:11:04" },
+  { event: "Recovery", msisdn: "08108762779", telco: "Airtel", amount: "₦300.00", status: "Failed", timestamp: "23/09/26, 09:11:04" },
+  { event: "Loan", msisdn: "08108762779", telco: "MTN", amount: "₦200.00", status: "Success", timestamp: "23/09/26, 09:11:04" },
+  { event: "Recovery", msisdn: "08108762779", telco: "Glo", amount: "₦250.00", status: "Pending", timestamp: "23/09/26, 09:11:04" },
 ];
 
 function StatusBadge({ status }: { status: string }) {
@@ -24,7 +27,7 @@ function StatusBadge({ status }: { status: string }) {
     Pending: "bg-yellow-100 text-yellow-700",
   };
   return (
-    <span className={`inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-1 rounded-full ${styles[status]}`}>
+    <span className={`inline-flex items-center gap-1 text-[12px] font-semibold px-2.5 py-1 rounded-sm ${styles[status]}`}>
       {status}
     </span>
   );
@@ -32,11 +35,11 @@ function StatusBadge({ status }: { status: string }) {
 
 function EventBadge({ event }: { event: string }) {
   const styles: Record<string, string> = {
-    Loan: "bg-blue-100 text-blue-700",
+    Loan: "bg-[#DBEAFE] text-[#1447E6]",
     Recovery: "bg-green-100 text-green-700",
   };
   return (
-    <span className={`inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-1 rounded-full ${styles[event]}`}>
+    <span className={`inline-flex items-center gap-1 text-[13px] font-semibold px-2.5 py-1 rounded-sm ${styles[event]}`}>
       {event}
     </span>
   );
@@ -55,13 +58,29 @@ export default function LoanTable() {
 
   return (
     <div className="bg-white rounded-sm shadow-sm overflow-hidden border border-[#F3F4F6] mt-6">
+      <div className="flex items-center justify-between p-4 pb-6">
+        <div className="">
+          <h2 className="font-ibm-plex-sans text-[20px] font-medium text-[#1F2937] mb-1">
+            Recents Transactions
+          </h2>
+          <p className="text-sm text-[#667085]">
+            Latest fulfllments and recoveries
+          </p>
+        </div>
+        <div className='border border-[#EBEBEB] flex items-center px-4 gap-2 rounded-sm bg-white py-2 cursor-pointer'>
+          <Image src={calender} alt='calender' width={15} height={15} />
+          <p className='text-gray-500 text-[14px] font-medium font-mulish'>This Year </p>
+          <AiOutlineDown color='#344054' size={14} />
+        </div>
+      </div>
+
       <div className="overflow-x-auto">
         <table className="w-full text-[13px] border-collapse">
           <thead>
-            <tr className="border-b border-[#F3F4F6]">
-              {["Event","MSISDN","Telco","Amount","Status","Timestamp"].map((h) => (
-                <th key={h} className="px-3 py-3 text-left text-[12px] font-normal text-[#667085] whitespace-nowrap border-r border-gray-200 last:border-r-0">
-                  {h} {h !== "Timestamp" && <SortIcon />}
+            <tr className="border-b border-[#F3F4F6] bg-gray-50">
+              {["Event", "MSISDN", "Telco", "Amount", "Status", "Timestamp"].map((h) => (
+                <th key={h} className="px-3 py-3 text-left text-[13px] font-normal text-[#667085] whitespace-nowrap">
+                  {h}  <SortIcon />
                 </th>
               ))}
             </tr>
