@@ -168,11 +168,11 @@ export default function LoanRequestTrend() {
       {/* Header — title + calendar only */}
       <div className="flex justify-between items-start mb-6 flex-wrap gap-3">
         <div>
-          <h2 className="font-ibm-plex-sans text-[20px] font-medium text-[#1F2937] mb-1">
+          <h2 className="font-sf-pro text-[20px] font-semibold text-[#1F2937] mb-1">
             Daily Loan vs Recovery Trend
           </h2>
-          <p className="text-sm text-[#667085]">
-            This shows daily loan requests and recovery trends.
+          <p className="text-[14px] text-[#667085] font-ibm-plex-sans">
+            Compares outbound lending and inbound recoveries over time.
           </p>
         </div>
         <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-full px-4 py-1.5 text-sm text-[#374151]">

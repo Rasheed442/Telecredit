@@ -1,0 +1,147 @@
+// page.tsx
+"use client";
+import React, { useState } from "react";
+import SubMenu from "@/components/SubMenu";
+import DataTable, { LoanRow, type TabKey } from "@/components/DataTable";
+import Dropdown from "@/components/Dropdown";
+import { IoFilterSharp, IoSearch } from "react-icons/io5";
+
+// ── Types ──────────────────────────────────────────────────────────────
+type TabKey = "open" | "delinquent" | "closed" | "watchlist" | "aging";
+
+// ── Mock data ──────────────────────────────────────────────────────────
+const rows: LoanRow[] = [
+    { loanId: "ATL_CORE_010", msisdn: "07086022674", telco: "AIRTEL", amount: "₦500", outstanding: "₦68", recovered: "₦432", aging: "DP 31", fraudRisk: "High", score: 86, created: "18/03/2026" },
+    { loanId: "MTN_CORE_045", msisdn: "08123456789", telco: "MTN", amount: "₦1,000", outstanding: "₦418", recovered: "₦582", aging: "DP 17", fraudRisk: "Medium", score: 81, created: "18/03/2026" },
+    { loanId: "GLO_CORE_089", msisdn: "09087654321", telco: "GLO", amount: "₦1,000", outstanding: "₦212", recovered: "₦788", aging: "DP 0", fraudRisk: "Low", score: 41, created: "18/03/2026" },
+    { loanId: "GLO_CORE_089", msisdn: "07012345678", telco: "9 MOBILE", amount: "₦1,000", outstanding: "₦330", recovered: "₦670", aging: "DP 31", fraudRisk: "High", score: 20, created: "18/03/2026" },
+    { loanId: "9MOB_CORE_034", msisdn: "08098765432", telco: "AIRTEL", amount: "₦200", outstanding: "₦186", recovered: "₦14", aging: "DP 17", fraudRisk: "Medium", score: 11, created: "18/03/2026" },
+    { loanId: "ATL_CORE_010", msisdn: "07086022674", telco: "MTN", amount: "₦500", outstanding: "₦17", recovered: "₦483", aging: "DP 0", fraudRisk: "Low", score: 13, created: "18/03/2026" },
+    { loanId: "MTN_CORE_045", msisdn: "08123456789", telco: "GLO", amount: "₦100", outstanding: "₦88", recovered: "₦12", aging: "DP 31", fraudRisk: "High", score: 20, created: "18/03/2026" },
+    { loanId: "GLO_CORE_089", msisdn: "09087654321", telco: "9 MOBILE", amount: "₦50", outstanding: "₦28", recovered: "₦22", aging: "DP 17", fraudRisk: "Medium", score: 49, created: "18/03/2026" },
+    { loanId: "9MOB_CORE_034", msisdn: "07012345678", telco: "AIRTEL", amount: "₦1,000", outstanding: "₦444", recovered: "₦556", aging: "DP 0", fraudRisk: "Low", score: 80, created: "18/03/2026" },
+    { loanId: "ATL_CORE_010", msisdn: "08098765432", telco: "MTN", amount: "₦50", outstanding: "₦40", recovered: "₦10", aging: "DP 31", fraudRisk: "High", score: 89, created: "18/03/2026" },
+];
+
+const tabs: { key: TabKey; label: string; count?: number }[] = [
+    { key: "open", label: "Open Loans", count: 542 },
+    { key: "delinquent", label: "Delinquent Loans", count: 89 },
+    { key: "closed", label: "Closed Loans", count: 616 },
+    { key: "watchlist", label: "Portfolio Watchlist", count: 2 },
+    { key: "aging", label: "Aging Buckets Analysis" },
+];
+
+
+export default function Page() {
+    const [activeTab, setActiveTab] = useState<TabKey>("open");
+    const [search, setSearch] = useState("");
+    const [telco, setTelco] = useState("All Telcos");
+    const [status, setStatus] = useState("All Statuses");
+    const [page, setPage] = useState(1);
+    const perPage = 10;
+
+    const telcoOptions = [
+        { value: "All Telcos", label: "All Telcos" },
+        { value: "MTN", label: "MTN" },
+        { value: "AIRTEL", label: "AIRTEL" },
+        { value: "GLO", label: "GLO" },
+        { value: "9 MOBILE", label: "9 MOBILE" },
+    ];
+
+    const statusOptions = [
+        { value: "All Statuses", label: "All Statuses" },
+        { value: "Active", label: "Active" },
+        { value: "Delinquent", label: "Delinquent" },
+        { value: "Closed", label: "Closed" },
+    ];
+
+    const filtered = rows.filter((r) =>
+        r.msisdn.includes(search) || r.loanId.toLowerCase().includes(search.toLowerCase())
+    );
+
+    return (
+        <div className="p-6">
+            <SubMenu
+                title="Live Portfolio Monitoring"
+                subtitle="Track and manage all active, delinquent, and closed loans."
+            />
+
+            <div className="flex border-b border-[#E5E7EB] bg-[#DCE9F9] rounded-sm mb-2 mt-6 pl-1 py-1 gap-1 overflow-x-auto ">
+                {tabs.map((t) => (
+                    <button
+                        key={t.key}
+                        onClick={() => setActiveTab(t.key)}
+                        className={`flex items-center gap-2 px-4 py-2 text-[14px] cursor-pointer font-ibm-plex-sans  whitespace-nowrap transition-colors border-b-2 -mb-[1px]
+                ${activeTab === t.key
+                                ? "bg-[#1F2937] text-white font-semibold rounded-md"
+                                : "border-transparent text-[#6B7280] hover:text-[#374151]"}`}
+                    >
+                        {t.label}
+                        {t.count !== undefined && (
+                            <span className={`text-[12px] font-semibold px-2 py-0.5 rounded-md
+                  ${activeTab === t.key
+                                    ? "bg-white text-gray-700 font-bold"
+                                    : "bg-gray-100 text-[#6B7280]"}`}>
+                                {t.count}
+                            </span>
+                        )}
+                    </button>
+                ))}
+            </div>
+
+            <div className="mt-6 bg-white border border-gray-100 rounded-sm shadow-sm overflow-hidden">
+
+                {/* ── Tabs ── */}
+
+
+                {/* ── Filters ── */}
+                <div className="flex items-center justify-end gap-3 px-5 py-4 flex-wrap">
+                    {/* Telco filter */}
+                    <div className="py-4 border-b border-[#F3F4F6]">
+                        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-[#EEF4FC] rounded-md px-3 h-10 flex-1 w-[370px]">
+                            <IoSearch size={20} className="text-gray-500" />
+                            <input
+                                value={search}
+                                onChange={(e) => {
+                                    setSearch(e.target.value);
+                                    setPage(1);
+                                }}
+                                placeholder={"Search MSISDN"}
+                                className="flex-1 placeholder:text-[14px] text-[#374151] font-ibm-plex-sans outline-none placeholder:font-ibm-plex-sans placeholder:text-[#9CA3AF] placeholder:text-gray-500 bg-transparent"
+                            />
+                        </div>
+                    </div>
+                    <Dropdown
+                        options={telcoOptions}
+                        value={telco}
+                        onChange={setTelco}
+                        className="w-32"
+                    />
+
+                    {/* Status filter */}
+                    <Dropdown
+                        options={statusOptions}
+                        value={status}
+                        onChange={setStatus}
+                        className="w-32"
+                    />
+
+                    {/* Apply filter */}
+                    <button className="flex items-center cursor-pointer gap-2 border border-gray-200 rounded-sm px-4 h-10 text-[14px] text-gray-700 font-medium hover:bg-[#F9FAFB] transition-colors ">
+                        <IoFilterSharp size={18} className="text-[#374151]" />
+                        Apply filter
+                    </button>
+                </div>
+
+                {/* ── DataTable ── */}
+                <DataTable
+                    searchable={false}
+                    data={filtered}
+                    onActionClick={(row) => console.log('View loan:', row.loanId)}
+                    className="border-t-0"
+                />
+
+            </div>
+        </div>
+    );
+}

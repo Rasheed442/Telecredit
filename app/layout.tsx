@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
-import { Mulish, IBM_Plex_Sans } from "next/font/google";
+import { Mulish, IBM_Plex_Sans, Geist } from "next/font/google";
 import "./globals.css";
 import "./fonts.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+
 
 // SF Pro and DM Serif Text will be loaded via CSS since they're not available on Google Fonts
 
@@ -35,7 +39,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${mulish.variable} ${ibmPlexSans.variable} h-full antialiased`}
+      className={cn("h-full", "antialiased", mulish.variable, ibmPlexSans.variable, "font-sans", geist.variable)}
       suppressHydrationWarning
     >
       <body className="">{children}</body>

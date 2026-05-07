@@ -17,7 +17,7 @@ import { AiOutlineDown } from 'react-icons/ai';
 
 function page() {
     const metricsData = [
-                {
+        {
             title: "Total Disbursed",
             value: "1,296",
             change: 8.2,
@@ -112,7 +112,7 @@ function page() {
                 <div className='border border-[#EBEBEB] flex items-center px-4 gap-2 rounded-sm bg-white py-2 cursor-pointer'>
                     <Image src={calender} alt='calender' width={15} height={15} />
                     <p className='text-gray-500 text-[14px] font-medium font-mulish'>This Year </p>
-                    <AiOutlineDown color='#344054' size={14}/>
+                    <AiOutlineDown color='#344054' size={14} />
                 </div>
             </div>
 
@@ -130,24 +130,24 @@ function page() {
                 ))}
             </div>
 
-          
-                <div className='grid grid-cols-[60%_40%] gap-4 py-6 pr-4'>
-                    <div className=''>
-                        <LoanRequestTrend />
-                    </div>
-                    <div className=''>
-                        <AgingBucketChart />
-                    </div>
-                </div>
 
-                {/* Telco Performance Section */}
-                <div className='py-4 pr-4'>
-                    <TelcoPerformance />
+            <div className='grid grid-cols-[60%_40%] gap-4 py-6 pr-4'>
+                <div className=''>
+                    <LoanRequestTrend />
                 </div>
+                <div className=''>
+                    <AgingBucketChart />
+                </div>
+            </div>
 
-                {/* Risk Panels Section */}
-                <RiskPanel/>
-                <LoanRequestTable/>
+            {/* Telco Performance Section */}
+            <div className='py-4 pr-4'>
+                <TelcoPerformance />
+            </div>
+
+            {/* Risk Panels Section */}
+            <RiskPanel />
+            <LoanRequestTable />
 
         </div>
     )

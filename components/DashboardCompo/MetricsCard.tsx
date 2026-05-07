@@ -24,7 +24,7 @@ const MetricsCard: React.FC<MetricsCardProps> = ({
       {/* Icon and Title */}
       <div className="flex items-center gap-3">
           <Image src={icon} alt={title} width={20} height={20} />
-        <p className="text-sm font-light text-[#667085]">
+        <p className="text-sm font-normal font-ibm-plex-sans text-[#667085]">
           {title}
         </p>
       </div>
@@ -33,7 +33,11 @@ const MetricsCard: React.FC<MetricsCardProps> = ({
           </p>
       {/* Value and Change */}
       <div className="flex items-center gap-1">
-        <div className={`flex items-center rounded-full text-[14px] font-medium ${
+      
+          <p className="text-xs font-ibm-plex-sans  font-light text-gray-500">
+            {changeText}
+          </p>
+            <div className={`flex font-ibm-plex-sans items-center rounded-full text-[14px] font-medium ${
           isPositive 
             ? ' text-green-600' 
             : ' text-red-600'
@@ -47,9 +51,6 @@ const MetricsCard: React.FC<MetricsCardProps> = ({
             {Math.abs(change)}%
           </span>
         </div>
-          <p className="text-xs font-light text-gray-500">
-            {changeText}
-          </p>
         
         {/* Change Badge */}
        

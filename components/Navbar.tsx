@@ -1,10 +1,11 @@
 
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Dashborad, Tel, caution, coll, archieve, key, logo, logout } from '@/constant'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 function Navbar() {
     const [activeLink, setActiveLink] = useState("Executive Dashboard");
@@ -14,31 +15,49 @@ function Navbar() {
         {
             title: "OVERVIEW",
             links: [
-                { name: "Executive Dashboard", icon: Dashborad },
+                { name: "Executive Dashboard", icon: Dashborad, link: "/dashboard" },
             ]
         },
         {
             title: "PORTFOLIO",
             links: [
-                { name: "Live Portfolio", icon: Tel },
+                { name: "Live Portfolio", icon: Tel, link: "/live-portfolio" },
             ]
         },
         {
             title: "RISKS",
             links: [
-                { name: "Customer Risk Center", icon: caution },
-                { name: "Fraud & Underwriting", icon: coll },
+                { name: "Customer Risk Center", icon: caution, link: "/customer-risk" },
+                { name: "Fraud & Underwriting", icon: coll, link: "/fraud-underwriting" },
             ]
         },
         {
             title: "OPERATIONS",
             links: [
-                { name: "Callback Audit", icon: archieve },
-                { name: "Analytics", icon: key },
-                { name: "System Jobs", icon: key },
+                { name: "Callback Audit", icon: archieve, link: "/callback-audit" },
+                { name: "Analytics", icon: key, link: "/analytics" },
+                { name: "System Jobs", icon: key, link: "/system-jobs" },
             ]
         }
     ];
+
+    useEffect(() => {
+        const currentPath = window.location.pathname;
+        
+        // Find the matching link based on current path
+        const findActiveLink = () => {
+            for (const section of navSections) {
+                for (const link of section.links) {
+                    if (link.link === currentPath) {
+                        return link.name;
+                    }
+                }
+            }
+            return "Executive Dashboard"; // Default fallback
+        };
+
+        setActiveLink(findActiveLink());
+    }, []);
 
     const handleLogout = () => {
         // Add logout logic here
@@ -61,9 +80,9 @@ function Navbar() {
                         </p>
                         <div className='flex flex-col gap-1'>
                             {section.links.map((link) => (
-                                <div
+                                <Link
+                                    href={link.link}
                                     key={link.name}
-                                    onClick={() => setActiveLink(link.name)}
                                     className={`flex items-center gap-3 px-3 py-3 rounded-lg cursor-pointer transition-colors ${
                                         activeLink === link.name 
                                             ? 'bg-[#5490DE] text-white' 
@@ -80,7 +99,7 @@ function Navbar() {
                                     <p className='text-[14px] font-medium font-inter'>
                                         {link.name}
                                     </p>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     </div>

@@ -31,7 +31,7 @@ const Row = ({ children }: { children: React.ReactNode }) => (
 // ── Panel header ──────────────────────────────────────────────────────
 const PanelHeader = ({ title }: { title: string }) => (
   <div className="flex items-center gap-2 mb-4">
-    <Image src={deliquent} alt="alert" width={18} height={18} />
+    <Image src={deliquent} alt="alert" width={20} height={20} />
     <h3 className="text-[18px] font-semibold font-sf-pro text-[#1F2937]">{title}</h3>
   </div>
 );
@@ -44,12 +44,12 @@ const HighRiskPanel = () => (
       {highRisk.map((item, i) => (
         <Row key={i}>
           <div className="flex justify-between items-start">
-            <span className="text-[14px] font-semibold text-[#1F2937]">{item.phone}</span>
+            <span className="text-[14px] font-semibold font-sf-pro text-[#1F2937]">{item.phone}</span>
             <span className="text-[13px] font-medium text-red-500">Score: {item.score}</span>
           </div>
           <div className="flex justify-between items-center mt-1">
-            <span className="text-[13px] text-[#667085]">{item.reason}</span>
-            <span className="text-[13px] text-[#374151]">{item.amount}</span>
+            <span className="text-[13px] text-[#667085] font-ibm-plex-sans">{item.reason}</span>
+            <span className="text-[13px] text-[#374151] font-light font-ibm-plex-sans">{item.amount}</span>
           </div>
         </Row>
       ))}
@@ -65,11 +65,11 @@ const FraudPanel = () => (
       {fraudBlocked.map((item, i) => (
         <Row key={i}>
           <div className="flex justify-between items-start">
-            <span className="text-[14px] font-semibold text-[#1F2937]">{item.phone}</span>
+            <span className="text-[14px] font-semibold font-sf-pro text-[#1F2937]">{item.phone}</span>
             <span className="text-[13px] text-[#9CA3AF]">{item.time}</span>
           </div>
           <div className="mt-1">
-            <span className="text-[13px] text-[#667085]">{item.reason}</span>
+            <span className="text-[13px] text-[#667085] font-ibm-plex-sans">{item.reason}</span>
           </div>
         </Row>
       ))}
@@ -85,7 +85,7 @@ const DelinquentPanel = () => (
       {delinquent.map((item, i) => (
         <Row key={i}>
           <div className="flex justify-between items-center">
-            <span className="text-[14px] font-semibold text-[#1F2937]">{item.phone}</span>
+            <span className="text-[14px] font-semibold font-sf-pro text-[#1F2937]">{item.phone}</span>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#9CA3AF] inline-block" />
               <span className="text-[13px] text-[#9CA3AF]">{item.dpd}</span>

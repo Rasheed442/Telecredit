@@ -56,11 +56,12 @@ const CustomLegend = (props: any) => {
 const AgingBucketChart = () => {
   return (
     <div className="bg-white rounded-sm p-6 shadow-sm h-full">
-             <div>
-          <h2 className="font-ibm-plex-sans text-[20px] font-medium text-[#1F2937] mb-1">
+      
+           <div>
+          <h2 className="font-sf-pro text-[20px] font-semibold text-[#1F2937] mb-1">
             Portfolio by Aging Bucket
           </h2>
-          <p className="text-sm text-[#667085]">
+          <p className="text-[14px] text-[#667085] font-ibm-plex-sans">
             Loan exposure across delinquency stages.
           </p>
         </div>

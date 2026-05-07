@@ -20,7 +20,7 @@ const layout: React.FC<LayoutProps> = ({ children }) => {
           <Navbar/>
         </Suspense>
          
-        <div className="bg-[#F8FAFC] h-[100vh] overflow-hidden overflow-y-auto">
+        <div className="bg-[#F8FAFC] h-[100vh] overflow-y-auto">
           <Header />
 
           <Suspense >

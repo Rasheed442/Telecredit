@@ -220,10 +220,10 @@ export default function TelcoPerformance() {
     <div className="bg-white rounded-sm p-6 shadow-sm">
       <div className="flex justify-between items-start mb-6 flex-wrap gap-3">
         <div>
-          <h2 className="font-ibm-plex-sans text-[20px] font-medium text-[#1F2937] mb-1">
+          <h2 className="font-sf-pro text-[20px] font-semibold text-[#1F2937] mb-1">
             Telco Performance
           </h2>
-          <p className="text-sm text-[#667085]">
+          <p className="text-[14px] text-[#667085] font-ibm-plex-sans">
             Outbound Lending vs Inbound Recovery per Telco
           </p>
         </div>
