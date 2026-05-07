@@ -2,7 +2,7 @@
 "use client";
 import React, { useState } from "react";
 import SubMenu from "@/components/SubMenu";
-import DataTable, { LoanRow, type TabKey } from "@/components/DataTable";
+import DataTable, { LoanRow } from "@/components/DataTable";
 import Dropdown from "@/components/Dropdown";
 import { IoFilterSharp, IoSearch } from "react-icons/io5";
 
@@ -66,7 +66,7 @@ export default function Page() {
                 subtitle="Track and manage all active, delinquent, and closed loans."
             />
 
-            <div className="flex border-b border-[#E5E7EB] bg-[#DCE9F9] rounded-sm mb-2 mt-6 pl-1 py-1 gap-1 overflow-x-auto ">
+            <div className="flex border border-gray-200 bg-[#EEF4FC] rounded-sm mb-2 mt-6 pl-1 py-1 gap-1 overflow-x-auto ">
                 {tabs.map((t) => (
                     <button
                         key={t.key}
@@ -81,7 +81,7 @@ export default function Page() {
                             <span className={`text-[12px] font-semibold px-2 py-0.5 rounded-md
                   ${activeTab === t.key
                                     ? "bg-white text-gray-700 font-bold"
-                                    : "bg-gray-100 text-[#6B7280]"}`}>
+                                    : "bg-gray-200 text-gray-700 text-[#6B7280]"}`}>
                                 {t.count}
                             </span>
                         )}

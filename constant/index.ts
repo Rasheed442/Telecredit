@@ -13,6 +13,7 @@ import caution from "../assets/icons/NavIcons/caution.png"
 import coll from "../assets/icons/NavIcons/collection.png"
 import archieve from "../assets/icons/NavIcons/archieve.png"
 import key from "../assets/icons/NavIcons/key.png"
+import sysj from "../assets/icons/NavIcons/sysj.png"
 import setting from "../assets/icons/NavIcons/settings.png"
 import logout from "../assets/icons/NavIcons/exit.png"
 
@@ -37,4 +38,4 @@ import speedo from "../assets/Images/DashboardImages/speedo.png"
 // Login
 import loginbg from "../assets/Images/LoginImages/loginbg.png"
 
-export { prodlogo, profile,arrowup, light,settings,loginbg, quicklink, speedo, notification, Dashborad, Tel,caution, calender, cube, cube2, cube3, cube4, coll, archieve, key, setting, logo,logout, activeb, behav, blocked, deliquent, money, outstanding, profit, trending }
+export { prodlogo, profile,arrowup, light,settings,loginbg,sysj, quicklink, speedo, notification, Dashborad, Tel,caution, calender, cube, cube2, cube3, cube4, coll, archieve, key, setting, logo,logout, activeb, behav, blocked, deliquent, money, outstanding, profit, trending }

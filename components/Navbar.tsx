@@ -2,14 +2,14 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
-import { Dashborad, Tel, caution, coll, archieve, key, logo, logout } from '@/constant'
+import { Dashborad, Tel, caution, coll, archieve, key, logo, logout, sysj } from '@/constant'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 
 function Navbar() {
-    const [activeLink, setActiveLink] = useState("Executive Dashboard");
     const route = useRouter();
+    const pathname = usePathname();
 
     const navSections = [
         {
@@ -36,19 +36,31 @@ function Navbar() {
             links: [
                 { name: "Callback Audit", icon: archieve, link: "/callback-audit" },
                 { name: "Analytics", icon: key, link: "/analytics" },
-                { name: "System Jobs", icon: key, link: "/system-jobs" },
+                { name: "System Jobs", icon: sysj, link: "/system-jobs" },
             ]
         }
     ];
 
+    // Find the initial active link based on current pathname
+    const getInitialActiveLink = () => {
+        for (const section of navSections) {
+            for (const link of section.links) {
+                if (link.link === pathname) {
+                    return link.name;
+                }
+            }
+        }
+        return "Executive Dashboard"; // Default fallback
+    };
+    
+    const [activeLink, setActiveLink] = useState(getInitialActiveLink());
+
     useEffect(() => {
-        const currentPath = window.location.pathname;
-        
-        // Find the matching link based on current path
+        // Find matching link based on current path
         const findActiveLink = () => {
             for (const section of navSections) {
                 for (const link of section.links) {
-                    if (link.link === currentPath) {
+                    if (link.link === pathname) {
                         return link.name;
                     }
                 }
@@ -57,7 +69,7 @@ function Navbar() {
         };
 
         setActiveLink(findActiveLink());
-    }, []);
+    }, [pathname, navSections]);
 
     const handleLogout = () => {
         // Add logout logic here
