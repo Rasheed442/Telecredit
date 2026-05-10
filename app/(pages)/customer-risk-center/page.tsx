@@ -55,42 +55,20 @@ interface CustomerMetrics {
 
 // ── Mock data ──────────────────────────────────────────────────────────
 const mockCustomerMetrics: CustomerMetrics = {
-  totalBorrowed: "₦500",
-  totalRecovered: "₦432",
-  outstandingBalance: "₦68",
-  activeLoans: 3,
-  lifetimeDefaults: 2,
-  behaviouralRiskScore: 23,
-  hardBlockStatus: "Active",
-  eligibilityStatus: "Restricted",
+  totalBorrowed: "₦0",
+  totalRecovered: "₦0",
+  outstandingBalance: "₦0",
+  activeLoans: 0,
+  lifetimeDefaults: 0,
+  behaviouralRiskScore: 0,
+  hardBlockStatus: "Inactive",
+  eligibilityStatus: "Pending",
 };
 
-const mockLoanHistory: LoanRow[] = [
-  {
-    loanId: "ATL_CORE_010",
-    msisdn: "07086022674",
-    telco: "AIRTEL",
-    amount: "₦500",
-    outstanding: "₦68",
-    recovered: "₦432",
-    aging: "DP 31",
-    fraudRisk: "High",
-    score: 86,
-    created: "18/03/2026",
-  },
-  {
-    loanId: "MTN_CORE_045",
-    msisdn: "08123456789",
-    telco: "MTN",
-    amount: "₦1,000",
-    outstanding: "₦418",
-    recovered: "₦582",
-    aging: "DP 17",
-    fraudRisk: "Medium",
-    score: 81,
-    created: "18/03/2026",
-  },
-];
+const mockLoanHistory: LoanRow[] = [];
+const mockRecoveryHistory: any[] = [];
+const mockFraudDecisions: any[] = [];
+const mockCallbackAudit: any[] = [];
 
 const mainTabs: { key: MainTabKey; label: string }[] = [
   { key: "customer-search", label: "Customer Search" },
@@ -121,7 +99,7 @@ const MetricCard = ({
   status?: string;
   icon?: any;
 }) => (
-  <div className="bg-white rounded-sm p-3 border border-gray-200">
+  <div className="bg-white rounded-sm p-5 border border-gray-200 shadow-sm">
     <div className="flex items-start justify-between mb-3">
       <div className="text-[13px] text-gray-600 font-ibm-plex-sans">
         {title}
@@ -136,12 +114,12 @@ const MetricCard = ({
         />
       )}
     </div>
-    <div className="text-[26px] font-bold text-gray-700 font-sf-pro mb-3">
-      {value === "Restricted" || value === "Active" ? "" : value}
+    <div className="text-[24px] font-semibold text-gray-900 font-sf-pro mb-3">
+      {value}
     </div>
     {status && (
       <div
-        className={`inline-block px-3 py-1 rounded-sm text-[12px] font-medium font-ibm-plex-sans ${
+        className={`inline-block px-3 py-1 rounded-full text-[12px] font-medium font-ibm-plex-sans ${
           status === "Active"
             ? "bg-green-100 text-green-800"
             : status === "Restricted"
@@ -150,6 +128,139 @@ const MetricCard = ({
         }`}
       >
         {status}
+      </div>
+    )}
+  </div>
+);
+
+const LoanHistoryTab = () => (
+  <div className="p-5">
+    {mockLoanHistory.length > 0 ? (
+      <DataTable
+        searchable={false}
+        data={mockLoanHistory}
+        onActionClick={(row) => console.log("View loan:", row.loanId)}
+        className="border-t-0"
+      />
+    ) : (
+      <div className="text-center py-12">
+        <div className="flex justify-center mb-3">
+          <svg
+            className="w-6 h-6 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 00-.707.293h-3.172a1 1 0 00-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+            />
+          </svg>
+        </div>
+        <div className="text-gray-500 text-sm font-ibm-plex-sans">
+          No loan history found
+        </div>
+      </div>
+    )}
+  </div>
+);
+
+const RecoveryHistoryTab = () => (
+  <div className="p-5">
+    {mockRecoveryHistory.length > 0 ? (
+      <div className="text-center py-12">
+        <div className="text-gray-500 text-sm font-ibm-plex-sans">
+          Recovery history data available
+        </div>
+      </div>
+    ) : (
+      <div className="text-center py-12">
+        <div className="flex justify-center mb-3">
+          <svg
+            className="w-6 h-6 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+            />
+          </svg>
+        </div>
+        <div className="text-gray-500 text-sm font-ibm-plex-sans">
+          No recovery history found
+        </div>
+      </div>
+    )}
+  </div>
+);
+
+const FraudDecisionsTab = () => (
+  <div className="p-5">
+    {mockFraudDecisions.length > 0 ? (
+      <div className="text-center py-12">
+        <div className="text-gray-500 text-sm font-ibm-plex-sans">
+          Fraud decisions data available
+        </div>
+      </div>
+    ) : (
+      <div className="text-center py-12">
+        <div className="flex justify-center mb-3">
+          <svg
+            className="w-6 h-6 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.502 0L4.314 16.5c-.77.833.192 2.5 1.732 2.5z"
+            />
+          </svg>
+        </div>
+        <div className="text-gray-500 text-sm font-ibm-plex-sans">
+          No fraud decisions found
+        </div>
+      </div>
+    )}
+  </div>
+);
+
+const CallbackAuditTab = () => (
+  <div className="p-5">
+    {mockCallbackAudit.length > 0 ? (
+      <div className="text-center py-12">
+        <div className="text-gray-500 text-sm font-ibm-plex-sans">
+          Callback audit data available
+        </div>
+      </div>
+    ) : (
+      <div className="text-center py-12">
+        <div className="flex justify-center mb-3">
+          <svg
+            className="w-6 h-6 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M3 8l7.89 5.26a2 2 0 002.22 0l7.89-5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            />
+          </svg>
+        </div>
+        <div className="text-gray-500 text-sm font-ibm-plex-sans">
+          No callback audit data found
+        </div>
       </div>
     )}
   </div>
@@ -341,14 +452,12 @@ export default function Page() {
           ))}
         </div>
         <div className=" overflow-hidden">
-          {/* Data Table */}
+          {/* Sub Tab Content */}
           <div className="py-4">
-            <DataTable
-              searchable={false}
-              data={mockLoanHistory}
-              onActionClick={(row) => console.log("View loan:", row.loanId)}
-              className="border-t-0"
-            />
+            {activeSubTab === "loan-history" && <LoanHistoryTab />}
+            {activeSubTab === "recovery-history" && <RecoveryHistoryTab />}
+            {activeSubTab === "fraud-decisions" && <FraudDecisionsTab />}
+            {activeSubTab === "callback-audit" && <CallbackAuditTab />}
           </div>
         </div>
       </div>
