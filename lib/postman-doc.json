@@ -1,0 +1,2698 @@
+{
+    "info": {
+        "name": "Airtime Lending Platform - Enterprise Admin APIs FINAL V4",
+        "_postman_id": "9e5668fc-5b17-4840-968a-a1a2c75cd56a",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": "Final polished frontend handoff Postman collection with grouped admin modules, auth placeholders, sample payloads, multipart upload definitions, and engineering descriptions."
+    },
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{jwt_token}}",
+                "type": "string"
+            }
+        ]
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "https://airtimeloanapi.paykiosk.com/api/v1"
+        },
+        {
+            "key": "jwt_token",
+            "value": "PASTE_ADMIN_JWT_HERE"
+        }
+    ],
+    "item": [
+        {
+            "name": "00 Authentication",
+            "item": [
+                {
+                    "name": "Admin Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/login"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"username\": \"superadmin\",\n  \"password\": \"Pass@123\"\n}"
+                        },
+                        "description": "Authenticate admin user.\n\nSample Success Response:\n{\n  \"token\": \"eyJhbGciOi...sample.jwt.token\"\n}"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/auth/login"
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"username\": \"superadmin\",\n  \"password\": \"Pass@123\"\n}"
+                                },
+                                "description": "Authenticate admin user.\n\nSample Success Response:\n{\n  \"token\": \"eyJhbGciOi...sample.jwt.token\"\n}"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n  \"token\": \"eyJhbGciOi...sample.jwt.token\"\n}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "01 Executive Dashboard",
+            "item": [
+                {
+                    "name": "Dashboard Summary",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/dashboard/summary"
+                        },
+                        "description": "Executive KPI cards.\n\nSample Success Response:\n{\n  \"totalDisbursed\":1250000,\n  \"totalRecovered\":910000,\n  \"outstandingPortfolio\":340000,\n  \"totalRevenue\":145000\n}"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/dashboard/summary"
+                                },
+                                "description": "Executive KPI cards.\n\nSample Success Response:\n{\n  \"totalDisbursed\":1250000,\n  \"totalRecovered\":910000,\n  \"outstandingPortfolio\":340000,\n  \"totalRevenue\":145000\n}"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n  \"totalDisbursed\":1250000,\n  \"totalRecovered\":910000,\n  \"outstandingPortfolio\":340000,\n  \"totalRevenue\":145000\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Disbursement Trend",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/dashboard/trends/disbursement"
+                        },
+                        "description": "Monthly booked loans chart.\n\nSample Success Response:\n[\n {\"label\":\"Jan\",\"value\":120000},\n {\"label\":\"Feb\",\"value\":135000}\n]"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/dashboard/trends/disbursement"
+                                },
+                                "description": "Monthly booked loans chart.\n\nSample Success Response:\n[\n {\"label\":\"Jan\",\"value\":120000},\n {\"label\":\"Feb\",\"value\":135000}\n]"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"label\":\"Jan\",\"value\":120000},\n {\"label\":\"Feb\",\"value\":135000}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Recovery Trend",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/dashboard/trends/recovery"
+                        },
+                        "description": "Monthly recovery chart.\n\nSample Success Response:\n[\n {\"label\":\"Jan\",\"value\":80000},\n {\"label\":\"Feb\",\"value\":92000}\n]"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/dashboard/trends/recovery"
+                                },
+                                "description": "Monthly recovery chart.\n\nSample Success Response:\n[\n {\"label\":\"Jan\",\"value\":80000},\n {\"label\":\"Feb\",\"value\":92000}\n]"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"label\":\"Jan\",\"value\":80000},\n {\"label\":\"Feb\",\"value\":92000}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Product Distribution",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/dashboard/distribution/product"
+                        },
+                        "description": "AIRTIME vs DATA distribution.\n\nSample Success Response:\n[\n {\"label\":\"AIRTIME\",\"value\":72},\n {\"label\":\"DATA\",\"value\":28}\n]"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/dashboard/distribution/product"
+                                },
+                                "description": "AIRTIME vs DATA distribution.\n\nSample Success Response:\n[\n {\"label\":\"AIRTIME\",\"value\":72},\n {\"label\":\"DATA\",\"value\":28}\n]"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"label\":\"AIRTIME\",\"value\":72},\n {\"label\":\"DATA\",\"value\":28}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Telco Distribution",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/dashboard/distribution/telco"
+                        },
+                        "description": "Telco mix chart.\n\nSample Success Response:\n[\n {\"label\":\"AIRTEL\",\"value\":44},\n {\"label\":\"MTN\",\"value\":31}\n]"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/dashboard/distribution/telco"
+                                },
+                                "description": "Telco mix chart.\n\nSample Success Response:\n[\n {\"label\":\"AIRTEL\",\"value\":44},\n {\"label\":\"MTN\",\"value\":31}\n]"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"label\":\"AIRTEL\",\"value\":44},\n {\"label\":\"MTN\",\"value\":31}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Aging Distribution",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/dashboard/distribution/aging"
+                        },
+                        "description": "Portfolio aging chart.\n\nSample Success Response:\n[\n {\"label\":\"CURRENT\",\"value\":58},\n {\"label\":\"DPD_31_PLUS\",\"value\":17}\n]"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/dashboard/distribution/aging"
+                                },
+                                "description": "Portfolio aging chart.\n\nSample Success Response:\n[\n {\"label\":\"CURRENT\",\"value\":58},\n {\"label\":\"DPD_31_PLUS\",\"value\":17}\n]"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"label\":\"CURRENT\",\"value\":58},\n {\"label\":\"DPD_31_PLUS\",\"value\":17}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Risk Metrics",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/dashboard/risk"
+                        },
+                        "description": "Risk portfolio metrics.\n\nSample Success Response:\n{\n \"totalExposure\":1250000,\n \"portfolioAtRisk\":17.2,\n \"defaultRate\":9.8\n}"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/dashboard/risk"
+                                },
+                                "description": "Risk portfolio metrics.\n\nSample Success Response:\n{\n \"totalExposure\":1250000,\n \"portfolioAtRisk\":17.2,\n \"defaultRate\":9.8\n}"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n \"totalExposure\":1250000,\n \"portfolioAtRisk\":17.2,\n \"defaultRate\":9.8\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Fraud Stats",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/dashboard/fraud"
+                        },
+                        "description": "Fraud counters.\n\nSample Success Response:\n{\n \"rejectedUnauthorizedCallbacks\":5,\n \"duplicateCallbacksRejected\":12\n}"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/dashboard/fraud"
+                                },
+                                "description": "Fraud counters.\n\nSample Success Response:\n{\n \"rejectedUnauthorizedCallbacks\":5,\n \"duplicateCallbacksRejected\":12\n}"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n \"rejectedUnauthorizedCallbacks\":5,\n \"duplicateCallbacksRejected\":12\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "High Value Customers",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/dashboard/customers/high-value"
+                        },
+                        "description": "Top cumulative borrowers.\n\nSample Success Response:\n[\n {\"msisdn\":\"07086022674\",\"metricValue\":1250}\n]"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/dashboard/customers/high-value"
+                                },
+                                "description": "Top cumulative borrowers.\n\nSample Success Response:\n[\n {\"msisdn\":\"07086022674\",\"metricValue\":1250}\n]"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"msisdn\":\"07086022674\",\"metricValue\":1250}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Repeat Borrowers",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/dashboard/customers/repeat"
+                        },
+                        "description": "Most frequent borrowers.\n\nSample Success Response:\n[\n {\"msisdn\":\"08134437923\",\"metricValue\":16}\n]"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/dashboard/customers/repeat"
+                                },
+                                "description": "Most frequent borrowers.\n\nSample Success Response:\n[\n {\"msisdn\":\"08134437923\",\"metricValue\":16}\n]"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"msisdn\":\"08134437923\",\"metricValue\":16}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Recent Loans",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/dashboard/loans/recent"
+                        },
+                        "description": "Latest loans booked.\n\nSample Success Response:\n[\n {\"partnerLoanId\":\"ATL_CORE_001\",\"amount\":100,\"status\":\"SUCCESS\"}\n]"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/dashboard/loans/recent"
+                                },
+                                "description": "Latest loans booked.\n\nSample Success Response:\n[\n {\"partnerLoanId\":\"ATL_CORE_001\",\"amount\":100,\"status\":\"SUCCESS\"}\n]"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"partnerLoanId\":\"ATL_CORE_001\",\"amount\":100,\"status\":\"SUCCESS\"}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Delinquent Customers",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/dashboard/customers/delinquent"
+                        },
+                        "description": "Current delinquent subscribers.\n\nSample Success Response:\n[\n {\"msisdn\":\"07086022674\",\"outstandingBalance\":60}\n]"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/dashboard/customers/delinquent"
+                                },
+                                "description": "Current delinquent subscribers.\n\nSample Success Response:\n[\n {\"msisdn\":\"07086022674\",\"outstandingBalance\":60}\n]"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"msisdn\":\"07086022674\",\"outstandingBalance\":60}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Legacy Risk Customers",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/dashboard/customers/legacy-risk"
+                        },
+                        "description": "Imported bad history customers.\n\nSample Success Response:\n[\n {\"msisdn\":\"08134437923\",\"riskFlag\":\"BLACKLIST\"}\n]"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/dashboard/customers/legacy-risk"
+                                },
+                                "description": "Imported bad history customers.\n\nSample Success Response:\n[\n {\"msisdn\":\"08134437923\",\"riskFlag\":\"BLACKLIST\"}\n]"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"msisdn\":\"08134437923\",\"riskFlag\":\"BLACKLIST\"}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Portfolio Watchlist",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/dashboard/portfolio/watchlist"
+                        },
+                        "description": "Dangerous open loans.\n\nSample Success Response:\n[\n {\"partnerLoanId\":\"ATL_CORE_001\",\"agingBucket\":\"DPD_31_PLUS\"}\n]"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/dashboard/portfolio/watchlist"
+                                },
+                                "description": "Dangerous open loans.\n\nSample Success Response:\n[\n {\"partnerLoanId\":\"ATL_CORE_001\",\"agingBucket\":\"DPD_31_PLUS\"}\n]"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"partnerLoanId\":\"ATL_CORE_001\",\"agingBucket\":\"DPD_31_PLUS\"}\n]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "03 Customer Control",
+            "item": [
+                {
+                    "name": "Customer Profile",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/customer/profile/07086022674"
+                        },
+                        "description": "Full customer underwriting profile.\n\nSample Success Response:\n{\n \"msisdn\":\"07086022674\",\n \"behavioralRiskScore\":25,\n \"outstandingBalance\":60\n}"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/customer/profile/07086022674"
+                                },
+                                "description": "Full customer underwriting profile.\n\nSample Success Response:\n{\n \"msisdn\":\"07086022674\",\n \"behavioralRiskScore\":25,\n \"outstandingBalance\":60\n}"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n \"msisdn\":\"07086022674\",\n \"behavioralRiskScore\":25,\n \"outstandingBalance\":60\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Blacklist Customer",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/customer/blacklist/07086022674"
+                        },
+                        "description": "Live blacklist customer.\n\nSample Success Response:\n\"Customer blacklisted successfully\""
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/customer/blacklist/07086022674"
+                                },
+                                "description": "Live blacklist customer.\n\nSample Success Response:\n\"Customer blacklisted successfully\""
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "\"Customer blacklisted successfully\""
+                        }
+                    ]
+                },
+                {
+                    "name": "Remove Blacklist",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/customer/blacklist/07086022674"
+                        },
+                        "description": "Remove blacklist.\n\nSample Success Response:\n\"Customer removed from blacklist\""
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/customer/blacklist/07086022674"
+                                },
+                                "description": "Remove blacklist.\n\nSample Success Response:\n\"Customer removed from blacklist\""
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "\"Customer removed from blacklist\""
+                        }
+                    ]
+                },
+                {
+                    "name": "Whitelist Customer",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/customer/whitelist/07086022674"
+                        },
+                        "description": "Live whitelist customer.\n\nSample Success Response:\n\"Customer whitelisted successfully\""
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/customer/whitelist/07086022674"
+                                },
+                                "description": "Live whitelist customer.\n\nSample Success Response:\n\"Customer whitelisted successfully\""
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "\"Customer whitelisted successfully\""
+                        }
+                    ]
+                },
+                {
+                    "name": "Remove Whitelist",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/customer/whitelist/07086022674"
+                        },
+                        "description": "Remove whitelist.\n\nSample Success Response:\n\"Customer removed from whitelist\""
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/customer/whitelist/07086022674"
+                                },
+                                "description": "Remove whitelist.\n\nSample Success Response:\n\"Customer removed from whitelist\""
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "\"Customer removed from whitelist\""
+                        }
+                    ]
+                },
+                {
+                    "name": "Apply Manual Override",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/customer/override"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"msisdn\": \"07086022674\",\n  \"forcedLimit\": 500,\n  \"forcedScore\": 95,\n  \"hardBlock\": false,\n  \"note\": \"VIP override\"\n}"
+                        },
+                        "description": "Force customer underwriting.\n\nSample Success Response:\n\"Customer manual override applied successfully\""
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/customer/override"
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"msisdn\": \"07086022674\",\n  \"forcedLimit\": 500,\n  \"forcedScore\": 95,\n  \"hardBlock\": false,\n  \"note\": \"VIP override\"\n}"
+                                },
+                                "description": "Force customer underwriting.\n\nSample Success Response:\n\"Customer manual override applied successfully\""
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "\"Customer manual override applied successfully\""
+                        }
+                    ]
+                },
+                {
+                    "name": "Remove Manual Override",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/customer/override/07086022674"
+                        },
+                        "description": "Remove override.\n\nSample Success Response:\n\"Customer manual override removed\""
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/customer/override/07086022674"
+                                },
+                                "description": "Remove override.\n\nSample Success Response:\n\"Customer manual override removed\""
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "\"Customer manual override removed\""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "04 Loan Portfolio Admin",
+            "item": [
+                {
+                    "name": "Fetch All Loans",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/loans"
+                        },
+                        "description": "Full loan book.\n\nSample Success Response:\n[\n {\"id\":1,\"partnerLoanId\":\"ATL_CORE_001\",\"status\":\"SUCCESS\"}\n]"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/loans"
+                                },
+                                "description": "Full loan book.\n\nSample Success Response:\n[\n {\"id\":1,\"partnerLoanId\":\"ATL_CORE_001\",\"status\":\"SUCCESS\"}\n]"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"id\":1,\"partnerLoanId\":\"ATL_CORE_001\",\"status\":\"SUCCESS\"}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Fetch Single Loan",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/loans/1"
+                        },
+                        "description": "Single loan detail.\n\nSample Success Response:\n{\"id\":1,\"partnerLoanId\":\"ATL_CORE_001\"}"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/loans/1"
+                                },
+                                "description": "Single loan detail.\n\nSample Success Response:\n{\"id\":1,\"partnerLoanId\":\"ATL_CORE_001\"}"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"id\":1, \"partnerLoanId\":\"ATL_CORE_001\" }"
+                        }
+                    ]
+                },
+                {
+                    "name": "Fetch Loans by MSISDN",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/loans/msisdn/07086022674"
+                        },
+                        "description": "Loans by customer.\n\nSample Success Response:\n[\n {\"id\":1,\"amount\":100}\n]"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/loans/msisdn/07086022674"
+                                },
+                                "description": "Loans by customer.\n\nSample Success Response:\n[\n {\"id\":1,\"amount\":100}\n]"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"id\":1,\"amount\":100}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Flag Loan",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/loans/1/flag"
+                        },
+                        "description": "Mark loan flagged.\n\nSample Success Response:\n{\"id\":1,\"status\":\"FLAGGED\"}"
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/loans/1/flag"
+                                },
+                                "description": "Mark loan flagged.\n\nSample Success Response:\n{\"id\":1,\"status\":\"FLAGGED\"}"
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"id\":1, \"status\":\"FLAGGED\" }"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "07 Data Management Uploads",
+            "item": [
+                {
+                    "name": "Upload Legacy History",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/data/upload/legacy-history"
+                        },
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": "/path/legacy.csv"
+                                }
+                            ]
+                        },
+                        "description": "Frontend handoff request for Upload Legacy History. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/data/upload/legacy-history"
+                                },
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "src": "/path/legacy.csv"
+                                        }
+                                    ]
+                                },
+                                "description": "Frontend handoff request for Upload Legacy History. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "\"Legacy customer history uploaded successfully\""
+                        }
+                    ]
+                },
+                {
+                    "name": "Upload Recharge History",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/data/upload/recharge-history"
+                        },
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": "/path/recharge.csv"
+                                },
+                                {
+                                    "key": "snapshotMonth",
+                                    "value": "2026-05",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "description": "Frontend handoff request for Upload Recharge History. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/data/upload/recharge-history"
+                                },
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "src": "/path/recharge.csv"
+                                        },
+                                        {
+                                            "key": "snapshotMonth",
+                                            "value": "2026-05",
+                                            "type": "text"
+                                        }
+                                    ]
+                                },
+                                "description": "Frontend handoff request for Upload Recharge History. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "\"Recharge history uploaded successfully for 2026-05\""
+                        }
+                    ]
+                },
+                {
+                    "name": "Upload Blacklist",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/data/upload/blacklist"
+                        },
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": "/path/blacklist.csv"
+                                }
+                            ]
+                        },
+                        "description": "Frontend handoff request for Upload Blacklist. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/data/upload/blacklist"
+                                },
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "src": "/path/blacklist.csv"
+                                        }
+                                    ]
+                                },
+                                "description": "Frontend handoff request for Upload Blacklist. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "\"Customer blacklist uploaded successfully\""
+                        }
+                    ]
+                },
+                {
+                    "name": "Upload Whitelist",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/data/upload/whitelist"
+                        },
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": "/path/whitelist.csv"
+                                }
+                            ]
+                        },
+                        "description": "Frontend handoff request for Upload Whitelist. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/data/upload/whitelist"
+                                },
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "src": "/path/whitelist.csv"
+                                        }
+                                    ]
+                                },
+                                "description": "Frontend handoff request for Upload Whitelist. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "\"Customer whitelist uploaded successfully\""
+                        }
+                    ]
+                },
+                {
+                    "name": "Upload Manual Overrides",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/data/upload/manual-overrides"
+                        },
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": "/path/manual_overrides.csv"
+                                }
+                            ]
+                        },
+                        "description": "Frontend handoff request for Upload Manual Overrides. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/data/upload/manual-overrides"
+                                },
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "src": "/path/manual_overrides.csv"
+                                        }
+                                    ]
+                                },
+                                "description": "Frontend handoff request for Upload Manual Overrides. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "\"Customer manual overrides uploaded successfully\""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "08 Config Center",
+            "item": [
+                {
+                    "name": "View All Configs",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/config/all"
+                        },
+                        "description": "Frontend handoff request for View All Configs. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/config/all"
+                                },
+                                "description": "Frontend handoff request for View All Configs. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"configKey\":\"MAX_LOAN_LIMIT\",\"configValue\":\"500\"}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "View Single Config",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/config/airtel.MAX_LOAN_LIMIT"
+                        },
+                        "description": "Frontend handoff request for View Single Config. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/config/airtel.MAX_LOAN_LIMIT"
+                                },
+                                "description": "Frontend handoff request for View Single Config. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"configKey\":\"MAX_LOAN_LIMIT\", \"configValue\":\"500\" }"
+                        }
+                    ]
+                },
+                {
+                    "name": "Save Config",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/config/save"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"telco\": \"airtel\",\n  \"configKey\": \"MAX_LOAN_LIMIT\",\n  \"configValue\": \"500\",\n  \"description\": \"Maximum lending amount\"\n}"
+                        },
+                        "description": "Frontend handoff request for Save Config. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/config/save"
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"telco\": \"airtel\",\n  \"configKey\": \"MAX_LOAN_LIMIT\",\n  \"configValue\": \"500\",\n  \"description\": \"Maximum lending amount\"\n}"
+                                },
+                                "description": "Frontend handoff request for Save Config. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"configKey\":\"MAX_LOAN_LIMIT\", \"configValue\":\"500\", \"description\":\"Maximum lending amount\" }"
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Config",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/config/airtel/MAX_LOAN_LIMIT"
+                        },
+                        "description": "Frontend handoff request for Delete Config. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/config/airtel/MAX_LOAN_LIMIT"
+                                },
+                                "description": "Frontend handoff request for Delete Config. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "\"Config deleted successfully\""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "09 Callback Audit",
+            "item": [
+                {
+                    "name": "Recent Callbacks",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/callback-audit/recent"
+                        },
+                        "description": "Frontend handoff request for Recent Callbacks. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/callback-audit/recent"
+                                },
+                                "description": "Frontend handoff request for Recent Callbacks. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"callbackFingerprint\":\"fulfillment|TXN001\",\"processed\":true}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Duplicate Callbacks",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/callback-audit/duplicates"
+                        },
+                        "description": "Frontend handoff request for Duplicate Callbacks. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/callback-audit/duplicates"
+                                },
+                                "description": "Frontend handoff request for Duplicate Callbacks. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"callbackFingerprint\":\"fulfillment|TXN001\",\"duplicateRejected\":true}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Unauthorized Callbacks",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/callback-audit/unauthorized"
+                        },
+                        "description": "Frontend handoff request for Unauthorized Callbacks. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/callback-audit/unauthorized"
+                                },
+                                "description": "Frontend handoff request for Unauthorized Callbacks. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"callbackFingerprint\":\"fraud|TXN009\",\"authorized\":false}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Parked Recoveries",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/callback-audit/parked-recoveries"
+                        },
+                        "description": "Frontend handoff request for Parked Recoveries. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/callback-audit/parked-recoveries"
+                                },
+                                "description": "Frontend handoff request for Parked Recoveries. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"recoveryId\":\"REC_CORE_001\",\"loanId\":\"ATL_CORE_001\",\"applied\":false}\n]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "10 Admin Live Operations",
+            "item": [
+                {
+                    "name": "Blacklist Customer Ops",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/blacklist"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"msisdn\": \"07086022674\",\n  \"reason\": \"Fraud suspicion\"\n}"
+                        },
+                        "description": "Frontend handoff request for Blacklist Customer Ops. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/blacklist"
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"msisdn\": \"07086022674\",\n  \"reason\": \"Fraud suspicion\"\n}"
+                                },
+                                "description": "Frontend handoff request for Blacklist Customer Ops. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"success\": true, \"message\":\"Customer blacklisted\" }"
+                        }
+                    ]
+                },
+                {
+                    "name": "Remove Blacklist Ops",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/blacklist/07086022674"
+                        },
+                        "description": "Frontend handoff request for Remove Blacklist Ops. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/blacklist/07086022674"
+                                },
+                                "description": "Frontend handoff request for Remove Blacklist Ops. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"success\": true, \"message\":\"Customer removed from blacklist\" }"
+                        }
+                    ]
+                },
+                {
+                    "name": "Whitelist Customer Ops",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/whitelist"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"msisdn\": \"07086022674\",\n  \"reason\": \"VIP\"\n}"
+                        },
+                        "description": "Frontend handoff request for Whitelist Customer Ops. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/whitelist"
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"msisdn\": \"07086022674\",\n  \"reason\": \"VIP\"\n}"
+                                },
+                                "description": "Frontend handoff request for Whitelist Customer Ops. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"success\": true, \"message\":\"Customer whitelisted\" }"
+                        }
+                    ]
+                },
+                {
+                    "name": "Remove Whitelist Ops",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/whitelist/07086022674"
+                        },
+                        "description": "Frontend handoff request for Remove Whitelist Ops. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/whitelist/07086022674"
+                                },
+                                "description": "Frontend handoff request for Remove Whitelist Ops. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"success\": true, \"message\":\"Customer removed from whitelist\" }"
+                        }
+                    ]
+                },
+                {
+                    "name": "Force Block Customer",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/customer/block/07086022674"
+                        },
+                        "description": "Frontend handoff request for Force Block Customer. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/customer/block/07086022674"
+                                },
+                                "description": "Frontend handoff request for Force Block Customer. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"success\": true, \"message\":\"Customer force blocked\" }"
+                        }
+                    ]
+                },
+                {
+                    "name": "Force Unblock Customer",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/customer/unblock/07086022674"
+                        },
+                        "description": "Frontend handoff request for Force Unblock Customer. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/customer/unblock/07086022674"
+                                },
+                                "description": "Frontend handoff request for Force Unblock Customer. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"success\": true, \"message\":\"Customer force unblocked\" }"
+                        }
+                    ]
+                },
+                {
+                    "name": "Risk Reset",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/customer/risk-reset"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"msisdn\": \"07086022674\"\n}"
+                        },
+                        "description": "Frontend handoff request for Risk Reset. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/customer/risk-reset"
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"msisdn\": \"07086022674\"\n}"
+                                },
+                                "description": "Frontend handoff request for Risk Reset. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"success\": true, \"message\":\"Customer risk profile reset\" }"
+                        }
+                    ]
+                },
+                {
+                    "name": "Save Config Ops",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/config"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"configKey\": \"MAX_LOAN_LIMIT\",\n  \"configValue\": \"500\"\n}"
+                        },
+                        "description": "Frontend handoff request for Save Config Ops. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/config"
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"configKey\": \"MAX_LOAN_LIMIT\",\n  \"configValue\": \"500\"\n}"
+                                },
+                                "description": "Frontend handoff request for Save Config Ops. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"success\": true, \"message\":\"Config saved\" }"
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Config Ops",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/config/MAX_LOAN_LIMIT"
+                        },
+                        "description": "Frontend handoff request for Delete Config Ops. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/config/MAX_LOAN_LIMIT"
+                                },
+                                "description": "Frontend handoff request for Delete Config Ops. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"success\": true, \"message\":\"Config deleted\" }"
+                        }
+                    ]
+                },
+                {
+                    "name": "List Config Ops",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/config"
+                        },
+                        "description": "Frontend handoff request for List Config Ops. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/config"
+                                },
+                                "description": "Frontend handoff request for List Config Ops. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"configKey\":\"MAX_LOAN_LIMIT\",\"configValue\":\"500\"}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Refresh Snapshots",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/snapshot/refresh"
+                        },
+                        "description": "Frontend handoff request for Refresh Snapshots. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/snapshot/refresh"
+                                },
+                                "description": "Frontend handoff request for Refresh Snapshots. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"success\": true, \"message\":\"Dashboard snapshots refreshed\" }"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "11 Admin User Management",
+            "item": [
+                {
+                    "name": "Create Admin User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/users"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"username\": \"opsadmin\",\n  \"password\": \"Pass@123\",\n  \"role\": \"OPS\"\n}"
+                        },
+                        "description": "Frontend handoff request for Create Admin User. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/users"
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"username\": \"opsadmin\",\n  \"password\": \"Pass@123\",\n  \"role\": \"OPS\"\n}"
+                                },
+                                "description": "Frontend handoff request for Create Admin User. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"id\":1, \"username\":\"opsadmin\", \"role\":\"OPS\", \"active\":true }"
+                        }
+                    ]
+                },
+                {
+                    "name": "List Admin Users",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/users"
+                        },
+                        "description": "Frontend handoff request for List Admin Users. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/users"
+                                },
+                                "description": "Frontend handoff request for List Admin Users. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"id\":1,\"username\":\"opsadmin\",\"role\":\"OPS\"}\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update User Role",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/users/1/role?role=SUPER_ADMIN"
+                        },
+                        "description": "Frontend handoff request for Update User Role. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "PUT",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/users/1/role?role=SUPER_ADMIN"
+                                },
+                                "description": "Frontend handoff request for Update User Role. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"id\":1, \"role\":\"SUPER_ADMIN\" }"
+                        }
+                    ]
+                },
+                {
+                    "name": "Deactivate User",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/users/1"
+                        },
+                        "description": "Frontend handoff request for Deactivate User. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/users/1"
+                                },
+                                "description": "Frontend handoff request for Deactivate User. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "12 Fraud Emergency Controls",
+            "item": [
+                {
+                    "name": "Fraud Block",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/fraud/block?msisdn=07086022674"
+                        },
+                        "description": "Frontend handoff request for Fraud Block. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/fraud/block?msisdn=07086022674"
+                                },
+                                "description": "Frontend handoff request for Fraud Block. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Fraud Unblock",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/fraud/unblock?msisdn=07086022674"
+                        },
+                        "description": "Frontend handoff request for Fraud Unblock. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/fraud/unblock?msisdn=07086022674"
+                                },
+                                "description": "Frontend handoff request for Fraud Unblock. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Fraud Status",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/fraud/status/07086022674"
+                        },
+                        "description": "Frontend handoff request for Fraud Status. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/fraud/status/07086022674"
+                                },
+                                "description": "Frontend handoff request for Fraud Status. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "true"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "13 Legacy Lending Migration",
+            "item": [
+                {
+                    "name": "Legacy Upload Admin",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/legacy/upload"
+                        },
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": "/path/legacy.csv"
+                                }
+                            ]
+                        },
+                        "description": "Frontend handoff request for Legacy Upload Admin. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/legacy/upload"
+                                },
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "src": "/path/legacy.csv"
+                                        }
+                                    ]
+                                },
+                                "description": "Frontend handoff request for Legacy Upload Admin. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{ \"success\": true, \"message\":\"Legacy history uploaded successfully\" }"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "15 Recharge Monthly Import",
+            "item": [
+                {
+                    "name": "Recharge Upload Monthly",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/recharge/upload"
+                        },
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": "/path/recharge.csv"
+                                },
+                                {
+                                    "key": "month",
+                                    "value": "2026-05",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "description": "Frontend handoff request for Recharge Upload Monthly. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/recharge/upload"
+                                },
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "src": "/path/recharge.csv"
+                                        },
+                                        {
+                                            "key": "month",
+                                            "value": "2026-05",
+                                            "type": "text"
+                                        }
+                                    ]
+                                },
+                                "description": "Frontend handoff request for Recharge Upload Monthly. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "\"Recharge file uploaded successfully for 2026-05\""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "16 Loan Retry Operations",
+            "item": [
+                {
+                    "name": "Retry Loan Processing",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/retry/1"
+                        },
+                        "description": "Frontend handoff request for Retry Loan Processing. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/retry/1"
+                                },
+                                "description": "Frontend handoff request for Retry Loan Processing. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "\"Loan retried successfully\""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "17 Telco Health Monitor",
+            "item": [
+                {
+                    "name": "Telco Health",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/admin/telco/health"
+                        },
+                        "description": "Frontend handoff request for Telco Health. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                    },
+                    "response": [
+                        {
+                            "name": "Sample Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/admin/telco/health"
+                                },
+                                "description": "Frontend handoff request for Telco Health. Use Bearer JWT except login. Refer to platform API documentation for expected sample success payload."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n {\"telco\":\"airtel\",\"status\":\"UP\",\"latencyMs\":220}\n]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

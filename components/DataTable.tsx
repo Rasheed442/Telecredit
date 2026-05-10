@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronUp,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { IoMdArrowDown } from "react-icons/io";
 
 // ── Types ──────────────────────────────────────────────────────────────
@@ -20,7 +25,7 @@ export interface LoanRow {
 }
 
 export interface TableColumn {
-  key: keyof LoanRow | 'action';
+  key: keyof LoanRow | "action";
   label: string;
   sortable?: boolean;
   render?: (row: LoanRow) => React.ReactNode;
@@ -60,23 +65,27 @@ const defaultColumns: TableColumn[] = [
   { key: "amount", label: "Amount" },
   { key: "outstanding", label: "Outstanding" },
   { key: "recovered", label: "Recovered" },
-  { 
-    key: "aging", 
+  {
+    key: "aging",
     label: "Aging",
     render: (row) => (
-      <span className={`text-[12px] font-medium px-2.5 py-1 rounded-md ${agingStyles[row.aging]}`}>
+      <span
+        className={`text-[12px] font-medium px-2.5 py-1 rounded-md ${agingStyles[row.aging]}`}
+      >
         {row.aging}
       </span>
-    )
+    ),
   },
-  { 
-    key: "fraudRisk", 
+  {
+    key: "fraudRisk",
     label: "Fraud Risk",
     render: (row) => (
-      <span className={`text-[12px] font-medium px-2.5 py-1 rounded-md ${riskStyles[row.fraudRisk]}`}>
+      <span
+        className={`text-[12px] font-medium px-2.5 py-1 rounded-md ${riskStyles[row.fraudRisk]}`}
+      >
         {row.fraudRisk}
       </span>
-    )
+    ),
   },
   { key: "score", label: "Score" },
   { key: "created", label: "Created" },
@@ -101,18 +110,19 @@ export default function DataTable({
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   // Filter data based on search
-  const filtered = data.filter((row) =>
-    row.msisdn.includes(search) || 
-    row.loanId.toLowerCase().includes(search.toLowerCase())
+  const filtered = data.filter(
+    (row) =>
+      row.msisdn.includes(search) ||
+      row.loanId.toLowerCase().includes(search.toLowerCase()),
   );
 
   // Sort data
   const sorted = [...filtered].sort((a, b) => {
     if (!sortColumn) return 0;
-    
+
     const aValue = a[sortColumn as keyof LoanRow];
     const bValue = b[sortColumn as keyof LoanRow];
-    
+
     if (aValue < bValue) return sortDirection === "asc" ? -1 : 1;
     if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
     return 0;
@@ -120,7 +130,7 @@ export default function DataTable({
 
   // Pagination
   const totalPages = Math.ceil(sorted.length / itemsPerPage);
-  const paginatedData = paginated 
+  const paginatedData = paginated
     ? sorted.slice((page - 1) * itemsPerPage, page * itemsPerPage)
     : sorted;
 
@@ -140,7 +150,7 @@ export default function DataTable({
 
     if (column.key === "action") {
       return (
-        <button 
+        <button
           className="text-[13px] font-medium text-[#2563EB] hover:underline"
           onClick={(e) => {
             e.stopPropagation();
@@ -156,7 +166,9 @@ export default function DataTable({
   };
 
   return (
-    <div className={`bg-white rounded-xl border border-[#E5E7EB] shadow-sm overflow-hidden ${className}`}>
+    <div
+      className={`bg-white rounded-xl border border-[#E5E7EB] shadow-sm overflow-hidden ${className}`}
+    >
       {/* Search */}
       {searchable && (
         <div className="px-5 py-4 border-b border-[#F3F4F6]">
@@ -164,9 +176,9 @@ export default function DataTable({
             <div className="w-4 h-4 text-[#9CA3AF]" />
             <input
               value={search}
-              onChange={(e) => { 
-                setSearch(e.target.value); 
-                setPage(1); 
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
               }}
               placeholder={searchPlaceholder}
               className="flex-1 text-[13px] text-[#374151] outline-none placeholder:text-[#9CA3AF] bg-transparent"
@@ -181,20 +193,20 @@ export default function DataTable({
           <thead>
             <tr className="border-y border-[#F3F4F6] bg-gray-50">
               {columns.map((column) => (
-                <th 
-                  key={column.key as string} 
+                <th
+                  key={column.key as string}
                   className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap"
                 >
                   <div className="flex items-center gap-1">
-                              <button
-                        onClick={() => handleSort(column.key as string)}
-                        className="flex items-center gap-1 hover:text-[#374151]"
-                      >
-                        {column.label}
-                        <div className="flex flex-col">
-                         <IoMdArrowDown className="inline ml-1 opacity-50" />
-                        </div>
-                      </button>
+                    <button
+                      onClick={() => handleSort(column.key as string)}
+                      className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]"
+                    >
+                      {column.label}
+                      <div className="flex flex-col">
+                        <IoMdArrowDown className="inline ml-1 opacity-50" />
+                      </div>
+                    </button>
                     {/* {column.sortable ? (
                       <button
                         onClick={() => handleSort(column.key as string)}
@@ -215,15 +227,15 @@ export default function DataTable({
           </thead>
           <tbody>
             {paginatedData.map((row, index) => (
-              <tr 
-                key={index} 
+              <tr
+                key={index}
                 className={`border-b border-[#F3F4F6] hover:bg-[#FAFAFA] transition-colors ${onRowClick ? "cursor-pointer" : ""}`}
                 onClick={() => onRowClick?.(row)}
               >
                 {columns.map((column) => (
-                  <td 
-                    key={column.key as string} 
-                    className="px-5 py-4 text-[13px] text-[#374151] whitespace-nowrap"
+                  <td
+                    key={column.key as string}
+                    className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap"
                   >
                     {renderCell(column, row)}
                   </td>

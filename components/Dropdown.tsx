@@ -28,7 +28,10 @@ export default function Dropdown({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -37,7 +40,7 @@ export default function Dropdown({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const selectedOption = options.find(option => option.value === value);
+  const selectedOption = options.find((option) => option.value === value);
 
   const handleSelect = (optionValue: string) => {
     onChange(optionValue);
@@ -57,9 +60,9 @@ export default function Dropdown({
         <span className={selectedOption ? "text-[#374151]" : "text-[#9CA3AF]"}>
           {selectedOption ? selectedOption.label : placeholder}
         </span>
-        <ChevronDown 
-          size={12} 
-          className={`absolute right-2.5 top-3.5 pointer-events-none text-[#6B7280] transition-transform ${
+        <ChevronDown
+          size={20}
+          className={`absolute right-2.5 pointer-events-none text-[#6B7280] transition-transform ${
             isOpen ? "rotate-180" : ""
           }`}
         />
@@ -73,7 +76,9 @@ export default function Dropdown({
               type="button"
               onClick={() => handleSelect(option.value)}
               className={`w-full px-3 py-2 text-[13px] text-left hover:bg-[#F9FAFB] transition-colors first:rounded-t-lg last:rounded-b-lg ${
-                option.value === value ? "bg-[#F3F4F6] text-[#1F2937] font-medium" : "text-[#374151]"
+                option.value === value
+                  ? "bg-[#F3F4F6] text-[#1F2937] font-medium"
+                  : "text-[#374151]"
               }`}
             >
               {option.label}
