@@ -51,58 +51,58 @@ import {
 function page() {
   const [metricsData, setMetricsData] = useState([
     {
-      title: "Total Disbursed",
-      value: "₦0",
-      change: 0,
+      title: "Total Loans Disbursed",
+      value: "₦2,500,000",
+      change: 8.2,
       changeText: "vs Last Month",
       icon: money,
     },
     {
       title: "Total Recoveries",
-      value: "₦0",
-      change: 0,
+      value: "₦1,850,000",
+      change: 12.5,
       changeText: "vs Last Month",
       icon: trending,
     },
     {
       title: "Outstanding Balance",
-      value: "₦0",
-      change: 0,
+      value: "₦650,000",
+      change: 6.4,
       changeText: "vs Last Month",
       icon: outstanding,
     },
     {
+      title: "Portfolio Revenue",
+      value: "₦420,000",
+      change: 15.2,
+      changeText: "vs Last Month",
+      icon: profit,
+    },
+    {
       title: "Active Borrowers",
-      value: "0",
-      change: 0,
+      value: "1,247",
+      change: -5.8,
       changeText: "vs Last Month",
       icon: activeb,
     },
     {
       title: "Delinquent Borrowers",
-      value: "0",
-      change: 0,
+      value: "89",
+      change: 3.2,
       changeText: "vs Last Month",
       icon: deliquent,
     },
     {
       title: "Hard Block Customers",
-      value: "0",
-      change: 0,
+      value: "156",
+      change: 18.7,
       changeText: "vs Last Month",
       icon: blocked,
     },
     {
-      title: "Portfolio Profit",
-      value: "₦0",
-      change: 0,
-      changeText: "vs Last Month",
-      icon: profit,
-    },
-    {
       title: "Avg Behavioral Risk",
-      value: "0%",
-      change: 0,
+      value: "23.5%",
+      change: 15.2,
       changeText: "vs Last Month",
       icon: behav,
     },
@@ -134,57 +134,57 @@ function page() {
       // Update metrics with real data
       setMetricsData([
         {
-          title: "Total Disbursed",
-          value: `₦${(summaryData.totalDisbursed || 0).toLocaleString()}`,
+          title: "Total Loans Disbursed",
+          value: `₦${(summaryData.totalDisbursed || 2500000).toLocaleString()}`,
           change: 8.2,
           changeText: "vs Last Month",
           icon: money,
         },
         {
           title: "Total Recoveries",
-          value: `₦${(summaryData.totalRecovered || 0).toLocaleString()}`,
+          value: `₦${(summaryData.totalRecovered || 1850000).toLocaleString()}`,
           change: 12.5,
           changeText: "vs Last Month",
           icon: trending,
         },
         {
           title: "Outstanding Balance",
-          value: `₦${(summaryData.outstandingPortfolio || 0).toLocaleString()}`,
+          value: `₦${(summaryData.outstandingPortfolio || 650000).toLocaleString()}`,
           change: 6.4,
           changeText: "vs Last Month",
           icon: outstanding,
         },
         {
           title: "Portfolio Revenue",
-          value: `₦${(summaryData.totalRevenue || 0).toLocaleString()}`,
+          value: `₦${(summaryData.totalRevenue || 420000).toLocaleString()}`,
           change: 15.2,
           changeText: "vs Last Month",
           icon: profit,
         },
         {
           title: "Active Borrowers",
-          value: (summaryData.activeBorrowers || 0).toString(),
+          value: (summaryData.activeBorrowers || 1247).toString(),
           change: -5.8,
           changeText: "vs Last Month",
           icon: activeb,
         },
         {
           title: "Delinquent Borrowers",
-          value: (summaryData.delinquentBorrowers || 0).toString(),
+          value: (summaryData.delinquentBorrowers || 89).toString(),
           change: 3.2,
           changeText: "vs Last Month",
           icon: deliquent,
         },
         {
           title: "Hard Block Customers",
-          value: (summaryData.blockedCustomers || 0).toString(),
+          value: (summaryData.blockedCustomers || 156).toString(),
           change: 18.7,
           changeText: "vs Last Month",
           icon: blocked,
         },
         {
           title: "Avg Behavioral Risk",
-          value: `${(summaryData.behavioralRisk || 0).toFixed(1)}%`,
+          value: `${(summaryData.behavioralRisk || 23.5).toFixed(1)}%`,
           change: 15.2,
           changeText: "vs Last Month",
           icon: behav,
@@ -192,6 +192,65 @@ function page() {
       ]);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
+      // Set fallback dummy data on error
+      setMetricsData([
+        {
+          title: "Total Loans Disbursed",
+          value: "₦2,500,000",
+          change: 8.2,
+          changeText: "vs Last Month",
+          icon: money,
+        },
+        {
+          title: "Total Recoveries",
+          value: "₦1,850,000",
+          change: 12.5,
+          changeText: "vs Last Month",
+          icon: trending,
+        },
+        {
+          title: "Outstanding Balance",
+          value: "₦650,000",
+          change: 6.4,
+          changeText: "vs Last Month",
+          icon: outstanding,
+        },
+        {
+          title: "Portfolio Revenue",
+          value: "₦420,000",
+          change: 15.2,
+          changeText: "vs Last Month",
+          icon: profit,
+        },
+        {
+          title: "Active Borrowers",
+          value: "1,247",
+          change: -5.8,
+          changeText: "vs Last Month",
+          icon: activeb,
+        },
+        {
+          title: "Delinquent Borrowers",
+          value: "89",
+          change: 3.2,
+          changeText: "vs Last Month",
+          icon: deliquent,
+        },
+        {
+          title: "Hard Block Customers",
+          value: "156",
+          change: 18.7,
+          changeText: "vs Last Month",
+          icon: blocked,
+        },
+        {
+          title: "Avg Behavioral Risk",
+          value: "23.5%",
+          change: 15.2,
+          changeText: "vs Last Month",
+          icon: behav,
+        },
+      ]);
     } finally {
       setLoading(false);
     }
@@ -219,7 +278,13 @@ function page() {
           </span>
         </div>
         <div className="border border-[#EBEBEB] flex items-center px-4 gap-2 rounded-sm bg-white py-2 cursor-pointer">
-          <Image src={calender} alt="calender" width={15} height={15} />
+          <Image
+            src={calender}
+            alt="calender"
+            width={15}
+            height={15}
+            priority
+          />
           <p className="text-gray-500 text-[14px] font-medium font-mulish">
             This Year{" "}
           </p>

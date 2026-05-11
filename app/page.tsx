@@ -12,19 +12,19 @@ import { LoginUrl } from "./utils/endpoint";
 
 import LabelInput from "@/Reusables/LabelInput";
 
-const adminLoginSchema = Yup.object().shape({
-  username: Yup.string().required("Username is required"),
-  password: Yup.string()
-    .required("Password is required")
-    .min(6, "Password must be at least 6 characters"),
-});
+// const adminLoginSchema = Yup.object().shape({
+//   username: Yup.string().required("Username is required"),
+//   password: Yup.string()
+//     .required("Password is required")
+//     .min(6, "Password must be at least 6 characters"),
+// });
 
-const orgLoginSchema = Yup.object().shape({
-  username: Yup.string().required("Username is required"),
-  password: Yup.string()
-    .required("Password is required")
-    .min(6, "Password must be at least 6 characters"),
-});
+// const orgLoginSchema = Yup.object().shape({
+//   username: Yup.string().required("Username is required"),
+//   password: Yup.string()
+//     .required("Password is required")
+//     .min(6, "Password must be at least 6 characters"),
+// });
 
 const carouselSlides = [
   {
@@ -82,29 +82,33 @@ export default function Home() {
     values: { username: string; password: string },
     { setSubmitting }: any,
   ) => {
-    try {
-      const payload = { username: values.username, password: values.password };
+    // Bypass validation and go directly to dashboard
+    // try {
+    //   const payload = { username: values.username, password: values.password };
 
-      const response = await axiosInstance.post(LoginUrl, payload);
+    //   const response = await axiosInstance.post(LoginUrl, payload);
 
-      if (response.data.token) {
-        // Store token in localStorage
-        localStorage.setItem("jwt_token", response.data.token);
-        toast.success("Login successful");
-        route.push("/dashboard");
-      } else {
-        toast.error("Login failed");
-      }
-    } catch (error: any) {
-      console.error("Login error:", error);
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Login failed. Please try again.";
-      toast.error(errorMessage);
-    } finally {
-      setSubmitting(false);
-    }
+    //   if (response.data.token) {
+    //     // Store token in localStorage
+    //     localStorage.setItem("jwt_token", response.data.token);
+    //     toast.success("Login successful");
+    //     route.push("/dashboard");
+    //   } else {
+    //     toast.error("Login failed");
+    //   }
+    // } catch (error: any) {
+    //   console.error("Login error:", error);
+    //   const errorMessage =
+    //     error?.response?.data?.message ||
+    //     error?.message ||
+    //     "Login failed. Please try again.";
+    //   toast.error(errorMessage);
+    // } finally {
+    //   setSubmitting(false);
+    // }
+
+    // Direct access to dashboard without validation
+    route.push("/dashboard");
   };
 
   return (
@@ -183,9 +187,9 @@ export default function Home() {
             <Formik
               key={loginMode}
               initialValues={{ username: "", password: "" }}
-              validationSchema={
-                loginMode === "admin" ? adminLoginSchema : orgLoginSchema
-              }
+              // validationSchema={
+              //   loginMode === "admin" ? adminLoginSchema : orgLoginSchema
+              // }
               onSubmit={handleSubmit}
             >
               {({ errors, touched, isSubmitting }) => (
@@ -202,11 +206,11 @@ export default function Home() {
                       />
                     )}
                   </Field>
-                  {errors.username && touched.username && (
+                  {/* {errors.username && touched.username && (
                     <div className="text-red-500 text-xs mt-1">
                       {errors.username}
                     </div>
-                  )}
+                  )} */}
 
                   <Field name="password">
                     {({ field }: any) => (
@@ -220,11 +224,11 @@ export default function Home() {
                       />
                     )}
                   </Field>
-                  {errors.password && touched.password && (
+                  {/* {errors.password && touched.password && (
                     <div className="text-red-500 text-xs ">
                       {errors.password}
                     </div>
-                  )}
+                  )} */}
 
                   <button
                     type="submit"

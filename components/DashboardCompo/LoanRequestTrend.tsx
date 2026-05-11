@@ -26,6 +26,23 @@ Chart.register(
   Tooltip,
 );
 
+const createHatchPattern = (ctx: CanvasRenderingContext2D, color: string) => {
+  const patternCanvas = document.createElement("canvas");
+  patternCanvas.width = 8;
+  patternCanvas.height = 8;
+  const patternCtx = patternCanvas.getContext("2d");
+  if (!patternCtx) return null;
+
+  patternCtx.strokeStyle = color + "30";
+  patternCtx.lineWidth = 1;
+  patternCtx.beginPath();
+  patternCtx.moveTo(0, 8);
+  patternCtx.lineTo(8, 0);
+  patternCtx.stroke();
+
+  return ctx.createPattern(patternCanvas, "repeat");
+};
+
 const months = [
   "Jan",
   "Feb",
@@ -48,17 +65,28 @@ const bgBarsPlugin: Plugin<"line"> = {
       ctx,
       chartArea: { left, right, top, bottom },
       scales: { x, y },
+      data,
     } = chart;
-    const barW = ((right - left) / months.length) * 0.38;
+    const barW = ((right - left) / (data.labels?.length || 1)) * 0.38;
+
+    const purpleHatch = createHatchPattern(ctx, "#8B80F9");
+
     ctx.save();
-    months.forEach((_, i) => {
+    if (!data.labels) return;
+    data.labels.forEach((_, i) => {
       const cx = x.getPixelForValue(i);
-      const barH = (bottom - top) * 0.42;
+      const maxValue = Math.max(
+        ...data.datasets[0].data.filter(
+          (val): val is number => typeof val === "number",
+        ),
+      );
+      const currentValue = data.datasets[0].data[i];
+      if (currentValue === null) return;
+      if (typeof currentValue !== "number") return;
+      const barH = (currentValue / maxValue) * (bottom - top) * 0.8;
       const bTop = bottom - barH;
-      const grad = ctx.createLinearGradient(0, bTop, 0, bottom);
-      grad.addColorStop(0, "rgba(139,128,249,0.12)");
-      grad.addColorStop(1, "rgba(139,128,249,0.02)");
-      ctx.fillStyle = grad;
+
+      ctx.fillStyle = "rgba(139,128,249,0.12)";
       const r = 7;
       const bx = cx - barW / 2;
       ctx.beginPath();
@@ -71,6 +99,20 @@ const bgBarsPlugin: Plugin<"line"> = {
       ctx.quadraticCurveTo(bx, bTop, bx + r, bTop);
       ctx.closePath();
       ctx.fill();
+
+      if (purpleHatch) {
+        ctx.fillStyle = purpleHatch;
+        ctx.beginPath();
+        ctx.moveTo(bx + r, bTop);
+        ctx.lineTo(bx + barW - r, bTop);
+        ctx.quadraticCurveTo(bx + barW, bTop, bx + barW, bTop + r);
+        ctx.lineTo(bx + barW, bottom);
+        ctx.lineTo(bx, bottom);
+        ctx.lineTo(bx, bTop + r);
+        ctx.quadraticCurveTo(bx, bTop, bx + r, bTop);
+        ctx.closePath();
+        ctx.fill();
+      }
     });
     ctx.restore();
   },
@@ -80,9 +122,35 @@ export default function LoanRequestTrend() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<Chart<"line"> | null>(null);
   const [hovered, setHovered] = useState<"loan" | "recovery" | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [disbursementData, setDisbursementData] = useState<any[]>([]);
-  const [recoveryData, setRecoveryData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [disbursementData, setDisbursementData] = useState<any[]>([
+    { date: "Jan", value: 4200 },
+    { date: "Feb", value: 1900 },
+    { date: "Mar", value: 1500 },
+    { date: "Apr", value: 2100 },
+    { date: "May", value: 2400 },
+    { date: "Jun", value: 1800 },
+    { date: "Jul", value: 2200 },
+    { date: "Aug", value: 2000 },
+    { date: "Sep", value: 2300 },
+    { date: "Oct", value: 1900 },
+    { date: "Nov", value: 2100 },
+    { date: "Dec", value: 2500 },
+  ]);
+  const [recoveryData, setRecoveryData] = useState<any[]>([
+    { date: "Jan", value: 3800 },
+    { date: "Feb", value: 1200 },
+    { date: "Mar", value: 900 },
+    { date: "Apr", value: 1400 },
+    { date: "May", value: 1600 },
+    { date: "Jun", value: 1100 },
+    { date: "Jul", value: 1300 },
+    { date: "Aug", value: 1500 },
+    { date: "Sep", value: 1700 },
+    { date: "Oct", value: 1400 },
+    { date: "Nov", value: 1600 },
+    { date: "Dec", value: 1800 },
+  ]);
 
   useEffect(() => {
     fetchTrendData();
@@ -103,11 +171,11 @@ export default function LoanRequestTrend() {
       type: "line",
       plugins: [bgBarsPlugin],
       data: {
-        labels: [],
+        labels: disbursementData.map((item) => item.date),
         datasets: [
           {
             label: "Loan",
-            data: [],
+            data: disbursementData.map((item) => item.value),
             borderColor: "#8B80F9",
             backgroundColor: "rgba(139,128,249,0.07)",
             borderWidth: 2.5,
@@ -122,18 +190,18 @@ export default function LoanRequestTrend() {
           },
           {
             label: "Recovery",
-            data: [],
+            data: recoveryData.map((item) => item.value),
             borderColor: "#4CBFFF",
-            backgroundColor: "rgba(76,191,255,0)",
+            backgroundColor: "rgba(76,191,255,0.07)",
             borderWidth: 2.5,
             borderDash: [6, 5],
-            pointRadius: 0,
+            pointRadius: [],
             pointHoverRadius: 6,
             pointBackgroundColor: "#fff",
             pointBorderColor: "#4CBFFF",
             pointBorderWidth: 2,
             tension: 0.45,
-            fill: false,
+            fill: true,
           },
         ],
       },
@@ -215,7 +283,7 @@ export default function LoanRequestTrend() {
         <div className="flex justify-between items-start mb-6">
           <div>
             <h2 className="font-sf-pro text-[20px] font-semibold text-[#1F2937] mb-1">
-              Daily Loan vs Recovery Trend
+              Daily Loan vs Recovery
             </h2>
             <p className="text-[14px] text-[#667085] font-ibm-plex-sans">
               Compares outbound lending and inbound recoveries over time.
@@ -261,7 +329,7 @@ export default function LoanRequestTrend() {
         <div className="flex justify-between items-start mb-6">
           <div>
             <h2 className="font-sf-pro text-[20px] font-semibold text-[#1F2937] mb-1">
-              Daily Loan vs Recovery Trend
+              Daily Loan vs Recovery
             </h2>
             <p className="text-[14px] text-[#667085] font-ibm-plex-sans">
               Compares outbound lending and inbound recoveries over time.
@@ -309,7 +377,7 @@ export default function LoanRequestTrend() {
       <div className="flex justify-between items-start mb-6">
         <div>
           <h2 className="font-sf-pro text-[20px] font-semibold text-[#1F2937] mb-1">
-            Daily Loan vs Recovery Trend
+            Daily Loan vs Recovery
           </h2>
           <p className="text-[14px] text-[#667085] font-ibm-plex-sans">
             Compares outbound lending and inbound recoveries over time.

@@ -43,7 +43,7 @@ function Navbar() {
         {
           name: "Fraud & Underwriting",
           icon: coll,
-          link: "/fraud-underwriting",
+          link: "/fraud-underwriting-control",
         },
       ],
     },

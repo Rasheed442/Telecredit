@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import SubMenu from "@/components/SubMenu";
 import DataTable, { LoanRow } from "@/components/DataTable";
 import Dropdown from "@/components/Dropdown";
+import DPDAnalysisChart from "@/components/LivePortfolio/DPDAnalysisChart";
 import { IoFilterSharp, IoSearch } from "react-icons/io5";
 
 // ── Types ──────────────────────────────────────────────────────────────
@@ -210,51 +211,57 @@ export default function Page() {
         {/* ── Tabs ── */}
 
         {/* ── Filters ── */}
-        <div className="flex items-center justify-end gap-3 px-5  flex-wrap">
-          {/* Telco filter */}
-          <div className="py-4 border-b border-[#F3F4F6]">
-            <div className="flex items-center gap-2 border border-[#E5E7EB] bg-[#FAFAFA]  rounded-sm px-3 h-10 flex-1 w-92.5">
-              <IoSearch size={19} className="text-gray-500" />
-              <input
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
-                }}
-                placeholder={"Search MSISDN"}
-                className="flex-1 placeholder:text-[16px] text-[#374151] font-ibm-plex-sans outline-none placeholder:font-ibm-plex-sans placeholder:text-gray-500 bg-transparent"
-              />
+        {activeTab !== "aging" && (
+          <div className="flex items-center justify-end gap-3 px-5  flex-wrap">
+            {/* Telco filter */}
+            <div className="py-4 border-b border-[#F3F4F6]">
+              <div className="flex items-center gap-2 border border-[#E5E7EB] bg-[#FAFAFA]  rounded-sm px-3 h-10 flex-1 w-92.5">
+                <IoSearch size={19} className="text-gray-500" />
+                <input
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(1);
+                  }}
+                  placeholder={"Search MSISDN"}
+                  className="flex-1 placeholder:text-[16px] text-[#374151] font-ibm-plex-sans outline-none placeholder:font-ibm-plex-sans placeholder:text-gray-500 bg-transparent"
+                />
+              </div>
             </div>
+            <Dropdown
+              options={telcoOptions}
+              value={telco}
+              onChange={setTelco}
+              className="w-32"
+            />
+
+            {/* Status filter */}
+            <Dropdown
+              options={statusOptions}
+              value={status}
+              onChange={setStatus}
+              className="w-32"
+            />
+
+            {/* Apply filter */}
+            <button className="flex items-center cursor-pointer gap-2 border bg-[#243B6B] border-gray-200 rounded-sm px-4 h-10 text-[14px] text-[#ffff] font-medium hover:bg-[#F9FAFB] transition-colors ">
+              <IoFilterSharp size={18} className="text-white" />
+              Apply filter
+            </button>
           </div>
-          <Dropdown
-            options={telcoOptions}
-            value={telco}
-            onChange={setTelco}
-            className="w-32"
+        )}
+
+        {/* ── Content based on active tab ── */}
+        {activeTab === "aging" ? (
+          <DPDAnalysisChart />
+        ) : (
+          <DataTable
+            searchable={false}
+            data={filtered}
+            onActionClick={(row) => console.log("View loan:", row.loanId)}
+            className="border-t-0"
           />
-
-          {/* Status filter */}
-          <Dropdown
-            options={statusOptions}
-            value={status}
-            onChange={setStatus}
-            className="w-32"
-          />
-
-          {/* Apply filter */}
-          <button className="flex items-center cursor-pointer gap-2 border bg-[#243B6B] border-gray-200 rounded-sm px-4 h-10 text-[14px] text-[#ffff] font-medium hover:bg-[#F9FAFB] transition-colors ">
-            <IoFilterSharp size={18} className="text-white" />
-            Apply filter
-          </button>
-        </div>
-
-        {/* ── DataTable ── */}
-        <DataTable
-          searchable={false}
-          data={filtered}
-          onActionClick={(row) => console.log("View loan:", row.loanId)}
-          className="border-t-0"
-        />
+        )}
       </div>
     </div>
   );

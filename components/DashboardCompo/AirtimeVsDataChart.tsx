@@ -66,7 +66,11 @@ const CustomLegend = (props: any) => {
 };
 
 const AgingBucketChart = () => {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<any[]>([
+    { name: "Current", value: 58, fill: "#10B981" },
+    { name: "DPD 1-30", value: 25, fill: "#3B82F6" },
+    { name: "DPD 31+", value: 17, fill: "#EF4444" },
+  ]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

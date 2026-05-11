@@ -7,7 +7,88 @@ import Image from "next/image";
 import { AiOutlineDown } from "react-icons/ai";
 import { calender } from "@/constant";
 
-const allRows: any[] = [];
+const allRows = [
+  {
+    event: "Loan",
+    msisdn: "08115322207",
+    telco: "MTN",
+    amount: "₦500.00",
+    status: "Failed",
+    timestamp: "23/09/26, 09:11:04",
+  },
+  {
+    event: "Recovery",
+    msisdn: "08108762779",
+    telco: "Glo",
+    amount: "₦750.00",
+    status: "Success",
+    timestamp: "23/09/26, 09:11:04",
+  },
+  {
+    event: "Loan",
+    msisdn: "09087622779",
+    telco: "9 Mobile",
+    amount: "₦200.00",
+    status: "Pending",
+    timestamp: "23/09/26, 09:11:04",
+  },
+  {
+    event: "Recovery",
+    msisdn: "07087627729",
+    telco: "Airtel",
+    amount: "₦150.00",
+    status: "Success",
+    timestamp: "23/09/26, 09:11:04",
+  },
+  {
+    event: "Loan",
+    msisdn: "08125322248",
+    telco: "MTN",
+    amount: "₦250.00",
+    status: "Failed",
+    timestamp: "23/09/26, 09:11:04",
+  },
+  {
+    event: "Recovery",
+    msisdn: "08115322017",
+    telco: "Glo",
+    amount: "₦1000.00",
+    status: "Pending",
+    timestamp: "23/09/26, 09:11:04",
+  },
+  {
+    event: "Loan",
+    msisdn: "08108762779",
+    telco: "9 Mobile",
+    amount: "₦950.00",
+    status: "Success",
+    timestamp: "23/09/26, 09:11:04",
+  },
+  {
+    event: "Recovery",
+    msisdn: "08108762779",
+    telco: "Airtel",
+    amount: "₦300.00",
+    status: "Failed",
+    timestamp: "23/09/26, 09:11:04",
+  },
+  {
+    event: "Loan",
+    msisdn: "08108762779",
+    telco: "MTN",
+    amount: "₦200.00",
+    status: "Success",
+    timestamp: "23/09/26, 09:11:04",
+  },
+  {
+    event: "Recovery",
+    msisdn: "08108762779",
+    telco: "Glo",
+    amount: "₦250.00",
+    status: "Pending",
+    timestamp: "23/09/26, 09:11:04",
+  },
+];
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {

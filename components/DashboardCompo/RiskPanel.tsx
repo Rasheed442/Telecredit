@@ -189,9 +189,18 @@ const DelinquentPanel = ({ delinquentData }: { delinquentData: any[] }) => (
 
 // ── Root ──────────────────────────────────────────────────────────────
 export default function RiskPanel() {
-  const [legacyRiskData, setLegacyRiskData] = useState<any[]>([]);
-  const [fraudData, setFraudData] = useState<any>(null);
-  const [delinquentData, setDelinquentData] = useState<any[]>([]);
+  const [legacyRiskData, setLegacyRiskData] = useState<any[]>([
+    { msisdn: "07086022674", riskFlag: "BLACKLIST" },
+    { msisdn: "08111222333", riskFlag: "HIGH_RISK" },
+  ]);
+  const [fraudData, setFraudData] = useState<any>({
+    rejectedUnauthorizedCallbacks: 5,
+    duplicateCallbacksRejected: 12,
+  });
+  const [delinquentData, setDelinquentData] = useState<any[]>([
+    { msisdn: "07086022674", outstandingBalance: 60 },
+    { msisdn: "08111222333", outstandingBalance: 45 },
+  ]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

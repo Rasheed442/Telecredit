@@ -76,28 +76,44 @@ const bgBarsPlugin: Plugin<"bar"> = {
       chartArea: { bottom },
       scales: { y },
     } = chart;
-
     const meta0 = chart.getDatasetMeta(0);
+    const meta1 = chart.getDatasetMeta(1);
     const maxY = y.getPixelForValue(100);
     const barH = bottom - maxY;
     const r = 6;
 
-    const blueHatch = createHatchPattern(ctx, BLUE);
+    const blueHatch = createHatchPattern(ctx, "#3B82F6");
+    const greenHatch = createHatchPattern(ctx, "#027A48");
 
     ctx.save();
 
+    // Draw crosshatch for disbursed bars (first dataset)
     meta0.data.forEach((bar: any, i) => {
       const { x: bx, width: bw } = bar.getProps(["x", "width"], true);
       const x0 = bx - bw / 2;
 
-      ctx.fillStyle = BLUE + "18";
+      ctx.fillStyle = "#3B82F6" + "18";
       roundedTopRect(ctx, x0, maxY, bw, barH, r);
       ctx.fill();
 
       if (blueHatch) {
         ctx.fillStyle = blueHatch;
         roundedTopRect(ctx, x0, maxY, bw, barH, r);
-        ctx.fill();
+      }
+    });
+
+    // Draw crosshatch for recovered bars (second dataset)
+    meta1.data.forEach((bar: any, i) => {
+      const { x: bx, width: bw } = bar.getProps(["x", "width"], true);
+      const x0 = bx - bw / 2;
+
+      ctx.fillStyle = "#027A48" + "18";
+      roundedTopRect(ctx, x0, maxY, bw, barH, r);
+      ctx.fill();
+
+      if (greenHatch) {
+        ctx.fillStyle = greenHatch;
+        roundedTopRect(ctx, x0, maxY, bw, barH, r);
       }
     });
 
@@ -109,8 +125,14 @@ export default function TelcoPerformance() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<Chart<"bar"> | null>(null);
   const [hovered, setHovered] = useState<"outbound" | "inbound" | null>(null);
-  const [telcoData, setTelcoData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [telcoData, setTelcoData] = useState<any[]>([
+    { telco: "MTN", disbursed: 35, recovered: 28 },
+    { telco: "Airtel", disbursed: 28, recovered: 22 },
+    { telco: "Glo", disbursed: 18, recovered: 15 },
+    { telco: "9mobile", disbursed: 12, recovered: 9 },
+    { telco: "Others", disbursed: 7, recovered: 5 },
+  ]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchTelcoData();
@@ -135,12 +157,20 @@ export default function TelcoPerformance() {
         labels: ["MTN", "Airtel", "Glo", "9mobile", "Others"],
         datasets: [
           {
-            label: "Telco Distribution",
+            label: "Disbursed",
             data: [35, 28, 18, 12, 7],
-            backgroundColor: BLUE,
+            backgroundColor: "#3B82F6",
             borderWidth: 0,
             borderRadius: 6,
-            barPercentage: 0.7,
+            barPercentage: 0.9,
+          },
+          {
+            label: "Recovered",
+            data: [28, 22, 15, 9, 5],
+            backgroundColor: "#10B981",
+            borderWidth: 0,
+            borderRadius: 6,
+            barPercentage: 0.9,
           },
         ],
       },
@@ -194,9 +224,9 @@ export default function TelcoPerformance() {
   useEffect(() => {
     const c = chartRef.current;
     if (!c) return;
-    const cols = [BLUE];
+    const cols = ["#3B82F6", "#027A48"];
     c.data.datasets.forEach((ds: any, i: number) => {
-      const match = hovered === "outbound";
+      const match = hovered === "outbound" && i === 0;
       const dim = hovered !== null && !match;
       ds.backgroundColor = dim ? cols[i] + "55" : cols[i];
     });
@@ -290,7 +320,7 @@ export default function TelcoPerformance() {
         </div>
       </div>
 
-      <div style={{ height: "300px" }}>
+      <div style={{ height: "250px" }}>
         <canvas ref={canvasRef} />
       </div>
 
@@ -299,9 +329,16 @@ export default function TelcoPerformance() {
         <div className="flex items-center gap-2">
           <div
             className="w-2.5 h-2.5 rounded-full"
-            style={{ background: BLUE }}
+            style={{ background: "#3B82F6" }}
           />
-          <span className="text-sm text-[#374151]">Distribution %</span>
+          <span className="text-sm text-[#374151]">Disbursed %</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div
+            className="w-2.5 h-2.5 rounded-full"
+            style={{ background: "#027A48" }}
+          />
+          <span className="text-sm text-[#374151]">Recovered %</span>
         </div>
       </div>
     </div>
