@@ -6,6 +6,7 @@ import { IoMdArrowDown } from "react-icons/io";
 import Image from "next/image";
 import { AiOutlineDown } from "react-icons/ai";
 import { calender } from "@/constant";
+import CalendarPopup from "@/components/ui/CalendarPopup";
 
 const allRows = [
   {
@@ -126,6 +127,7 @@ const SortIcon = () => (
 export default function LoanTable() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
+  const [selectedDate, setSelectedDate] = useState("This Year");
   const total = allRows.length;
   const rows = allRows.slice((page - 1) * perPage, page * perPage);
   const totalPages = Math.ceil(total / perPage);
@@ -141,13 +143,10 @@ export default function LoanTable() {
             Latest fulfllments and recoveries
           </p>
         </div>
-        <div className="border border-[#EBEBEB] flex items-center px-4 gap-2 rounded-sm bg-white py-2 cursor-pointer">
-          <Image src={calender} alt="calender" width={15} height={15} />
-          <p className="text-gray-500 text-[14px] font-medium font-mulish">
-            This Year{" "}
-          </p>
-          <AiOutlineDown color="#344054" size={14} />
-        </div>
+        <CalendarPopup
+          selectedDate={selectedDate}
+          onDateChange={setSelectedDate}
+        />
       </div>
 
       <div className="overflow-x-auto">

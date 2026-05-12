@@ -6,6 +6,7 @@ import LoanRequestTable from "@/components/DashboardCompo/LoanRequestTable";
 import LoanRequestTrend from "@/components/DashboardCompo/LoanRequestTrend";
 import RiskPanel from "@/components/DashboardCompo/RiskPanel";
 import MetricsCard from "@/components/DashboardCompo/MetricsCard";
+import CalendarPopup from "@/components/ui/CalendarPopup";
 import {
   calender,
   activeb,
@@ -85,6 +86,7 @@ function page() {
 
   const [metricsData, setMetricsData] = useState(defaultMetrics);
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState("This Year");
 
   useEffect(() => {
     fetchDashboardData();
@@ -176,7 +178,7 @@ function page() {
   return (
     <div className="px-4 md:px-6 pt-4 md:pt-5 pb-10 max-w-full overflow-x-hidden">
       {/* ── Page Header ── */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+      <div className="flex items-end justify-between gap-4 mb-6">
         <div className="flex flex-col gap-0.5">
           <p className="font-sf-pro text-[22px] sm:text-[26px] lg:text-[28px] text-[#1F2937] font-semibold leading-tight">
             Welcome back, Admin 👋
@@ -185,18 +187,12 @@ function page() {
             Monitor loan activity, manage airtime & data credits in real time.
           </span>
         </div>
-        <div className="border border-[#EBEBEB] flex items-center self-start sm:self-auto px-3 gap-2 rounded-sm bg-white py-2 cursor-pointer shrink-0">
-          <Image
-            src={calender}
-            alt="calendar"
-            width={14}
-            height={14}
-            priority
+        <div className="flex justify-start sm:justify-end">
+          <CalendarPopup
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
+            className="w-full sm:w-auto"
           />
-          <p className="text-gray-500 text-[13px] font-medium font-mulish">
-            This Year
-          </p>
-          <AiOutlineDown color="#344054" size={13} />
         </div>
       </div>
 

@@ -215,14 +215,14 @@ function TelcoCard({ stat }: { stat: TelcoStat }) {
 // ── Page ───────────────────────────────────────────────────────────────────
 export default function AnalyticsPage() {
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-4">
       <SubMenu
         title="Analytics & Leaderboards"
         subtitle="Performance metrics and customer insights."
       />
 
       {/* Top Borrowers + Recovery Champions */}
-      <div className="flex flex-col lg:flex-row gap-5  py-4">
+      <div className="flex flex-col lg:flex-row gap-5 ">
         <BorrowerCard
           title="Top Borrowers"
           icon={

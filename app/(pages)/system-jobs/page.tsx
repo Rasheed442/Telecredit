@@ -180,14 +180,14 @@ export default function SystemJobsPage() {
   };
 
   return (
-    <div className="p-6 space-y-8 bg-gray-50 min-h-screen">
+    <div className="p-6 space-y-4 bg-gray-50 min-h-screen">
       <SubMenu
         title="System Job Center"
         subtitle="Execute administrative tasks and maintenance jobs."
       />
 
       {/* Job Trigger Cards — 2×2 grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {systemJobs.map((job) => (
           <JobTriggerCard
             key={job.id}

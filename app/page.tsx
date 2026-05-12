@@ -120,10 +120,16 @@ export default function Home() {
           </Formik>
 
           <div className="flex justify-center gap-1 items-center">
-            <p className="text-white/70 lg:text-[#1A1A1A] text-[14px] font-geist font-light">
+            <p
+              className="text-white/70 lg:text-[#1A1A1A] text-[14px] font-geist font-light"
+              onClick={() => route.push("/")}
+            >
               Forgot Password?
             </p>
-            <p className="text-white lg:text-[#1A1A1A] text-[15px] font-geist font-normal border-b border-white lg:border-[#1A1A1A] cursor-pointer hover:opacity-80 transition-opacity">
+            <p
+              onClick={() => route.push("/forgot-password")}
+              className="text-white lg:text-[#1A1A1A] text-[15px] font-geist font-normal border-b border-white lg:border-[#1A1A1A] cursor-pointer hover:opacity-80 transition-opacity"
+            >
               Reset Password
             </p>
           </div>

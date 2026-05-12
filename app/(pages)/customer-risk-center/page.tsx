@@ -961,8 +961,8 @@ const CustomerSearchSection = ({
 }) => (
   <div>
     {/* Search bar */}
-    <div className="flex justify-end gap-3 mb-6 px-4 pt-6">
-      <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-80">
+    <div className="flex justify-between lg:justify-end gap-3 mb-6 px-4 pt-6">
+      <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10  lg:w-80">
         <IoSearch size={16} className="text-gray-400" />
         <input
           value={search}
@@ -971,8 +971,10 @@ const CustomerSearchSection = ({
           className="flex-1 text-[13px] text-[#374151] font-ibm-plex-sans outline-none placeholder:text-gray-400 bg-transparent"
         />
       </div>
-      <button className="flex items-center gap-2 bg-[#243B6B] px-4 h-10 rounded-sm text-[13px] text-white font-medium hover:bg-[#1E3A5F] transition-colors">
-        <AiOutlineSearch size={16} />
+      <button className="flex items-center lg:gap-2 bg-[#243B6B] px-3 lg:px-4 h-10 rounded-sm w-auto lg:w-auto text-[10px] lg:text-[13px] text-white font-medium hover:bg-[#1E3A5F] transition-colors">
+        <span className="hidden lg:block">
+          <AiOutlineSearch size={16} />
+        </span>
         Search Customer
       </button>
     </div>
