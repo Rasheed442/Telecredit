@@ -6,6 +6,7 @@ import DataTable, { LoanRow } from "@/components/DataTable";
 import Dropdown from "@/components/Dropdown";
 import DPDAnalysisChart from "@/components/LivePortfolio/DPDAnalysisChart";
 import { IoFilterSharp, IoSearch } from "react-icons/io5";
+import LoanDetailView from "@/components/LivePortfolio/LoanDetailView";
 
 // ── Types ──────────────────────────────────────────────────────────────
 type TabKey = "open" | "delinquent" | "closed" | "watchlist" | "aging";
@@ -148,7 +149,7 @@ export default function Page() {
   const [telco, setTelco] = useState("All Telcos");
   const [status, setStatus] = useState("All Statuses");
   const [page, setPage] = useState(1);
-  const perPage = 10;
+  const [selectedLoan, setSelectedLoan] = useState<LoanRow | null>(null);
 
   const telcoOptions = [
     { value: "All Telcos", label: "All Telcos" },
@@ -171,6 +172,16 @@ export default function Page() {
       r.loanId.toLowerCase().includes(search.toLowerCase()),
   );
 
+  // ── Loan detail view ──
+  if (selectedLoan) {
+    return (
+      <LoanDetailView
+        loan={selectedLoan}
+        onBack={() => setSelectedLoan(null)}
+      />
+    );
+  }
+
   return (
     <div className="p-6">
       <SubMenu
@@ -178,17 +189,17 @@ export default function Page() {
         subtitle="Track and manage all active, delinquent, and closed loans."
       />
 
-      <div className="flex border border-[#DCE9F9] bg-[#EEF4FC] rounded-sm mb-2 mt-6 pl-1 py-1 gap-1 overflow-x-auto ">
+      <div className="flex border border-[#DCE9F9] bg-[#EEF4FC] rounded-sm mb-2 mt-6 pl-1 py-1 gap-1 overflow-x-auto">
         {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setActiveTab(t.key)}
-            className={`flex items-center gap-2 px-4 py-2 text-[14px] cursor-pointer font-ibm-plex-sans  whitespace-nowrap transition-colors border-b-2 -mb-[1px]
-                ${
-                  activeTab === t.key
-                    ? "bg-[#243B6B] text-white font-semibold rounded-md"
-                    : "border-transparent text-[#6B7280] hover:text-[#374151]"
-                }`}
+            className={`flex items-center gap-2 px-4 py-2 text-[14px] cursor-pointer font-ibm-plex-sans whitespace-nowrap transition-colors border-b-2 -mb-[1px]
+              ${
+                activeTab === t.key
+                  ? "bg-[#243B6B] text-white font-semibold rounded-md"
+                  : "border-transparent text-[#6B7280] hover:text-[#374151]"
+              }`}
           >
             {t.label}
             {t.count !== undefined && (
@@ -197,7 +208,7 @@ export default function Page() {
                   ${
                     activeTab === t.key
                       ? "bg-white text-gray-700 font-bold"
-                      : "bg-gray-50 text-gray-700 "
+                      : "bg-gray-50 text-gray-700"
                   }`}
               >
                 {t.count}
@@ -208,14 +219,11 @@ export default function Page() {
       </div>
 
       <div className="mt-6 bg-white border border-gray-100 rounded-sm shadow-sm overflow-hidden">
-        {/* ── Tabs ── */}
-
         {/* ── Filters ── */}
         {activeTab !== "aging" && (
-          <div className="flex items-center justify-end gap-3 px-5  flex-wrap">
-            {/* Telco filter */}
+          <div className="flex items-center justify-end gap-3 px-5 flex-wrap">
             <div className="py-4 border-b border-[#F3F4F6]">
-              <div className="flex items-center gap-2 border border-[#E5E7EB] bg-[#FAFAFA]  rounded-sm px-3 h-10 flex-1 w-92.5">
+              <div className="flex items-center gap-2 border border-[#E5E7EB] bg-[#FAFAFA] rounded-sm px-3 h-10 flex-1 w-92.5">
                 <IoSearch size={19} className="text-gray-500" />
                 <input
                   value={search}
@@ -223,7 +231,7 @@ export default function Page() {
                     setSearch(e.target.value);
                     setPage(1);
                   }}
-                  placeholder={"Search MSISDN"}
+                  placeholder="Search MSISDN"
                   className="flex-1 placeholder:text-[16px] text-[#374151] font-ibm-plex-sans outline-none placeholder:font-ibm-plex-sans placeholder:text-gray-500 bg-transparent"
                 />
               </div>
@@ -234,31 +242,27 @@ export default function Page() {
               onChange={setTelco}
               className="w-32"
             />
-
-            {/* Status filter */}
             <Dropdown
               options={statusOptions}
               value={status}
               onChange={setStatus}
               className="w-32"
             />
-
-            {/* Apply filter */}
-            <button className="flex items-center cursor-pointer gap-2 border bg-[#243B6B] border-gray-200 rounded-sm px-4 h-10 text-[14px] text-[#ffff] font-medium hover:bg-[#F9FAFB] transition-colors ">
+            <button className="flex items-center cursor-pointer gap-2 border bg-[#243B6B] border-gray-200 rounded-sm px-4 h-10 text-[14px] text-white font-medium hover:bg-[#F9FAFB] transition-colors">
               <IoFilterSharp size={18} className="text-white" />
               Apply filter
             </button>
           </div>
         )}
 
-        {/* ── Content based on active tab ── */}
+        {/* ── Content ── */}
         {activeTab === "aging" ? (
           <DPDAnalysisChart />
         ) : (
           <DataTable
             searchable={false}
             data={filtered}
-            onActionClick={(row) => console.log("View loan:", row.loanId)}
+            onActionClick={(row) => setSelectedLoan(row)}
             className="border-t-0"
           />
         )}

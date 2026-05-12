@@ -126,7 +126,7 @@ function JobTriggerCard({
 function StatusBadge({ status }: { status: string }) {
   return (
     <span
-      className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${statusStyles[status] ?? "bg-gray-100 text-gray-600"}`}
+      className={`inline-flex px-3 py-1 text-sm font-semibold rounded-sm ${statusStyles[status] ?? "bg-gray-100 text-gray-600"}`}
     >
       {status}
     </span>

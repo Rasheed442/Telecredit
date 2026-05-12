@@ -117,14 +117,14 @@ const tabs: { key: TabKey; label: string; count: number }[] = [
 // ── Status Badge ───────────────────────────────────────────────────────
 function StatusBadge({ status }: { status: StatusValue }) {
   const styles: Record<StatusValue, string> = {
-    Success: "bg-green-50 text-green-600",
-    Failed: "bg-red-50 text-red-500",
-    Pending: "bg-yellow-50 text-yellow-500",
+    Success: "bg-green-50 text-green-700",
+    Failed: "bg-[#FEF3F2] text-[#B42318]",
+    Pending: "bg-[#F9F5E7] text-[#D76603]",
   };
 
   return (
     <span
-      className={`inline-flex items-center px-3 py-1 rounded-md text-[13px] font-semibold ${styles[status]}`}
+      className={`inline-flex items-center px-3 py-1 rounded-sm text-[13px] font-semibold ${styles[status]}`}
     >
       {status}
     </span>
@@ -177,11 +177,11 @@ export default function Page() {
       </div>
 
       {/* ── Table Card ── */}
-      <div className="mt-6 bg-white border border-gray-100 rounded-sm shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="mt-6 bg-white border border-gray-100 rounded-sm shadow-sm overflow-x-auto">
+        <div className="overflow-x-auto w-[120%]">
           <table className="w-full text-[13px] font-ibm-plex-sans">
             <thead>
-              <tr className="border-b border-gray-100">
+              <tr className="border-b border-gray-100 bg-gray-50">
                 <th className="text-left px-5 py-4 text-[#6B7280] font-medium whitespace-nowrap">
                   Callback Fingerprint
                 </th>

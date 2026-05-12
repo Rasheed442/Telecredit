@@ -16,36 +16,42 @@ import { TelcoDistribution } from "@/app/utils/endpoint";
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
-const BLUE = "#1447E6";
+const BLUE = "#3B82F6";
 const GREEN = "#027A48";
 
 function createHatchPattern(
   ctx: CanvasRenderingContext2D,
   color: string,
 ): CanvasPattern | null {
-  const size = 8;
+  const size = 10;
   const offscreen = document.createElement("canvas");
   offscreen.width = size;
   offscreen.height = size;
   const octx = offscreen.getContext("2d")!;
+
+  // Transparent background
   octx.clearRect(0, 0, size, size);
+
+  // Draw diagonal slash lines (///)
   octx.strokeStyle = color;
-  octx.lineWidth = 1.2;
-  octx.globalAlpha = 0.35;
-  // Diagonal line from top-right to bottom-left
+  octx.lineWidth = 1.5;
+  octx.globalAlpha = 0.55;
+
   octx.beginPath();
   octx.moveTo(0, size);
   octx.lineTo(size, 0);
   octx.stroke();
-  // Repeat tile edges to fill seamlessly
+
   octx.beginPath();
   octx.moveTo(-size, size);
   octx.lineTo(size, -size);
   octx.stroke();
+
   octx.beginPath();
   octx.moveTo(0, size * 2);
   octx.lineTo(size * 2, 0);
   octx.stroke();
+
   return ctx.createPattern(offscreen, "repeat");
 }
 
@@ -57,6 +63,7 @@ function roundedTopRect(
   h: number,
   r: number,
 ) {
+  if (h < r) r = h;
   ctx.beginPath();
   ctx.moveTo(x + r, y);
   ctx.lineTo(x + w - r, y);
@@ -68,56 +75,47 @@ function roundedTopRect(
   ctx.closePath();
 }
 
-const bgBarsPlugin: Plugin<"bar"> = {
-  id: "bgBars",
+// Draws full-height ghost bars with hatch BEFORE the actual solid bars are drawn
+const ghostHatchPlugin: Plugin<"bar"> = {
+  id: "ghostHatch",
   beforeDatasetsDraw(chart) {
     const {
       ctx,
       chartArea: { bottom },
       scales: { y },
     } = chart;
-    const meta0 = chart.getDatasetMeta(0);
-    const meta1 = chart.getDatasetMeta(1);
-    const maxY = y.getPixelForValue(100);
-    const barH = bottom - maxY;
+
+    const maxY = y.getPixelForValue(y.max);
+    const fullBarH = bottom - maxY;
     const r = 6;
 
-    const blueHatch = createHatchPattern(ctx, "#3B82F6");
-    const greenHatch = createHatchPattern(ctx, "#027A48");
+    [0, 1].forEach((datasetIndex) => {
+      const meta = chart.getDatasetMeta(datasetIndex);
+      const color = datasetIndex === 0 ? BLUE : GREEN;
+      const hatchPattern = createHatchPattern(ctx, color);
 
-    ctx.save();
+      meta.data.forEach((bar: any) => {
+        const { x: bx, width: bw } = bar.getProps(["x", "width"], true);
+        const x0 = bx - bw / 2;
 
-    // Draw crosshatch for disbursed bars (first dataset)
-    meta0.data.forEach((bar: any, i) => {
-      const { x: bx, width: bw } = bar.getProps(["x", "width"], true);
-      const x0 = bx - bw / 2;
+        ctx.save();
 
-      ctx.fillStyle = "#3B82F6" + "18";
-      roundedTopRect(ctx, x0, maxY, bw, barH, r);
-      ctx.fill();
+        // 1. Faint solid background (full height)
+        ctx.fillStyle = color + "18";
+        roundedTopRect(ctx, x0, maxY, bw, fullBarH, r);
+        ctx.fill();
 
-      if (blueHatch) {
-        ctx.fillStyle = blueHatch;
-        roundedTopRect(ctx, x0, maxY, bw, barH, r);
-      }
+        // 2. Diagonal hatch overlay (full height)
+        if (hatchPattern) {
+          roundedTopRect(ctx, x0, maxY, bw, fullBarH, r);
+          ctx.clip();
+          ctx.fillStyle = hatchPattern;
+          ctx.fillRect(x0, maxY, bw, fullBarH);
+        }
+
+        ctx.restore();
+      });
     });
-
-    // Draw crosshatch for recovered bars (second dataset)
-    meta1.data.forEach((bar: any, i) => {
-      const { x: bx, width: bw } = bar.getProps(["x", "width"], true);
-      const x0 = bx - bw / 2;
-
-      ctx.fillStyle = "#027A48" + "18";
-      roundedTopRect(ctx, x0, maxY, bw, barH, r);
-      ctx.fill();
-
-      if (greenHatch) {
-        ctx.fillStyle = greenHatch;
-        roundedTopRect(ctx, x0, maxY, bw, barH, r);
-      }
-    });
-
-    ctx.restore();
   },
 };
 
@@ -152,14 +150,14 @@ export default function TelcoPerformance() {
 
     chartRef.current = new Chart(canvasRef.current, {
       type: "bar",
-      plugins: [bgBarsPlugin],
+      plugins: [ghostHatchPlugin],
       data: {
         labels: ["MTN", "Airtel", "Glo", "9mobile", "Others"],
         datasets: [
           {
             label: "Disbursed",
             data: [35, 28, 18, 12, 7],
-            backgroundColor: "#3B82F6",
+            backgroundColor: BLUE,
             borderWidth: 0,
             borderRadius: 6,
             barPercentage: 0.9,
@@ -167,7 +165,7 @@ export default function TelcoPerformance() {
           {
             label: "Recovered",
             data: [28, 22, 15, 9, 5],
-            backgroundColor: "#10B981",
+            backgroundColor: GREEN,
             borderWidth: 0,
             borderRadius: 6,
             barPercentage: 0.9,
@@ -224,7 +222,7 @@ export default function TelcoPerformance() {
   useEffect(() => {
     const c = chartRef.current;
     if (!c) return;
-    const cols = ["#3B82F6", "#027A48"];
+    const cols = [BLUE, GREEN];
     c.data.datasets.forEach((ds: any, i: number) => {
       const match = hovered === "outbound" && i === 0;
       const dim = hovered !== null && !match;
@@ -324,19 +322,19 @@ export default function TelcoPerformance() {
         <canvas ref={canvasRef} />
       </div>
 
-      {/* Legend at bottom */}
+      {/* Legend */}
       <div className="flex justify-center gap-6 mt-4">
         <div className="flex items-center gap-2">
           <div
             className="w-2.5 h-2.5 rounded-full"
-            style={{ background: "#3B82F6" }}
+            style={{ background: BLUE }}
           />
           <span className="text-sm text-[#374151]">Disbursed %</span>
         </div>
         <div className="flex items-center gap-2">
           <div
             className="w-2.5 h-2.5 rounded-full"
-            style={{ background: "#027A48" }}
+            style={{ background: GREEN }}
           />
           <span className="text-sm text-[#374151]">Recovered %</span>
         </div>

@@ -103,10 +103,10 @@ const AgingBucketChart = () => {
       console.error("Error fetching aging data:", error);
       // Set fallback data on error
       setData([
-        { name: "Current", value: 40, fill: "#027A48" },
-        { name: "DPD 1-7", value: 30, fill: "#175CD3" },
+        { name: "DPD 0", value: 40, fill: "#175CD3" },
+        { name: "DPD 1-7", value: 30, fill: "#B42318" },
         { name: "DPD 8-30", value: 20, fill: "#D76603" },
-        { name: "DPD 31+", value: 10, fill: "#B42318" },
+        { name: "DPD 31+", value: 10, fill: "#027A48" },
       ]);
     } finally {
       setLoading(false);

@@ -13,6 +13,8 @@ import {
   outstanding,
   behav,
   key,
+  trending,
+  moneyin,
 } from "@/constant";
 
 // ── Types ──────────────────────────────────────────────────────────────
@@ -592,7 +594,7 @@ const MetricCard = ({
   status?: string;
   icon?: any;
 }) => (
-  <div className="bg-white rounded-sm p-5 border border-gray-200">
+  <div className="bg-white rounded-sm py-4 px-4 border border-gray-200">
     <div className="flex items-center gap-2 mb-4">
       {icon && <Image src={icon} alt={title} width={18} height={18} />}
       <span className="text-[13px] text-[#667085] font-ibm-plex-sans">
@@ -601,11 +603,11 @@ const MetricCard = ({
     </div>
     {status ? (
       <span
-        className={`inline-flex px-3 py-1 rounded-full text-[13px] font-semibold font-ibm-plex-sans ${
+        className={`inline-flex px-3 py-1  rounded-sm text-[13px] font-normal font-ibm-plex-sans ${
           status === "Active"
             ? "bg-green-100 text-green-800"
             : status === "Restricted"
-              ? "bg-orange-100 text-orange-800"
+              ? "bg-orange-100 text-[#D76603]"
               : "bg-gray-100 text-gray-800"
         }`}
       >
@@ -775,7 +777,7 @@ const CustomerSearchSection = ({
       <MetricCard
         title="Total Recovered"
         value={mockCustomerMetrics.totalRecovered}
-        icon={profit}
+        icon={trending}
       />
       <MetricCard
         title="Outstanding Balance"
@@ -785,7 +787,7 @@ const CustomerSearchSection = ({
       <MetricCard
         title="Active Loans"
         value={mockCustomerMetrics.activeLoans}
-        icon={activeb}
+        icon={moneyin}
       />
       <MetricCard
         title="Lifetime Defaults"
@@ -795,19 +797,19 @@ const CustomerSearchSection = ({
       <MetricCard
         title="Behavioral Risk Score"
         value={mockCustomerMetrics.behaviouralRiskScore}
-        icon={behav}
+        icon={blocked}
       />
       <MetricCard
         title="Hard Block Status"
         value={mockCustomerMetrics.hardBlockStatus}
         status={mockCustomerMetrics.hardBlockStatus}
-        icon={blocked}
+        icon={profit}
       />
       <MetricCard
         title="Eligibility Status"
         value={mockCustomerMetrics.eligibilityStatus}
         status={mockCustomerMetrics.eligibilityStatus}
-        icon={key}
+        icon={behav}
       />
     </div>
 
