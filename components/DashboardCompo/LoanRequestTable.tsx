@@ -131,7 +131,7 @@ export default function LoanTable() {
   const totalPages = Math.ceil(total / perPage);
 
   return (
-    <div className="bg-white rounded-sm shadow-sm overflow-hidden border border-[#F3F4F6] mt-6">
+    <div className="bg-white rounded-sm shadow-sm overflow-hidden border border-[#DCE9F9] mt-6">
       <div className="flex items-center justify-between p-4 pb-6">
         <div>
           <h2 className="font-sf-pro text-[20px] font-semibold text-[#1F2937] mb-1">

@@ -1,6 +1,88 @@
 "use client";
 import React, { useState } from "react";
 import SubMenu from "@/components/SubMenu";
+import { IoMdArrowDown } from "react-icons/io";
+
+const PER_PAGE = 5;
+
+function Pagination({
+  total,
+  page,
+  onPage,
+}: {
+  total: number;
+  page: number;
+  onPage: (p: number) => void;
+}) {
+  const totalPages = Math.ceil(total / PER_PAGE);
+
+  const pages: (number | "...")[] = [];
+  if (totalPages <= 6) {
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+  } else {
+    pages.push(1, 2, 3, "...", totalPages - 2, totalPages - 1, totalPages);
+  }
+
+  return (
+    <div className="flex items-center justify-between px-5 py-4 border-t border-gray-100">
+      <button
+        onClick={() => onPage(Math.max(1, page - 1))}
+        disabled={page === 1}
+        className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path
+            d="M10 12L6 8L10 4"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        Previous
+      </button>
+
+      <div className="flex items-center gap-1">
+        {pages.map((p, i) =>
+          p === "..." ? (
+            <span key={`e-${i}`} className="px-2 text-gray-400 text-sm">
+              ...
+            </span>
+          ) : (
+            <button
+              key={p}
+              onClick={() => onPage(p as number)}
+              className={`w-8 h-8 rounded-md text-sm font-medium transition-colors ${
+                page === p
+                  ? "bg-[#243B6B] text-white"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              {p}
+            </button>
+          ),
+        )}
+      </div>
+
+      <button
+        onClick={() => onPage(Math.min(totalPages, page + 1))}
+        disabled={page === totalPages}
+        className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+      >
+        Next
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path
+            d="M6 4L10 8L6 12"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+    </div>
+  );
+}
 
 // ── Types ──────────────────────────────────────────────────────────────
 type TabKey = "fulfillment" | "recovery" | "duplicate" | "unauthorized";
@@ -121,13 +203,24 @@ function StatusBadge({ status }: { status: StatusValue }) {
     Failed: "bg-[#FEF3F2] text-[#B42318]",
     Pending: "bg-[#F9F5E7] text-[#D76603]",
   };
-
   return (
     <span
       className={`inline-flex items-center px-3 py-1 rounded-sm text-[13px] font-semibold ${styles[status]}`}
     >
       {status}
     </span>
+  );
+}
+
+// ── Sortable TH ────────────────────────────────────────────────────────
+function SortableTh({ children }: { children: React.ReactNode }) {
+  return (
+    <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+      <button className="flex items-center gap-1 font-ibm-plex-sans hover:text-[#374151]">
+        {children}
+        <IoMdArrowDown className="opacity-50" />
+      </button>
+    </th>
   );
 }
 
@@ -140,6 +233,13 @@ const statusKeys: (keyof CallbackRow)[] = [
 // ── Page ───────────────────────────────────────────────────────────────
 export default function Page() {
   const [activeTab, setActiveTab] = useState<TabKey>("fulfillment");
+  const [page, setPage] = useState(1);
+
+  const handleTabChange = (key: TabKey) => {
+    setActiveTab(key);
+    setPage(1);
+  };
+  const sliced = rows.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   return (
     <div className="p-6">
@@ -153,7 +253,7 @@ export default function Page() {
         {tabs.map((t) => (
           <button
             key={t.key}
-            onClick={() => setActiveTab(t.key)}
+            onClick={() => handleTabChange(t.key)}
             className={`flex items-center gap-2 px-4 py-2 text-[14px] cursor-pointer font-ibm-plex-sans whitespace-nowrap transition-colors -mb-[1px]
               ${
                 activeTab === t.key
@@ -164,11 +264,7 @@ export default function Page() {
             {t.label}
             <span
               className={`text-[12px] font-semibold px-2 py-0.5 rounded-md
-                ${
-                  activeTab === t.key
-                    ? "bg-white text-gray-700 font-bold"
-                    : "bg-gray-50 text-gray-700"
-                }`}
+              ${activeTab === t.key ? "bg-white text-gray-700 font-bold" : "bg-gray-50 text-gray-700"}`}
             >
               {t.count}
             </span>
@@ -178,85 +274,58 @@ export default function Page() {
 
       {/* ── Table Card ── */}
       <div className="mt-6 bg-white border border-gray-100 rounded-sm shadow-sm overflow-x-auto">
-        <div className="overflow-x-auto w-[120%]">
-          <table className="w-full text-[13px] font-ibm-plex-sans">
-            <thead>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="text-left px-5 py-4 text-[#6B7280] font-medium whitespace-nowrap">
-                  Callback Fingerprint
-                </th>
-                <th className="text-left px-5 py-4 text-[#6B7280] font-medium">
-                  Request
-                  <br />
-                  Type
-                </th>
-                <th className="text-left px-5 py-4 text-[#6B7280] font-medium">
-                  Transaction
-                  <br />
-                  Ref
-                </th>
-                <th className="text-left px-5 py-4 text-[#6B7280] font-medium whitespace-nowrap">
-                  Partner Loan ID
-                </th>
-                <th className="text-left px-5 py-4 text-[#6B7280] font-medium whitespace-nowrap">
-                  Recovery ID
-                </th>
-                <th className="text-left px-5 py-4 text-[#6B7280] font-medium whitespace-nowrap">
-                  Authorized
-                </th>
-                <th className="text-left px-5 py-4 text-[#6B7280] font-medium whitespace-nowrap">
-                  Processed
-                </th>
-                <th className="text-left px-5 py-4 text-[#6B7280] font-medium">
-                  Duplicate
-                  <br />
-                  Rejected
-                </th>
-                <th className="text-left px-5 py-4 text-[#6B7280] font-medium whitespace-nowrap">
-                  Response Message
-                </th>
-                <th className="text-left px-5 py-4 text-[#6B7280] font-medium whitespace-nowrap">
-                  Received At
-                </th>
+        <table className="w-full text-[13px] font-ibm-plex-sans">
+          <thead>
+            <tr className="border-b border-[#F3F4F6] bg-gray-50">
+              <SortableTh>Callback Fingerprint</SortableTh>
+              <SortableTh>Request Type</SortableTh>
+              <SortableTh>Transaction Ref</SortableTh>
+              <SortableTh>Partner Loan ID</SortableTh>
+              <SortableTh>Recovery ID</SortableTh>
+              <SortableTh>Authorized</SortableTh>
+              <SortableTh>Processed</SortableTh>
+              <SortableTh>Duplicate Rejected</SortableTh>
+              <SortableTh>Response Message</SortableTh>
+              <SortableTh>Received At</SortableTh>
+            </tr>
+          </thead>
+          <tbody>
+            {sliced.map((row, i) => (
+              <tr
+                key={i}
+                className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+              >
+                <td className="px-5 py-4 font-semibold text-[#111827] whitespace-nowrap">
+                  {row.fingerprint}
+                </td>
+                <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                  {row.requestType}
+                </td>
+                <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                  {row.transactionRef}
+                </td>
+                <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                  {row.partnerLoanId}
+                </td>
+                <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                  {row.recoveryId}
+                </td>
+                {statusKeys.map((key) => (
+                  <td key={key} className="px-5 py-4 whitespace-nowrap">
+                    <StatusBadge status={row[key] as StatusValue} />
+                  </td>
+                ))}
+                <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                  {row.responseMessage}
+                </td>
+                <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                  {row.receivedAt}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {rows.map((row, i) => (
-                <tr
-                  key={i}
-                  className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
-                >
-                  <td className="px-5 py-4 font-semibold text-[#111827] whitespace-nowrap">
-                    {row.fingerprint}
-                  </td>
-                  <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
-                    {row.requestType}
-                  </td>
-                  <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
-                    {row.transactionRef}
-                  </td>
-                  <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
-                    {row.partnerLoanId}
-                  </td>
-                  <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
-                    {row.recoveryId}
-                  </td>
-                  {statusKeys.map((key) => (
-                    <td key={key} className="px-5 py-4 whitespace-nowrap">
-                      <StatusBadge status={row[key] as StatusValue} />
-                    </td>
-                  ))}
-                  <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
-                    {row.responseMessage}
-                  </td>
-                  <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
-                    {row.receivedAt}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
+        <Pagination total={rows.length} page={page} onPage={setPage} />
       </div>
     </div>
   );

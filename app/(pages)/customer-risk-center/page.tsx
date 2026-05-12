@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import SubMenu from "@/components/SubMenu";
 import { IoSearch } from "react-icons/io5";
 import { AiOutlineSearch } from "react-icons/ai";
+import { IoMdArrowDown } from "react-icons/io";
 import Image from "next/image";
 import {
   deliquent,
@@ -625,22 +626,77 @@ const MetricCard = ({
 const LoanHistoryTab = () => (
   <TableWrapper>
     <thead>
-      <tr className="border-b border-[#F3F4F6]">
-        <Th>Loan ID</Th>
-        <Th>Amount</Th>
-        <Th>Outstanding</Th>
-        <Th>Date</Th>
-        <Th>Aging</Th>
+      <tr className="border-y border-[#F3F4F6] bg-gray-50">
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Loan ID
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Amount
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Outstanding
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Date
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Aging
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
       </tr>
     </thead>
     <tbody>
       {mockLoanHistory.map((row, i) => (
         <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
-          <Td bold>{row.loanId}</Td>
-          <Td>{row.amount}</Td>
-          <Td>{row.outstanding}</Td>
-          <Td>{row.date}</Td>
-          <td className="px-4 py-4">{agingBadge(row.aging, row.agingColor)}</td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.loanId}
+          </td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.amount}
+          </td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.outstanding}
+          </td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.date}
+          </td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {agingBadge(row.aging, row.agingColor)}
+          </td>
         </tr>
       ))}
     </tbody>
@@ -650,20 +706,64 @@ const LoanHistoryTab = () => (
 const RecoveryHistoryTab = () => (
   <TableWrapper>
     <thead>
-      <tr className="border-b border-[#F3F4F6]">
-        <Th>Recover ID</Th>
-        <Th>Loan ID</Th>
-        <Th>Amount Recovered</Th>
-        <Th>Date</Th>
+      <tr className="border-y border-[#F3F4F6] bg-gray-50">
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Recover ID
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Loan ID
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Amount Recovered
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Date
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
       </tr>
     </thead>
     <tbody>
       {mockRecoveryHistory.map((row, i) => (
         <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
-          <Td bold>{row.recoverId}</Td>
-          <Td>{row.loanId}</Td>
-          <Td>{row.amountRecovered}</Td>
-          <Td>{row.date}</Td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.recoverId}
+          </td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.loanId}
+          </td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.amountRecovered}
+          </td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.date}
+          </td>
         </tr>
       ))}
     </tbody>
@@ -673,22 +773,77 @@ const RecoveryHistoryTab = () => (
 const FraudDecisionsTab = () => (
   <TableWrapper>
     <thead>
-      <tr className="border-b border-[#F3F4F6]">
-        <Th>Decision ID</Th>
-        <Th>Loan ID</Th>
-        <Th>Risk Score</Th>
-        <Th>Decision</Th>
-        <Th>Date</Th>
+      <tr className="border-y border-[#F3F4F6] bg-gray-50">
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Decision ID
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Loan ID
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Risk Score
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Decision
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Date
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
       </tr>
     </thead>
     <tbody>
       {mockFraudDecisions.map((row, i) => (
         <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
-          <Td bold>{row.decisionId}</Td>
-          <Td>{row.loanId}</Td>
-          <Td>{row.riskScore}</Td>
-          <td className="px-4 py-4">{fraudRiskBadge(row.decision)}</td>
-          <Td>{row.date}</Td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.decisionId}
+          </td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.loanId}
+          </td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.riskScore}
+          </td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {fraudRiskBadge(row.decision)}
+          </td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.date}
+          </td>
         </tr>
       ))}
     </tbody>
@@ -698,22 +853,77 @@ const FraudDecisionsTab = () => (
 const CallbackAuditTab = () => (
   <TableWrapper>
     <thead>
-      <tr className="border-b border-[#F3F4F6]">
-        <Th>Callback ID</Th>
-        <Th>Customer ID</Th>
-        <Th>Agent Name</Th>
-        <Th>Outcome</Th>
-        <Th>Date</Th>
+      <tr className="border-y border-[#F3F4F6] bg-gray-50">
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Callback ID
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Customer ID
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Agent Name
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Outcome
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
+        <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+          <div className="flex items-center gap-1">
+            <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+              Date
+              <div className="flex flex-col">
+                <IoMdArrowDown className="inline ml-1 opacity-50" />
+              </div>
+            </button>
+          </div>
+        </th>
       </tr>
     </thead>
     <tbody>
       {mockCallbackAudit.map((row, i) => (
         <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
-          <Td bold>{row.callbackId}</Td>
-          <Td>{row.customerId}</Td>
-          <Td>{row.agentName}</Td>
-          <Td>{row.outcome}</Td>
-          <Td>{row.date}</Td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.callbackId}
+          </td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.customerId}
+          </td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.agentName}
+          </td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.outcome}
+          </td>
+          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+            {row.date}
+          </td>
         </tr>
       ))}
     </tbody>
@@ -751,7 +961,7 @@ const CustomerSearchSection = ({
 }) => (
   <div>
     {/* Search bar */}
-    <div className="flex justify-end gap-3 mb-6">
+    <div className="flex justify-end gap-3 mb-6 px-4 pt-6">
       <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-80">
         <IoSearch size={16} className="text-gray-400" />
         <input
@@ -768,7 +978,7 @@ const CustomerSearchSection = ({
     </div>
 
     {/* Metric cards */}
-    <div className="grid grid-cols-4 gap-4 mb-6">
+    <div className="grid grid-cols-4 gap-4 mb-6 px-4">
       <MetricCard
         title="Total Borrowed"
         value={mockCustomerMetrics.totalBorrowed}
@@ -814,7 +1024,7 @@ const CustomerSearchSection = ({
     </div>
 
     {/* Sub tabs */}
-    <div className="flex gap-6 border-b border-[#F3F4F6] mb-4">
+    <div className="flex gap-6 border-b border-[#F3F4F6] mb-4 px-6 pt-6">
       {subTabs.map((tab) => (
         <button
           key={tab.key}
@@ -838,32 +1048,129 @@ const CustomerSearchSection = ({
   </div>
 );
 
-const ExposureLedgerSection = () => (
+const ExposureLedgerSection = ({
+  search,
+  setSearch,
+  filteredData,
+}: {
+  search: string;
+  setSearch: (v: string) => void;
+  filteredData: any[];
+}) => (
   <div>
-    <SectionHeader
-      title="Exposure Ledger"
-      subtitle="Per-customer outstanding exposure across the portfolio"
-    />
+    <div className="flex items-center justify-between mb-6 px-4 pt-6">
+      <div className="flex-1">
+        <SectionHeader
+          title="Exposure Ledger"
+          subtitle="Per-customer outstanding exposure across portfolio"
+        />
+      </div>
+      {/* Search bar */}
+      <div className="flex gap-3">
+        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-80">
+          <IoSearch size={16} className="text-gray-400" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search MSISDN (e.g 07015322207)"
+            className="flex-1 text-[13px] text-[#374151] font-ibm-plex-sans outline-none placeholder:text-gray-400 bg-transparent"
+          />
+        </div>
+        <button className="flex items-center gap-2 bg-[#243B6B] px-4 h-10 rounded-sm text-[13px] text-white font-medium hover:bg-[#1E3A5F] transition-colors">
+          <AiOutlineSearch size={16} />
+          Search
+        </button>
+      </div>
+    </div>
     <TableWrapper>
       <thead>
-        <tr className="border-b border-[#F3F4F6]">
-          <Th>MSISDN</Th>
-          <Th>Telco</Th>
-          <Th>Active Loan</Th>
-          <Th>Disbursed</Th>
-          <Th>Recovered</Th>
-          <Th>Outstanding</Th>
+        <tr className="border-y border-[#F3F4F6] bg-gray-50">
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                MSISDN
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Telco
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Active Loan
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Disbursed
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Recovered
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Outstanding
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
-        {mockExposureLedger.map((row, i) => (
-          <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
-            <Td bold>{row.msisdn}</Td>
-            <Td>{row.telco}</Td>
-            <Td>{row.activeLoans}</Td>
-            <Td>{row.disbursed}</Td>
-            <Td>{row.recovered}</Td>
-            <Td>{row.outstanding}</Td>
+        {filteredData.map((row: any, i) => (
+          <tr
+            key={i}
+            className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA] transition-colors"
+          >
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.msisdn}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.telco}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.activeLoans}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.disbursed}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.recovered}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.outstanding}
+            </td>
           </tr>
         ))}
       </tbody>
@@ -871,28 +1178,100 @@ const ExposureLedgerSection = () => (
   </div>
 );
 
-const DelinquentCustomerSection = () => (
+const DelinquentCustomerSection = ({
+  search,
+  setSearch,
+  filteredData,
+}: {
+  search: string;
+  setSearch: (v: string) => void;
+  filteredData: any[];
+}) => (
   <div>
-    <SectionHeader
-      title="Delinquent Customers"
-      subtitle="Borrowers with outstanding balances past due"
-    />
+    <div className="flex items-center justify-between mb-6 px-4 pt-6">
+      <div className="flex-1">
+        <SectionHeader
+          title="Delinquent Customers"
+          subtitle="Borrowers with outstanding balances past due"
+        />
+      </div>
+      {/* Search bar */}
+      <div className="flex gap-3">
+        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-80">
+          <IoSearch size={16} className="text-gray-400" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search MSISDN (e.g 07015322207)"
+            className="flex-1 text-[13px] text-[#374151] font-ibm-plex-sans outline-none placeholder:text-gray-400 bg-transparent"
+          />
+        </div>
+        <button className="flex items-center gap-2 bg-[#243B6B] px-4 h-10 rounded-sm text-[13px] text-white font-medium hover:bg-[#1E3A5F] transition-colors">
+          <AiOutlineSearch size={16} />
+          Search
+        </button>
+      </div>
+    </div>
     <TableWrapper>
       <thead>
-        <tr className="border-b border-[#F3F4F6]">
-          <Th>MSISDN</Th>
-          <Th>Active Loan</Th>
-          <Th>Outstanding</Th>
-          <Th>Fraud Risk</Th>
+        <tr className="border-y border-[#F3F4F6] bg-gray-50">
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                MSISDN
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Active Loan
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Outstanding
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Fraud Risk
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
-        {mockDelinquentCustomers.map((row, i) => (
+        {filteredData.map((row, i) => (
           <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
-            <Td bold>{row.msisdn}</Td>
-            <Td>{row.activeLoans}</Td>
-            <Td>{row.outstanding}</Td>
-            <td className="px-4 py-4">{fraudRiskBadge(row.fraudRisk)}</td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.msisdn}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.activeLoans}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.outstanding}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {fraudRiskBadge(row.fraudRisk)}
+            </td>
           </tr>
         ))}
       </tbody>
@@ -900,28 +1279,100 @@ const DelinquentCustomerSection = () => (
   </div>
 );
 
-const LegacyRiskSection = () => (
+const LegalRiskCustomerSection = ({
+  search,
+  setSearch,
+  filteredData,
+}: {
+  search: string;
+  setSearch: (v: string) => void;
+  filteredData: any[];
+}) => (
   <div>
-    <SectionHeader
-      title="Legacy Risk Customers"
-      subtitle="Imported risk records from prior systems"
-    />
+    <div className="flex items-center justify-between mb-6 px-4 pt-6">
+      <div className="flex-1">
+        <SectionHeader
+          title="Legacy Risk Customers"
+          subtitle="Imported risk records from prior systems"
+        />
+      </div>
+      {/* Search bar */}
+      <div className="flex gap-3">
+        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-80">
+          <IoSearch size={16} className="text-gray-400" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search MSISDN (e.g 07015322207)"
+            className="flex-1 text-[13px] text-[#374151] font-ibm-plex-sans outline-none placeholder:text-gray-400 bg-transparent"
+          />
+        </div>
+        <button className="flex items-center gap-2 bg-[#243B6B] px-4 h-10 rounded-sm text-[13px] text-white font-medium hover:bg-[#1E3A5F] transition-colors">
+          <AiOutlineSearch size={16} />
+          Search
+        </button>
+      </div>
+    </div>
     <TableWrapper>
       <thead>
-        <tr className="border-b border-[#F3F4F6]">
-          <Th>MSISDN</Th>
-          <Th>Legacy Defaults</Th>
-          <Th>Last Seen</Th>
-          <Th>Source</Th>
+        <tr className="border-y border-[#F3F4F6] bg-gray-50">
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                MSISDN
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Legacy Defaults
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Last Seen
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Source
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
-        {mockLegacyRiskCustomers.map((row, i) => (
+        {filteredData.map((row, i) => (
           <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
-            <Td bold>{row.msisdn}</Td>
-            <Td>{row.legacyDefaults}</Td>
-            <Td>{row.lastSeen}</Td>
-            <Td>{row.source}</Td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.msisdn}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.legacyDefaults}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.lastSeen}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.source}
+            </td>
           </tr>
         ))}
       </tbody>
@@ -929,32 +1380,126 @@ const LegacyRiskSection = () => (
   </div>
 );
 
-const BehaviouralRiskSection = () => (
+const BehaviouralRiskSection = ({
+  search,
+  setSearch,
+  filteredData,
+}: {
+  search: string;
+  setSearch: (v: string) => void;
+  filteredData: any[];
+}) => (
   <div>
-    <SectionHeader
-      title="Behavioural Risk Ranking"
-      subtitle="Customers ranked by aggregate behavioural risk score"
-    />
+    <div className="flex items-center justify-between mb-6 px-4 pt-6">
+      <div className="flex-1">
+        <SectionHeader
+          title="Behavioural Risk Ranking"
+          subtitle="Customers ranked by aggregate behavioural risk score"
+        />
+      </div>
+      {/* Search bar */}
+      <div className="flex gap-3">
+        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-80">
+          <IoSearch size={16} className="text-gray-400" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search MSISDN (e.g 07015322207)"
+            className="flex-1 text-[13px] text-[#374151] font-ibm-plex-sans outline-none placeholder:text-gray-400 bg-transparent"
+          />
+        </div>
+        <button className="flex items-center gap-2 bg-[#243B6B] px-4 h-10 rounded-sm text-[13px] text-white font-medium hover:bg-[#1E3A5F] transition-colors">
+          <AiOutlineSearch size={16} />
+          Search
+        </button>
+      </div>
+    </div>
     <TableWrapper>
       <thead>
-        <tr className="border-b border-[#F3F4F6]">
-          <Th>MSISDN</Th>
-          <Th>Telco</Th>
-          <Th>Loan</Th>
-          <Th>Defaults</Th>
-          <Th>Average Risk</Th>
-          <Th>Fraud Risk</Th>
+        <tr className="border-y border-[#F3F4F6] bg-gray-50">
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                MSISDN
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Telco
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Loan
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Defaults
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Average Risk
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Fraud Risk
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
-        {mockBehaviouralRisk.map((row, i) => (
+        {filteredData.map((row: any, i) => (
           <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
-            <Td bold>{row.msisdn}</Td>
-            <Td>{row.telco}</Td>
-            <Td>{row.loan}</Td>
-            <Td>{row.defaults}</Td>
-            <Td>{row.averageRisk}</Td>
-            <td className="px-4 py-4">{fraudRiskBadge(row.fraudRisk)}</td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.msisdn}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.telco}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.loan}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.defaults}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.averageRisk}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {fraudRiskBadge(row.fraudRisk)}
+            </td>
           </tr>
         ))}
       </tbody>
@@ -962,28 +1507,100 @@ const BehaviouralRiskSection = () => (
   </div>
 );
 
-const HardBlockedSection = () => (
+const HardBlockedSection = ({
+  search,
+  setSearch,
+  filteredData,
+}: {
+  search: string;
+  setSearch: (v: string) => void;
+  filteredData: any[];
+}) => (
   <div>
-    <SectionHeader
-      title="Hard Blocked Customers"
-      subtitle="Permanently blocked from all lending products"
-    />
+    <div className="flex items-center justify-between mb-6 px-4 pt-6">
+      <div className="flex-1">
+        <SectionHeader
+          title="Hard Blocked Customers"
+          subtitle="Permanently blocked from all lending products"
+        />
+      </div>
+      {/* Search bar */}
+      <div className="flex gap-3">
+        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-80">
+          <IoSearch size={16} className="text-gray-400" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search MSISDN (e.g 07015322207)"
+            className="flex-1 text-[13px] text-[#374151] font-ibm-plex-sans outline-none placeholder:text-gray-400 bg-transparent"
+          />
+        </div>
+        <button className="flex items-center gap-2 bg-[#243B6B] px-4 h-10 rounded-sm text-[13px] text-white font-medium hover:bg-[#1E3A5F] transition-colors">
+          <AiOutlineSearch size={16} />
+          Search
+        </button>
+      </div>
+    </div>
     <TableWrapper>
       <thead>
-        <tr className="border-b border-[#F3F4F6]">
-          <Th>MSISDN</Th>
-          <Th>Reason</Th>
-          <Th>Rule</Th>
-          <Th>Last Seen</Th>
+        <tr className="border-y border-[#F3F4F6] bg-gray-50">
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                MSISDN
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Reason
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Rule
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Last Seen
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
-        {mockHardBlocked.map((row, i) => (
+        {filteredData.map((row: any, i) => (
           <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
-            <Td bold>{row.msisdn}</Td>
-            <Td>{row.reason}</Td>
-            <Td>{row.rule}</Td>
-            <Td>{row.lastSeen}</Td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.msisdn}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.reason}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.rule}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.lastSeen}
+            </td>
           </tr>
         ))}
       </tbody>
@@ -991,28 +1608,100 @@ const HardBlockedSection = () => (
   </div>
 );
 
-const WhitelistedSection = () => (
+const WhitelistedSection = ({
+  search,
+  setSearch,
+  filteredData,
+}: {
+  search: string;
+  setSearch: (v: string) => void;
+  filteredData: any[];
+}) => (
   <div>
-    <SectionHeader
-      title="Whitelisted Customers"
-      subtitle="Trusted customers with elevated lending access"
-    />
+    <div className="flex items-center justify-between mb-6 px-4 pt-6">
+      <div className="flex-1">
+        <SectionHeader
+          title="Whitelisted Customers"
+          subtitle="Trusted customers with elevated lending access"
+        />
+      </div>
+      {/* Search bar */}
+      <div className="flex gap-3">
+        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-80">
+          <IoSearch size={16} className="text-gray-400" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search MSISDN (e.g 07015322207)"
+            className="flex-1 text-[13px] text-[#374151] font-ibm-plex-sans outline-none placeholder:text-gray-400 bg-transparent"
+          />
+        </div>
+        <button className="flex items-center gap-2 bg-[#243B6B] px-4 h-10 rounded-sm text-[13px] text-white font-medium hover:bg-[#1E3A5F] transition-colors">
+          <AiOutlineSearch size={16} />
+          Search
+        </button>
+      </div>
+    </div>
     <TableWrapper>
       <thead>
-        <tr className="border-b border-[#F3F4F6]">
-          <Th>MSISDN</Th>
-          <Th>Reason</Th>
-          <Th>Source</Th>
-          <Th>Created Date</Th>
+        <tr className="border-y border-[#F3F4F6] bg-gray-50">
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                MSISDN
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Reason
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Source
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
+          <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+                Created Date
+                <div className="flex flex-col">
+                  <IoMdArrowDown className="inline ml-1 opacity-50" />
+                </div>
+              </button>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
-        {mockWhitelisted.map((row, i) => (
+        {filteredData.map((row: any, i) => (
           <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
-            <Td bold>{row.msisdn}</Td>
-            <Td>{row.reason}</Td>
-            <Td>{row.source}</Td>
-            <Td>{row.createdDate}</Td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.msisdn}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.reason}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.source}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.createdDate}
+            </td>
           </tr>
         ))}
       </tbody>
@@ -1052,7 +1741,7 @@ export default function Page() {
       </div>
 
       {/* Content */}
-      <div className="bg-white p-6 rounded-sm border border-gray-200">
+      <div className="bg-white  rounded-sm border border-gray-200">
         {activeMainTab === "customer-search" && (
           <CustomerSearchSection
             search={search}
@@ -1061,16 +1750,60 @@ export default function Page() {
             setActiveSubTab={setActiveSubTab}
           />
         )}
-        {activeMainTab === "exposure-ledger" && <ExposureLedgerSection />}
+        {activeMainTab === "exposure-ledger" && (
+          <ExposureLedgerSection
+            search={search}
+            setSearch={setSearch}
+            filteredData={mockExposureLedger.filter((row: any) =>
+              row.msisdn.toLowerCase().includes(search.toLowerCase()),
+            )}
+          />
+        )}
         {activeMainTab === "delinquent-customer" && (
-          <DelinquentCustomerSection />
+          <DelinquentCustomerSection
+            search={search}
+            setSearch={setSearch}
+            filteredData={mockDelinquentCustomers.filter((row: any) =>
+              row.msisdn.toLowerCase().includes(search.toLowerCase()),
+            )}
+          />
         )}
-        {activeMainTab === "legal-risk-customer" && <LegacyRiskSection />}
+        {activeMainTab === "legal-risk-customer" && (
+          <LegalRiskCustomerSection
+            search={search}
+            setSearch={setSearch}
+            filteredData={mockLegacyRiskCustomers.filter((row: any) =>
+              row.msisdn.toLowerCase().includes(search.toLowerCase()),
+            )}
+          />
+        )}
         {activeMainTab === "behavioural-risk-ranking" && (
-          <BehaviouralRiskSection />
+          <BehaviouralRiskSection
+            search={search}
+            setSearch={setSearch}
+            filteredData={mockBehaviouralRisk.filter((row: any) =>
+              row.msisdn.toLowerCase().includes(search.toLowerCase()),
+            )}
+          />
         )}
-        {activeMainTab === "hard-blocked" && <HardBlockedSection />}
-        {activeMainTab === "whitelisted-customer" && <WhitelistedSection />}
+        {activeMainTab === "hard-blocked" && (
+          <HardBlockedSection
+            search={search}
+            setSearch={setSearch}
+            filteredData={mockHardBlocked.filter((row: any) =>
+              row.msisdn.toLowerCase().includes(search.toLowerCase()),
+            )}
+          />
+        )}
+        {activeMainTab === "whitelisted-customer" && (
+          <WhitelistedSection
+            search={search}
+            setSearch={setSearch}
+            filteredData={mockWhitelisted.filter((row: any) =>
+              row.msisdn.toLowerCase().includes(search.toLowerCase()),
+            )}
+          />
+        )}
       </div>
     </div>
   );

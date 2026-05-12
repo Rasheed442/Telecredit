@@ -3,8 +3,8 @@ import SubMenu from "@/components/SubMenu";
 import React, { useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import { AiOutlinePlus, AiOutlineSearch } from "react-icons/ai";
+import { IoMdArrowDown } from "react-icons/io";
 
-// ── Types ──────────────────────────────────────────────────────────────
 type MainTabKey =
   | "fraud-decision-log"
   | "blacklist-manager"
@@ -13,7 +13,6 @@ type MainTabKey =
   | "underwriting-config"
   | "risk-rule-tester";
 
-// ── Mock Data ──────────────────────────────────────────────────────────
 const mockFraudDecisions = [
   {
     msisdn: "07086022674",
@@ -265,9 +264,12 @@ const ModalActions = ({ onClose }: { onClose: () => void }) => (
 );
 
 // ── Shared Table UI ────────────────────────────────────────────────────
-const Th = ({ children }: { children: React.ReactNode }) => (
-  <th className="px-4 py-3 text-left text-[13px] font-normal text-[#667085] whitespace-nowrap">
-    {children}
+const SortableTh = ({ children }: { children: React.ReactNode }) => (
+  <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280] whitespace-nowrap">
+    <button className="flex items-center font-ibm-plex-sans gap-1 hover:text-[#374151]">
+      {children}
+      <IoMdArrowDown className="inline ml-1 opacity-50" />
+    </button>
   </th>
 );
 
@@ -316,19 +318,18 @@ const FraudDecisionLog = () => {
           />
         </div>
         <button className="flex items-center gap-2 bg-[#243B6B] px-4 h-10 rounded-sm text-[13px] text-white font-medium hover:bg-[#1E3A5F] transition-colors">
-          <AiOutlineSearch size={16} />
-          Search
+          <AiOutlineSearch size={16} /> Search
         </button>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
-            <tr className="border-b border-[#F3F4F6]">
-              <Th>MSISDN</Th>
-              <Th>Decision</Th>
-              <Th>Rule</Th>
-              <Th>Reason</Th>
-              <Th>Timestamp</Th>
+            <tr className="border-y border-[#F3F4F6] bg-gray-50">
+              <SortableTh>MSISDN</SortableTh>
+              <SortableTh>Decision</SortableTh>
+              <SortableTh>Rule</SortableTh>
+              <SortableTh>Reason</SortableTh>
+              <SortableTh>Timestamp</SortableTh>
             </tr>
           </thead>
           <tbody>
@@ -351,14 +352,23 @@ const FraudDecisionLog = () => {
   );
 };
 
-const BlacklistManager = () => {
+// ── Shared list table for Blacklist / Whitelist ────────────────────────
+const ListManager = ({
+  data,
+  modalTitle,
+  buttonLabel,
+}: {
+  data: typeof mockBlacklist;
+  modalTitle: string;
+  buttonLabel: string;
+}) => {
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({ msisdn: "", reason: "", source: "" });
 
   return (
     <div>
       {showModal && (
-        <Modal title="Add to Blacklist" onClose={() => setShowModal(false)}>
+        <Modal title={modalTitle} onClose={() => setShowModal(false)}>
           <ModalInput
             label="MSISDN"
             placeholder="e.g (08115422207)"
@@ -387,101 +397,26 @@ const BlacklistManager = () => {
           onClick={() => setShowModal(true)}
           className="flex items-center gap-2 bg-[#243B6B] px-4 h-10 rounded-sm text-[13px] text-white font-medium hover:bg-[#1E3A5F] transition-colors"
         >
-          <AiOutlinePlus /> Add to Blacklist
+          <AiOutlinePlus /> {buttonLabel}
         </button>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
-            <tr className="border-b border-[#F3F4F6]">
-              <Th>MSISDN</Th>
-              <Th>Reason</Th>
-              <Th>Rule</Th>
-              <Th>Created Date</Th>
-              <Th>Updated Date</Th>
-              <Th>Action</Th>
+            <tr className="border-y border-[#F3F4F6] bg-gray-50">
+              <SortableTh>MSISDN</SortableTh>
+              <SortableTh>Reason</SortableTh>
+              <SortableTh>Source</SortableTh>
+              <SortableTh>Created Date</SortableTh>
+              <SortableTh>Updated Date</SortableTh>
+              <th className="text-left px-5 py-3 text-[12px] font-medium text-[#6B7280]">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
-            {mockBlacklist.map((row, i) => (
-              <tr
-                key={i}
-                className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]"
-              >
-                <Td bold>{row.msisdn}</Td>
-                <Td>{row.reason}</Td>
-                <Td>{row.rule}</Td>
-                <Td>{row.createdDate}</Td>
-                <Td>{row.updatedDate}</Td>
-                <td className="px-4 py-4">
-                  <button className="text-red-500 text-[13px] font-medium hover:text-red-700">
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-};
-
-const WhitelistManager = () => {
-  const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({ msisdn: "", reason: "", source: "" });
-
-  return (
-    <div>
-      {showModal && (
-        <Modal title="Add to Whitelist" onClose={() => setShowModal(false)}>
-          <ModalInput
-            label="MSISDN"
-            placeholder="e.g (08115422207)"
-            value={form.msisdn}
-            onChange={(v) => setForm((p) => ({ ...p, msisdn: v }))}
-          />
-          <ModalInput
-            label="Reason"
-            placeholder="Enter Reason...."
-            value={form.reason}
-            onChange={(v) => setForm((p) => ({ ...p, reason: v }))}
-            textarea
-          />
-          <ModalInput
-            label="Source"
-            placeholder="Enter Source"
-            value={form.source}
-            onChange={(v) => setForm((p) => ({ ...p, source: v }))}
-          />
-          <ModalActions onClose={() => setShowModal(false)} />
-        </Modal>
-      )}
-
-      <div className="flex justify-end mb-6">
-        <button
-          onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-[#243B6B] px-4 h-10 rounded-sm text-[13px] text-white font-medium hover:bg-[#1E3A5F] transition-colors"
-        >
-          <AiOutlinePlus /> Add to Whitelist
-        </button>
-      </div>
-
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="border-b border-[#F3F4F6]">
-              <Th>MSISDN</Th>
-              <Th>Reason</Th>
-              <Th>Rule</Th>
-              <Th>Created Date</Th>
-              <Th>Updated Date</Th>
-              <Th>Action</Th>
-            </tr>
-          </thead>
-          <tbody>
-            {mockWhitelist.map((row, i) => (
+            {data.map((row, i) => (
               <tr
                 key={i}
                 className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]"
@@ -529,7 +464,7 @@ const ConfigTable = ({
           />
           <ModalInput
             label="Value"
-            placeholder="Enter vlaue"
+            placeholder="Enter value"
             value={form.value}
             onChange={(v) => setForm((p) => ({ ...p, value: v }))}
           />
@@ -556,11 +491,11 @@ const ConfigTable = ({
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
-            <tr className="border-b border-[#F3F4F6]">
-              <Th>Key</Th>
-              <Th>Value</Th>
-              <Th>Description</Th>
-              <Th>Action</Th>
+            <tr className="border-y border-[#F3F4F6] bg-gray-50">
+              <SortableTh>Key</SortableTh>
+              <SortableTh>Value</SortableTh>
+              <SortableTh>Description</SortableTh>
+              <SortableTh>Action</SortableTh>
             </tr>
           </thead>
           <tbody>
@@ -654,7 +589,6 @@ const RiskRuleTester = () => {
             </div>
           ))}
         </div>
-
         <div className="flex items-center gap-2 mt-4">
           <input
             type="checkbox"
@@ -667,7 +601,6 @@ const RiskRuleTester = () => {
             Blacklisted MSISDN
           </label>
         </div>
-
         <div className="flex gap-3 mt-6">
           <button className="bg-[#243B6B] text-white px-6 h-10 rounded-sm text-[13px] font-medium hover:bg-[#1E3A5F] transition-colors">
             Run Rule
@@ -777,8 +710,20 @@ export default function Page() {
         className={`bg-white rounded-sm border border-gray-200 ${activeMainTab !== "risk-rule-tester" ? "p-6" : "p-4"}`}
       >
         {activeMainTab === "fraud-decision-log" && <FraudDecisionLog />}
-        {activeMainTab === "blacklist-manager" && <BlacklistManager />}
-        {activeMainTab === "whitelist-manager" && <WhitelistManager />}
+        {activeMainTab === "blacklist-manager" && (
+          <ListManager
+            data={mockBlacklist}
+            modalTitle="Add to Blacklist"
+            buttonLabel="Add to Blacklist"
+          />
+        )}
+        {activeMainTab === "whitelist-manager" && (
+          <ListManager
+            data={mockWhitelist}
+            modalTitle="Add to Whitelist"
+            buttonLabel="Add to Whitelist"
+          />
+        )}
         {activeMainTab === "fraud-config" && (
           <ConfigTable
             data={mockFraudConfig}

@@ -1,6 +1,8 @@
 "use client";
+
 import SubMenu from "@/components/SubMenu";
 import React, { useState } from "react";
+import { IoMdArrowDown } from "react-icons/io";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface SystemJob {
@@ -123,10 +125,21 @@ function JobTriggerCard({
   );
 }
 
+function SortableTh({ children }: { children: React.ReactNode }) {
+  return (
+    <th className="text-left px-6 py-3">
+      <button className="flex items-center gap-1 text-xs font-medium text-[#6B7280] font-ibm-plex-sans hover:text-[#374151]">
+        {children}
+        <IoMdArrowDown className="opacity-50" />
+      </button>
+    </th>
+  );
+}
+
 function StatusBadge({ status }: { status: string }) {
   return (
     <span
-      className={`inline-flex px-3 py-1 text-sm font-semibold rounded-sm ${statusStyles[status] ?? "bg-gray-100 text-gray-600"}`}
+      className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${statusStyles[status] ?? "bg-gray-100 text-gray-600"}`}
     >
       {status}
     </span>
@@ -194,11 +207,11 @@ export default function SystemJobsPage() {
         </div>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-gray-500 text-xs font-medium border-b border-gray-100">
-              <th className="text-left px-6 py-3">Job Name</th>
-              <th className="text-left px-6 py-3">Status</th>
-              <th className="text-left px-6 py-3">Executed At</th>
-              <th className="text-left px-6 py-3">Duration</th>
+            <tr className="bg-gray-50 border-b border-[#F3F4F6]">
+              <SortableTh>Job Name</SortableTh>
+              <SortableTh>Status</SortableTh>
+              <SortableTh>Executed At</SortableTh>
+              <SortableTh>Duration</SortableTh>
             </tr>
           </thead>
           <tbody>
