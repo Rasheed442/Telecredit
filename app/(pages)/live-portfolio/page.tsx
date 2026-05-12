@@ -8,10 +8,8 @@ import DPDAnalysisChart from "@/components/LivePortfolio/DPDAnalysisChart";
 import { IoFilterSharp, IoSearch } from "react-icons/io5";
 import LoanDetailView from "@/components/LivePortfolio/LoanDetailView";
 
-// ── Types ──────────────────────────────────────────────────────────────
 type TabKey = "open" | "delinquent" | "closed" | "watchlist" | "aging";
 
-// ── Mock data ──────────────────────────────────────────────────────────
 const rows: LoanRow[] = [
   {
     loanId: "ATL_CORE_010",
@@ -172,7 +170,6 @@ export default function Page() {
       r.loanId.toLowerCase().includes(search.toLowerCase()),
   );
 
-  // ── Loan detail view ──
   if (selectedLoan) {
     return (
       <LoanDetailView
@@ -183,18 +180,19 @@ export default function Page() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-3 sm:p-6">
       <SubMenu
         title="Live Portfolio Monitoring"
         subtitle="Track and manage all active, delinquent, and closed loans."
       />
 
-      <div className="flex border border-[#DCE9F9] bg-[#EEF4FC] rounded-sm mb-2 mt-6 pl-1 py-1 gap-1 overflow-x-auto">
+      {/* ── Tabs ── */}
+      <div className="flex border border-[#DCE9F9] bg-[#EEF4FC] rounded-sm mb-2 mt-6 pl-1 py-1 gap-1 overflow-x-auto scrollbar-hide">
         {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setActiveTab(t.key)}
-            className={`flex items-center gap-2 px-4 py-2 text-[14px] cursor-pointer font-ibm-plex-sans whitespace-nowrap transition-colors border-b-2 -mb-[1px]
+            className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 text-[12px] sm:text-[14px] cursor-pointer font-ibm-plex-sans whitespace-nowrap transition-colors border-b-2 -mb-[1px]
               ${
                 activeTab === t.key
                   ? "bg-[#243B6B] text-white font-semibold rounded-md"
@@ -204,7 +202,7 @@ export default function Page() {
             {t.label}
             {t.count !== undefined && (
               <span
-                className={`text-[12px] font-semibold px-2 py-0.5 rounded-md
+                className={`text-[11px] sm:text-[12px] font-semibold px-1.5 sm:px-2 py-0.5 rounded-md
                   ${
                     activeTab === t.key
                       ? "bg-white text-gray-700 font-bold"
@@ -221,37 +219,40 @@ export default function Page() {
       <div className="mt-6 bg-white border border-gray-100 rounded-sm shadow-sm overflow-hidden">
         {/* ── Filters ── */}
         {activeTab !== "aging" && (
-          <div className="flex items-center justify-end gap-3 px-5 flex-wrap">
-            <div className="py-4 border-b border-[#F3F4F6]">
-              <div className="flex items-center gap-2 border border-[#E5E7EB] bg-[#FAFAFA] rounded-sm px-3 h-10 flex-1 w-92.5">
-                <IoSearch size={19} className="text-gray-500" />
-                <input
-                  value={search}
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                    setPage(1);
-                  }}
-                  placeholder="Search MSISDN"
-                  className="flex-1 placeholder:text-[16px] text-[#374151] font-ibm-plex-sans outline-none placeholder:font-ibm-plex-sans placeholder:text-gray-500 bg-transparent"
-                />
-              </div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3 px-4 sm:px-5 py-4 border-b border-[#F3F4F6] flex-wrap">
+            {/* Search */}
+            <div className="flex items-center gap-2 border border-[#E5E7EB] bg-[#FAFAFA] rounded-sm px-3 h-10 w-full sm:w-auto sm:min-w-[260px]">
+              <IoSearch size={19} className="text-gray-500 shrink-0" />
+              <input
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setPage(1);
+                }}
+                placeholder="Search MSISDN"
+                className="flex-1 min-w-0 placeholder:text-[16px] text-[#374151] font-ibm-plex-sans outline-none placeholder:font-ibm-plex-sans placeholder:text-gray-500 bg-transparent"
+              />
             </div>
-            <Dropdown
-              options={telcoOptions}
-              value={telco}
-              onChange={setTelco}
-              className="w-32"
-            />
-            <Dropdown
-              options={statusOptions}
-              value={status}
-              onChange={setStatus}
-              className="w-32"
-            />
-            <button className="flex items-center cursor-pointer gap-2 border bg-[#243B6B] border-gray-200 rounded-sm px-4 h-10 text-[14px] text-white font-medium hover:bg-[#F9FAFB] transition-colors">
-              <IoFilterSharp size={18} className="text-white" />
-              Apply filter
-            </button>
+
+            {/* Dropdowns + button row — wraps together on mobile */}
+            <div className="flex items-center gap-3 flex-wrap">
+              <Dropdown
+                options={telcoOptions}
+                value={telco}
+                onChange={setTelco}
+                className="w-full xs:w-auto flex-1 sm:flex-none sm:w-32"
+              />
+              <Dropdown
+                options={statusOptions}
+                value={status}
+                onChange={setStatus}
+                className="w-full xs:w-auto flex-1 sm:flex-none sm:w-32"
+              />
+              <button className="flex items-center justify-center cursor-pointer gap-2 border bg-[#243B6B] border-gray-200 rounded-sm px-4 h-10 text-[14px] text-white font-medium hover:bg-[#1a2d54] transition-colors w-full sm:w-auto">
+                <IoFilterSharp size={18} className="text-white shrink-0" />
+                Apply filter
+              </button>
+            </div>
           </div>
         )}
 

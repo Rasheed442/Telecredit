@@ -222,7 +222,7 @@ export default function AnalyticsPage() {
       />
 
       {/* Top Borrowers + Recovery Champions */}
-      <div className="flex gap-5 flex-wrap py-4">
+      <div className="flex flex-col lg:flex-row gap-5  py-4">
         <BorrowerCard
           title="Top Borrowers"
           icon={
@@ -343,7 +343,7 @@ export default function AnalyticsPage() {
         <h3 className="font-semibold text-gray-800 text-base mb-4">
           Telco Performance
         </h3>
-        <div className="flex gap-4 flex-wrap">
+        <div className="flex flex-col lg:flex-row md:flex-row flex-wrap  gap-4">
           {telcoStats.map((s) => (
             <TelcoCard key={s.name} stat={s} />
           ))}

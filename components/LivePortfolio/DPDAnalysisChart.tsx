@@ -197,18 +197,20 @@ export default function DPDAnalysisChart() {
 
   // ── Header ──────────────────────────────────────────────────────────────────
   const Header = () => (
-    <div className="flex justify-between items-start mb-6">
+    <div className="flex justify-between items-center gap-2 lg:items-start mb-6">
       <div>
-        <h2 className="font-sf-pro text-[20px] font-semibold text-[#1F2937] mb-1">
+        <h2 className="font-sf-pro text-[15px] lg:text-[20px] font-semibold text-[#1F2937] mb-1">
           Telco Performance
         </h2>
-        <p className="text-[14px] text-[#667085] font-ibm-plex-sans">
+        <p className="text-[12px] lg:text-[14px] md:text-[14px] text-[#667085] font-ibm-plex-sans">
           Compares outbound lending and inbound recoveries over time.
         </p>
       </div>
-      <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-sm px-4 py-1.5 text-sm text-[#374151]">
+      <div className="flex items-center justify-center gap-1 lg:gap-2 border border-[#E5E7EB] rounded-sm w-25 lg:w-30 cursor-pointer  lg:px-4 px-1 py-2 lg:py-1.5 text-sm text-[#374151]">
         <Image src={calender} alt="calendar" width={14} height={14} />
-        <span>This year</span>
+        <span className="font-ibm-plex-sans text-[10px] lg:text-[14px]">
+          This year
+        </span>
       </div>
     </div>
   );
@@ -273,7 +275,7 @@ export default function DPDAnalysisChart() {
       <Header />
 
       {/* Metric Cards */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {dpdData.map((item) => (
           <div
             key={item.category}

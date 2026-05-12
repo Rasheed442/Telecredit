@@ -541,7 +541,7 @@ const RiskRuleTester = () => {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div className="bg-white border border-[#F3F4F6] rounded-sm p-6">
         <h2 className="text-[18px] font-semibold text-[#1F2937] font-sf-pro mb-6">
           Applicant Inputs

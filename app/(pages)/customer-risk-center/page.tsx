@@ -978,7 +978,7 @@ const CustomerSearchSection = ({
     </div>
 
     {/* Metric cards */}
-    <div className="grid grid-cols-4 gap-4 mb-6 px-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 px-4">
       <MetricCard
         title="Total Borrowed"
         value={mockCustomerMetrics.totalBorrowed}
@@ -1058,7 +1058,7 @@ const ExposureLedgerSection = ({
   filteredData: any[];
 }) => (
   <div>
-    <div className="flex items-center justify-between mb-6 px-4 pt-6">
+    <div className="flex flex-col lg:flex-row items-center justify-between mb-6 px-4 pt-6">
       <div className="flex-1">
         <SectionHeader
           title="Exposure Ledger"
@@ -1066,8 +1066,8 @@ const ExposureLedgerSection = ({
         />
       </div>
       {/* Search bar */}
-      <div className="flex gap-3">
-        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-80">
+      <div className="flex  gap-3">
+        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-full lg:w-80">
           <IoSearch size={16} className="text-gray-400" />
           <input
             value={search}
@@ -1188,7 +1188,7 @@ const DelinquentCustomerSection = ({
   filteredData: any[];
 }) => (
   <div>
-    <div className="flex items-center justify-between mb-6 px-4 pt-6">
+    <div className="flex flex-col lg:flex-row items-center justify-between mb-6 px-4 pt-6">
       <div className="flex-1">
         <SectionHeader
           title="Delinquent Customers"
@@ -1197,7 +1197,7 @@ const DelinquentCustomerSection = ({
       </div>
       {/* Search bar */}
       <div className="flex gap-3">
-        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-80">
+        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-full lg:w-80">
           <IoSearch size={16} className="text-gray-400" />
           <input
             value={search}
@@ -1289,7 +1289,7 @@ const LegalRiskCustomerSection = ({
   filteredData: any[];
 }) => (
   <div>
-    <div className="flex items-center justify-between mb-6 px-4 pt-6">
+    <div className="flex flex-col lg:flex-row items-center justify-between mb-6 px-4 pt-6">
       <div className="flex-1">
         <SectionHeader
           title="Legacy Risk Customers"
@@ -1298,7 +1298,7 @@ const LegalRiskCustomerSection = ({
       </div>
       {/* Search bar */}
       <div className="flex gap-3">
-        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-80">
+        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-full lg:w-80">
           <IoSearch size={16} className="text-gray-400" />
           <input
             value={search}
@@ -1390,7 +1390,7 @@ const BehaviouralRiskSection = ({
   filteredData: any[];
 }) => (
   <div>
-    <div className="flex items-center justify-between mb-6 px-4 pt-6">
+    <div className="flex flex-col lg:flex-row items-center justify-between mb-6 px-4 pt-6">
       <div className="flex-1">
         <SectionHeader
           title="Behavioural Risk Ranking"
@@ -1399,7 +1399,7 @@ const BehaviouralRiskSection = ({
       </div>
       {/* Search bar */}
       <div className="flex gap-3">
-        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-80">
+        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-full lg:w-80">
           <IoSearch size={16} className="text-gray-400" />
           <input
             value={search}
@@ -1517,7 +1517,7 @@ const HardBlockedSection = ({
   filteredData: any[];
 }) => (
   <div>
-    <div className="flex items-center justify-between mb-6 px-4 pt-6">
+    <div className="flex lg:flex-row flex-col items-center justify-between mb-6 px-4 pt-6">
       <div className="flex-1">
         <SectionHeader
           title="Hard Blocked Customers"
@@ -1526,7 +1526,7 @@ const HardBlockedSection = ({
       </div>
       {/* Search bar */}
       <div className="flex gap-3">
-        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-80">
+        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 lg:w-80 w-full">
           <IoSearch size={16} className="text-gray-400" />
           <input
             value={search}
@@ -1618,7 +1618,7 @@ const WhitelistedSection = ({
   filteredData: any[];
 }) => (
   <div>
-    <div className="flex items-center justify-between mb-6 px-4 pt-6">
+    <div className="flex items-center justify-between mb-6 px-4 pt-6 flex-col lg:flex-row">
       <div className="flex-1">
         <SectionHeader
           title="Whitelisted Customers"
@@ -1627,7 +1627,7 @@ const WhitelistedSection = ({
       </div>
       {/* Search bar */}
       <div className="flex gap-3">
-        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 w-80">
+        <div className="flex items-center gap-2 border border-[#E5E7EB] bg-white rounded-sm px-3 h-10 lg:w-80 w-full">
           <IoSearch size={16} className="text-gray-400" />
           <input
             value={search}
