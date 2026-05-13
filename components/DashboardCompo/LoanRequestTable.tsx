@@ -219,11 +219,11 @@ export default function LoanTable() {
 
       {/* Footer */}
       <div className="flex justify-between items-center px-4 py-3 border-t border-[#F3F4F6] text-[13px] text-[#667085]">
-        <span>
+        <span className="hidden lg:block">
           Showing {(page - 1) * perPage + 1}–{Math.min(page * perPage, total)}{" "}
           of {total} entries
         </span>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between lg:justify-start gap-2">
           <span>Show</span>
           <select
             value={perPage}
