@@ -241,7 +241,7 @@ function Navbar() {
       {/* ── Logout Modal ── */}
       {showLogoutModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[60] px-4">
-          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-2xl">
+          <div className="bg-white rounded p-6 w-full max-w-sm shadow-2xl">
             <div className="flex items-center justify-center mb-4">
               <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
                 <Image src={logout} alt="Logout" width={22} height={22} />
@@ -256,13 +256,13 @@ function Navbar() {
             <div className="flex gap-3">
               <button
                 onClick={cancelLogout}
-                className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors text-sm font-medium"
+                className="flex-1 px-4 py-2.5 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 transition-colors text-sm font-medium"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmLogout}
-                className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm font-medium"
               >
                 Logout
               </button>

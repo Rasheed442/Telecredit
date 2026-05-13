@@ -185,24 +185,23 @@ export default function Page() {
         title="Live Portfolio Monitoring"
         subtitle="Track and manage all active, delinquent, and closed loans."
       />
-
       {/* ── Tabs ── */}
-      <div className="flex border border-[#DCE9F9] bg-[#EEF4FC] rounded-sm mb-2 mt-6 pl-1 py-1 gap-1 overflow-x-auto scrollbar-hide">
+      <div className="flex border border-[#DCE9F9] bg-[#EEF4FC] mt-6 mb-6 pl-1 py-1 gap-1 overflow-x-auto">
         {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setActiveTab(t.key)}
-            className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 text-[12px] sm:text-[14px] cursor-pointer font-ibm-plex-sans whitespace-nowrap transition-colors border-b-2 -mb-[1px]
+            className={`flex items-center gap-1.5 sm:gap-2 px-2.5 rounded sm:px-4 py-2 text-[12px] sm:text-[14px] cursor-pointer font-ibm-plex-sans whitespace-nowrap transition-colors border-b-2 -mb-[1px]
               ${
                 activeTab === t.key
-                  ? "bg-[#243B6B] text-white font-semibold rounded-md"
+                  ? "bg-[#243B6B] text-white font-semibold"
                   : "border-transparent text-[#6B7280] hover:text-[#374151]"
               }`}
           >
             {t.label}
             {t.count !== undefined && (
               <span
-                className={`text-[11px] sm:text-[12px] font-semibold px-1.5 sm:px-2 py-0.5 rounded-md
+                className={`text-[11px] sm:text-[12px] font-semibold px-1.5 sm:px-2 py-0.5 rounded
                   ${
                     activeTab === t.key
                       ? "bg-white text-gray-700 font-bold"
@@ -215,7 +214,6 @@ export default function Page() {
           </button>
         ))}
       </div>
-
       <div className="mt-6 bg-white border border-gray-100 rounded-sm shadow-sm overflow-hidden">
         {/* ── Filters ── */}
         {activeTab !== "aging" && (

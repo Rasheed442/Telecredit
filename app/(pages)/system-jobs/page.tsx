@@ -101,7 +101,7 @@ function JobTriggerCard({
   running: boolean;
 }) {
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6 flex flex-col justify-between gap-6">
+    <div className="bg-white rounded-sm border border-gray-200 p-6 flex flex-col justify-between gap-6">
       <div className="space-y-2">
         <h3 className="text-lg font-semibold text-gray-900">{job.title}</h3>
         <p className="text-sm text-gray-500">{job.description}</p>
@@ -115,7 +115,7 @@ function JobTriggerCard({
         <button
           onClick={() => onRun(job)}
           disabled={running}
-          className="inline-flex items-center gap-2 bg-[#1e2d4d] hover:bg-[#273d66] disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium px-5 py-2.5 rounded-md transition-colors"
+          className="inline-flex items-center gap-2 bg-[#243B6B] hover:bg-[#273d66] disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium px-5 py-2.5 cursor-pointer transition-colors"
         >
           <PlayIcon />
           {running ? "Running…" : "Run Job"}
@@ -139,7 +139,7 @@ function SortableTh({ children }: { children: React.ReactNode }) {
 function StatusBadge({ status }: { status: string }) {
   return (
     <span
-      className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${statusStyles[status] ?? "bg-gray-100 text-gray-600"}`}
+      className={`inline-flex px-3 py-1 text-sm font-semibold  ${statusStyles[status] ?? "bg-gray-100 text-gray-600"}`}
     >
       {status}
     </span>

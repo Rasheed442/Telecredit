@@ -52,9 +52,9 @@ const agingStyles: Record<Aging, string> = {
 };
 
 const riskStyles: Record<FraudRisk, string> = {
-  Low: "bg-green-50  text-green-700",
-  Medium: "bg-orange-50 text-orange-600",
-  High: "bg-red-50    text-red-600",
+  Low: "bg-green-50  text-green-700 border border-green-200",
+  Medium: "bg-orange-50 text-orange-600 border border-orange-200",
+  High: "bg-red-50    text-red-600    border border-red-200",
 };
 
 // Default columns configuration
@@ -70,7 +70,7 @@ const defaultColumns: TableColumn[] = [
     label: "Aging",
     render: (row) => (
       <span
-        className={`text-[12px] font-medium px-2.5 py-1 rounded-md ${agingStyles[row.aging]}`}
+        className={`text-[12px] font-medium px-2.5 py-1   ${agingStyles[row.aging]}`}
       >
         {row.aging}
       </span>
@@ -81,7 +81,7 @@ const defaultColumns: TableColumn[] = [
     label: "Fraud Risk",
     render: (row) => (
       <span
-        className={`text-[12px] font-medium px-2.5 py-1 rounded-md ${riskStyles[row.fraudRisk]}`}
+        className={`text-[12px] font-medium px-2.5 py-1  ${riskStyles[row.fraudRisk]}`}
       >
         {row.fraudRisk}
       </span>
@@ -172,7 +172,7 @@ export default function DataTable({
       {/* Search */}
       {searchable && (
         <div className="px-5 py-4 border-b border-[#F3F4F6]">
-          <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-lg px-3 h-10 flex-1 max-w-[340px]">
+          <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-lg px-3 h-10 flex-1 max-w-85">
             <div className="w-4 h-4 text-[#9CA3AF]" />
             <input
               value={search}

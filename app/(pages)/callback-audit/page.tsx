@@ -28,7 +28,7 @@ function Pagination({
       <button
         onClick={() => onPage(Math.max(1, page - 1))}
         disabled={page === 1}
-        className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path
@@ -52,7 +52,7 @@ function Pagination({
             <button
               key={p}
               onClick={() => onPage(p as number)}
-              className={`w-8 h-8 rounded-md text-sm font-medium transition-colors ${
+              className={`w-8 h-8 rounded text-sm font-medium transition-colors ${
                 page === p
                   ? "bg-[#243B6B] text-white"
                   : "text-gray-600 hover:bg-gray-100"
@@ -67,7 +67,7 @@ function Pagination({
       <button
         onClick={() => onPage(Math.min(totalPages, page + 1))}
         disabled={page === totalPages}
-        className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         Next
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -199,13 +199,13 @@ const tabs: { key: TabKey; label: string; count: number }[] = [
 // ── Status Badge ───────────────────────────────────────────────────────
 function StatusBadge({ status }: { status: StatusValue }) {
   const styles: Record<StatusValue, string> = {
-    Success: "bg-green-50 text-green-700",
-    Failed: "bg-[#FEF3F2] text-[#B42318]",
-    Pending: "bg-[#F9F5E7] text-[#D76603]",
+    Success: "bg-green-50 text-green-700  border border-green-200",
+    Failed: "bg-[#FEF3F2] text-[#B42318] border border-red-200",
+    Pending: "bg-[#F9F5E7] text-[#D76603] border border-orange-200",
   };
   return (
     <span
-      className={`inline-flex items-center px-3 py-1 rounded-sm text-[13px] font-semibold ${styles[status]}`}
+      className={`inline-flex items-center px-3 py-1 text-[13px] font-semibold ${styles[status]}`}
     >
       {status}
     </span>
@@ -249,21 +249,21 @@ export default function Page() {
       />
 
       {/* ── Tab Bar ── */}
-      <div className="flex border border-[#DCE9F9] bg-[#EEF4FC] rounded-sm mb-2 mt-6 pl-1 py-1 gap-1 overflow-x-auto">
+      <div className="flex border border-[#DCE9F9] bg-[#EEF4FC] rounded mb-2 mt-6 pl-1 py-1 gap-1 overflow-x-auto">
         {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => handleTabChange(t.key)}
-            className={`flex items-center gap-2 px-4 py-2 text-[14px] cursor-pointer font-ibm-plex-sans whitespace-nowrap transition-colors -mb-[1px]
+            className={`flex items-center gap-2 px-4 py-2 text-[14px] cursor-pointer font-ibm-plex-sans whitespace-nowrap transition-colors -mb-px
               ${
                 activeTab === t.key
-                  ? "bg-[#243B6B] text-white font-semibold rounded-md"
+                  ? "bg-[#243B6B] text-white font-semibold rounded"
                   : "border-transparent text-[#6B7280] hover:text-[#374151]"
               }`}
           >
             {t.label}
             <span
-              className={`text-[12px] font-semibold px-2 py-0.5 rounded-md
+              className={`text-[12px] font-semibold px-2 py-0.5 rounded
               ${activeTab === t.key ? "bg-white text-gray-700 font-bold" : "bg-gray-50 text-gray-700"}`}
             >
               {t.count}

@@ -554,13 +554,13 @@ const TableWrapper = ({ children }: { children: React.ReactNode }) => (
 
 const agingBadge = (aging: string, color: string) => {
   const styles: Record<string, string> = {
-    red: "bg-red-100 text-red-700",
-    green: "bg-green-100 text-green-700",
-    orange: "bg-orange-100 text-orange-700",
+    red: "bg-red-100 text-red-700 border border-red-200",
+    green: "bg-green-100 text-green-700  border border-green-200",
+    orange: "bg-orange-100 text-orange-700 border border-orange-200",
   };
   return (
     <span
-      className={`inline-flex px-2 py-0.5 rounded text-xs font-semibold ${styles[color] ?? "bg-gray-100 text-gray-700"}`}
+      className={`inline-flex px-2 py-0.5  text-xs font-semibold ${styles[color] ?? "bg-gray-100 text-gray-700"}`}
     >
       {aging}
     </span>
@@ -569,10 +569,10 @@ const agingBadge = (aging: string, color: string) => {
 
 const fraudRiskBadge = (risk: string) => {
   const styles: Record<string, string> = {
-    High: "bg-red-100 text-red-700",
-    Medium: "bg-orange-100 text-orange-700",
-    Low: "bg-green-100 text-green-700",
-    Critical: "bg-red-100 text-red-700",
+    High: "bg-red-100 text-red-700  border border-red-200",
+    Medium: "bg-orange-100 text-orange-700 border border-orange-200",
+    Low: "bg-green-100 text-green-700 border border-green-200",
+    Critical: "bg-red-100 text-red-700 border border-red-200",
   };
   return (
     <span
@@ -604,11 +604,11 @@ const MetricCard = ({
     </div>
     {status ? (
       <span
-        className={`inline-flex px-3 py-1  rounded-sm text-[13px] font-normal font-ibm-plex-sans ${
+        className={`inline-flex px-3 py-1  rounded text-[13px] font-normal font-ibm-plex-sans ${
           status === "Active"
-            ? "bg-green-100 text-green-800"
+            ? "bg-green-100 text-green-800 border border-green-200 pt-1"
             : status === "Restricted"
-              ? "bg-orange-100 text-[#D76603]"
+              ? "bg-orange-100 text-[#D76603] border border-orange-200 pt-1"
               : "bg-gray-100 text-gray-800"
         }`}
       >

@@ -289,13 +289,13 @@ const Td = ({
 
 const decisionBadge = (decision: string) => {
   const styles: Record<string, string> = {
-    Failed: "bg-red-100 text-red-600",
-    Pending: "bg-orange-100 text-orange-500",
-    Success: "bg-green-100 text-green-600",
+    Failed: "bg-red-100 text-red-600 border border-red-200",
+    Pending: "bg-orange-100 text-orange-500 border border-orange-200",
+    Success: "bg-green-100 text-green-600 border border-green-200",
   };
   return (
     <span
-      className={`inline-flex px-3 py-0.5 rounded text-xs font-semibold ${styles[decision] ?? "bg-gray-100 text-gray-600"}`}
+      className={`inline-flex px-3 py-0.5  text-xs font-semibold ${styles[decision] ?? "bg-gray-100 text-gray-600"}`}
     >
       {decision}
     </span>
@@ -643,7 +643,7 @@ const RiskRuleTester = () => {
                 </div>
               </div>
               <div
-                className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${item.passed ? "bg-green-500" : "bg-red-500"}`}
+                className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${item.passed ? "bg-green-500" : "bg-red-500"}`}
               >
                 <svg
                   className="w-3.5 h-3.5 text-white"

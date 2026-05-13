@@ -143,7 +143,7 @@ function BorrowerCard({
   data: TopBorrower[];
 }) {
   return (
-    <div className="flex-1 min-w-0 bg-white rounded-sm border border-gray-200 p-5">
+    <div className="flex-1 min-w-0 bg-white rounded border border-gray-200 p-5">
       <div className="flex items-center gap-2 mb-4">
         {icon}
         <h3 className="font-semibold text-gray-800 text-base">{title}</h3>
@@ -222,7 +222,7 @@ export default function AnalyticsPage() {
       />
 
       {/* Top Borrowers + Recovery Champions */}
-      <div className="flex flex-col lg:flex-row gap-5 ">
+      <div className="flex flex-col lg:flex-row gap-3 ">
         <BorrowerCard
           title="Top Borrowers"
           icon={

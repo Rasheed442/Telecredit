@@ -93,13 +93,13 @@ const allRows = [
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    Success: "bg-green-100 text-green-700",
-    Failed: "bg-red-100 text-red-600",
-    Pending: "bg-yellow-100 text-yellow-700",
+    Success: "bg-green-100 text-green-700 border border-green-200",
+    Failed: "bg-red-100 text-red-600 border border-red-200",
+    Pending: "bg-yellow-100 text-yellow-700 border border-yellow-200",
   };
   return (
     <span
-      className={`inline-flex items-center gap-1 text-[12px] font-semibold px-2.5 py-1 rounded-sm ${styles[status]}`}
+      className={`inline-flex items-center gap-1 text-[12px] font-semibold px-2.5 py-1 ${styles[status]}`}
     >
       {status}
     </span>
@@ -108,12 +108,12 @@ function StatusBadge({ status }: { status: string }) {
 
 function EventBadge({ event }: { event: string }) {
   const styles: Record<string, string> = {
-    Loan: "bg-[#DBEAFE] text-[#1447E6]",
-    Recovery: "bg-green-100 text-green-700",
+    Loan: "bg-[#DBEAFE] text-[#1447E6] border border-blue-200",
+    Recovery: "bg-green-100 text-green-700 border border-green-200",
   };
   return (
     <span
-      className={`inline-flex items-center gap-1 text-[13px] font-semibold px-2.5 py-1 rounded-sm ${styles[event]}`}
+      className={`inline-flex items-center gap-1 text-[13px] font-semibold px-2.5 py-1 ${styles[event]}`}
     >
       {event}
     </span>
