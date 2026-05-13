@@ -26,38 +26,23 @@ Chart.register(
   Tooltip,
 );
 
+/* ─── hatch pattern helper ─── */
 const createHatchPattern = (ctx: CanvasRenderingContext2D, color: string) => {
   const patternCanvas = document.createElement("canvas");
   patternCanvas.width = 8;
   patternCanvas.height = 8;
   const patternCtx = patternCanvas.getContext("2d");
   if (!patternCtx) return null;
-
   patternCtx.strokeStyle = color + "30";
   patternCtx.lineWidth = 1;
   patternCtx.beginPath();
   patternCtx.moveTo(0, 8);
   patternCtx.lineTo(8, 0);
   patternCtx.stroke();
-
   return ctx.createPattern(patternCanvas, "repeat");
 };
 
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
-
+/* ─── background bars plugin ─── */
 const bgBarsPlugin: Plugin<"line"> = {
   id: "bgBars",
   beforeDatasetsDraw(chart) {
@@ -68,9 +53,7 @@ const bgBarsPlugin: Plugin<"line"> = {
       data,
     } = chart;
     const barW = ((right - left) / (data.labels?.length || 1)) * 0.38;
-
     const purpleHatch = createHatchPattern(ctx, "#8B80F9");
-
     ctx.save();
     if (!data.labels) return;
     data.labels.forEach((_, i) => {
@@ -81,14 +64,12 @@ const bgBarsPlugin: Plugin<"line"> = {
         ),
       );
       const currentValue = data.datasets[0].data[i];
-      if (currentValue === null) return;
-      if (typeof currentValue !== "number") return;
+      if (currentValue === null || typeof currentValue !== "number") return;
       const barH = (currentValue / maxValue) * (bottom - top) * 0.8;
       const bTop = bottom - barH;
-
-      ctx.fillStyle = "rgba(139,128,249,0.12)";
       const r = 7;
       const bx = cx - barW / 2;
+      ctx.fillStyle = "rgba(139,128,249,0.12)";
       ctx.beginPath();
       ctx.moveTo(bx + r, bTop);
       ctx.lineTo(bx + barW - r, bTop);
@@ -99,7 +80,6 @@ const bgBarsPlugin: Plugin<"line"> = {
       ctx.quadraticCurveTo(bx, bTop, bx + r, bTop);
       ctx.closePath();
       ctx.fill();
-
       if (purpleHatch) {
         ctx.fillStyle = purpleHatch;
         ctx.beginPath();
@@ -118,12 +98,274 @@ const bgBarsPlugin: Plugin<"line"> = {
   },
 };
 
+/* ─── Calendar constants ─── */
+const DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+/* ─── Calendar Dropdown (fixed-position so it never overflows viewport) ─── */
+/* ─── Calendar Dropdown ─── */
+function CalendarDropdown({
+  selected,
+  onChange,
+}: {
+  selected: Date | null;
+  onChange: (d: Date) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [viewDate, setViewDate] = useState(selected ?? new Date());
+  const [pos, setPos] = useState<{
+    top: number;
+    left?: number;
+    right?: number;
+  }>({
+    top: 0,
+    right: 16,
+  });
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const handleOpen = () => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      const dropW = Math.min(300, window.innerWidth - 32);
+      const spaceOnRight = window.innerWidth - rect.left;
+      const spaceOnLeft = rect.right;
+
+      // If calendar fits to the right of trigger, align left edge with trigger
+      // Otherwise align right edge with trigger (or viewport edge with padding)
+      if (spaceOnRight >= dropW + 16) {
+        setPos({ top: rect.bottom + 8, left: rect.left });
+      } else {
+        // Align right edge of calendar with right edge of trigger, but clamp to viewport
+        const rightAligned = window.innerWidth - rect.right;
+        setPos({
+          top: rect.bottom + 8,
+          right: Math.max(16, rightAligned),
+        });
+      }
+    }
+    setOpen((v) => !v);
+  };
+
+  const year = viewDate.getFullYear();
+  const month = viewDate.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInPrev = new Date(year, month, 0).getDate();
+
+  const cells: { day: number; cur: boolean }[] = [];
+  for (let i = firstDay - 1; i >= 0; i--)
+    cells.push({ day: daysInPrev - i, cur: false });
+  for (let d = 1; d <= daysInMonth; d++) cells.push({ day: d, cur: true });
+  while (cells.length < 42)
+    cells.push({ day: cells.length - daysInMonth - firstDay + 1, cur: false });
+
+  const isToday = (d: number, cur: boolean) => {
+    const now = new Date();
+    return (
+      cur &&
+      d === now.getDate() &&
+      month === now.getMonth() &&
+      year === now.getFullYear()
+    );
+  };
+  const isSel = (d: number, cur: boolean) =>
+    !!selected &&
+    cur &&
+    d === selected.getDate() &&
+    month === selected.getMonth() &&
+    year === selected.getFullYear();
+
+  const label = selected
+    ? selected.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "This Year";
+
+  const dropW =
+    typeof window !== "undefined" ? Math.min(300, window.innerWidth - 32) : 300;
+
+  return (
+    <div ref={wrapperRef}>
+      <button
+        ref={triggerRef}
+        type="button"
+        onClick={handleOpen}
+        className="flex items-center gap-2 border border-[#E5E7EB] rounded-sm px-3 py-1.5 text-sm text-[#374151] bg-white hover:bg-[#F9FAFB] transition-colors whitespace-nowrap"
+      >
+        <Image src={calender} alt="calendar" width={16} height={16} />
+        <span>{label}</span>
+      </button>
+
+      {open && (
+        <>
+          {/* Backdrop for mobile tap-outside */}
+          <div
+            className="fixed inset-0 z-[9998]"
+            onClick={() => setOpen(false)}
+          />
+          <div
+            className="fixed z-[9999] bg-white border border-[#E5E7EB] rounded-xl shadow-2xl overflow-hidden"
+            style={{
+              top: pos.top,
+              ...(pos.left !== undefined
+                ? {
+                    left: Math.max(
+                      16,
+                      Math.min(pos.left, window.innerWidth - dropW - 16),
+                    ),
+                  }
+                : { right: pos.right }),
+              width: dropW,
+            }}
+          >
+            {/* Month navigation */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[#F3F4F6]">
+              <button
+                type="button"
+                onClick={() => setViewDate(new Date(year, month - 1, 1))}
+                className="w-7 h-7 flex items-center justify-center rounded-md hover:bg-[#F3F4F6] text-[#6B7280] transition-colors"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M10 12L6 8L10 4"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+              <span className="text-[14px] font-semibold text-[#111827]">
+                {MONTH_NAMES[month]} {year}
+              </span>
+              <button
+                type="button"
+                onClick={() => setViewDate(new Date(year, month + 1, 1))}
+                className="w-7 h-7 flex items-center justify-center rounded-md hover:bg-[#F3F4F6] text-[#6B7280] transition-colors"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M6 4L10 8L6 12"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Day labels */}
+            <div className="grid grid-cols-7 px-3 pt-3 pb-1">
+              {DAYS.map((d) => (
+                <div
+                  key={d}
+                  className="text-center text-[11px] font-medium text-[#9CA3AF]"
+                >
+                  {d}
+                </div>
+              ))}
+            </div>
+
+            {/* Date grid */}
+            <div className="grid grid-cols-7 px-3 pb-3 gap-y-0.5">
+              {cells.map((cell, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  disabled={!cell.cur}
+                  onClick={() => {
+                    if (!cell.cur) return;
+                    onChange(new Date(year, month, cell.day));
+                    setOpen(false);
+                  }}
+                  className={[
+                    "h-8 w-full rounded-md text-[13px] font-medium transition-colors",
+                    !cell.cur
+                      ? "text-[#D1D5DB] cursor-default"
+                      : "cursor-pointer",
+                    isSel(cell.day, cell.cur)
+                      ? "bg-[#243B6B] text-white"
+                      : isToday(cell.day, cell.cur)
+                        ? "bg-[#EFF4FF] text-[#243B6B] font-semibold"
+                        : cell.cur
+                          ? "text-[#374151] hover:bg-[#F3F4F6]"
+                          : "",
+                  ].join(" ")}
+                >
+                  {cell.day}
+                </button>
+              ))}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between px-4 py-2.5 border-t border-[#F3F4F6]">
+              <button
+                type="button"
+                onClick={() => {
+                  onChange(new Date());
+                  setViewDate(new Date());
+                  setOpen(false);
+                }}
+                className="text-[12px] text-[#243B6B] font-medium hover:underline"
+              >
+                Today
+              </button>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="text-[12px] text-[#6B7280] hover:text-[#374151]"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════
+   Main component
+════════════════════════════════════════ */
 export default function LoanRequestTrend() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<Chart<"line"> | null>(null);
   const [hovered, setHovered] = useState<"loan" | "recovery" | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [loading, setLoading] = useState(false);
-  const [disbursementData, setDisbursementData] = useState<any[]>([
+
+  const [disbursementData] = useState([
     { date: "Jan", value: 4200 },
     { date: "Feb", value: 1900 },
     { date: "Mar", value: 1500 },
@@ -137,7 +379,8 @@ export default function LoanRequestTrend() {
     { date: "Nov", value: 2100 },
     { date: "Dec", value: 2500 },
   ]);
-  const [recoveryData, setRecoveryData] = useState<any[]>([
+
+  const [recoveryData] = useState([
     { date: "Jan", value: 3800 },
     { date: "Feb", value: 1200 },
     { date: "Mar", value: 900 },
@@ -152,35 +395,30 @@ export default function LoanRequestTrend() {
     { date: "Dec", value: 1800 },
   ]);
 
+  /* ── build chart ONCE on mount ── */
   useEffect(() => {
-    fetchTrendData();
-  }, []);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-  const fetchTrendData = async () => {
-    try {
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching trend data:", error);
-      setLoading(false);
+    if (chartRef.current) {
+      chartRef.current.destroy();
+      chartRef.current = null;
     }
-  };
 
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    chartRef.current = new Chart(canvasRef.current, {
+    chartRef.current = new Chart(canvas, {
       type: "line",
       plugins: [bgBarsPlugin],
       data: {
-        labels: disbursementData.map((item) => item.date),
+        labels: disbursementData.map((d) => d.date),
         datasets: [
           {
             label: "Loan",
-            data: disbursementData.map((item) => item.value),
+            data: disbursementData.map((d) => d.value),
             borderColor: "#8B80F9",
             backgroundColor: "rgba(139,128,249,0.07)",
             borderWidth: 2.5,
             borderDash: [6, 5],
-            pointRadius: [],
+            pointRadius: 0,
             pointHoverRadius: 6,
             pointBackgroundColor: "#fff",
             pointBorderColor: "#8B80F9",
@@ -190,12 +428,12 @@ export default function LoanRequestTrend() {
           },
           {
             label: "Recovery",
-            data: recoveryData.map((item) => item.value),
+            data: recoveryData.map((d) => d.value),
             borderColor: "#4CBFFF",
             backgroundColor: "rgba(76,191,255,0.07)",
             borderWidth: 2.5,
             borderDash: [6, 5],
-            pointRadius: [],
+            pointRadius: 0,
             pointHoverRadius: 6,
             pointBackgroundColor: "#fff",
             pointBorderColor: "#4CBFFF",
@@ -208,11 +446,7 @@ export default function LoanRequestTrend() {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        layout: {
-          padding: {
-            left: -16,
-          },
-        },
+        layout: { padding: { left: -16 } },
         interaction: { mode: "index", intersect: false },
         plugins: {
           legend: { display: false },
@@ -247,7 +481,7 @@ export default function LoanRequestTrend() {
             grid: { color: "rgba(0,0,0,0.055)", drawTicks: false },
             border: { display: false, dash: [4, 4] },
             afterFit(scale) {
-              scale.width = 60; // ← forces a fixed width for the y-axis label area
+              scale.width = 60;
             },
             ticks: {
               font: { size: 11 },
@@ -260,9 +494,15 @@ export default function LoanRequestTrend() {
         },
       },
     });
-    return () => chartRef.current?.destroy();
+
+    return () => {
+      chartRef.current?.destroy();
+      chartRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /* ── hover dim effect ── */
   useEffect(() => {
     const c = chartRef.current;
     if (!c) return;
@@ -277,70 +517,64 @@ export default function LoanRequestTrend() {
     c.update("none");
   }, [hovered]);
 
+  /* ── shared header ── */
+  const header = (
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-6">
+      <div className="min-w-0">
+        <h2 className="font-sf-pro text-[16px] sm:text-[18px] lg:text-[20px] font-semibold text-[#1F2937] mb-1">
+          Daily Loan vs Recovery
+        </h2>
+        <p className="text-[12px] lg:text-[14px] text-[#667085] font-ibm-plex-sans">
+          Compares outbound lending and inbound recoveries over time.
+        </p>
+      </div>
+      <div className="self-start shrink-0">
+        <CalendarDropdown selected={selectedDate} onChange={setSelectedDate} />
+      </div>
+    </div>
+  );
+
+  /* ── shared legend ── */
+  const legend = (
+    <div className="flex justify-center items-center gap-6 mt-4">
+      {(["loan", "recovery"] as const).map((s) => (
+        <div
+          key={s}
+          className={`flex items-center gap-2 cursor-pointer px-2 py-1 rounded-md text-sm text-[#667085] transition-opacity ${
+            hovered !== null && hovered !== s ? "opacity-30" : ""
+          }`}
+          onMouseEnter={() => setHovered(s)}
+          onMouseLeave={() => setHovered(null)}
+        >
+          <div
+            className="w-2.5 h-2.5 rounded-full"
+            style={{ background: s === "loan" ? "#8B80F9" : "#4CBFFF" }}
+          />
+          <span className="capitalize">{s}</span>
+        </div>
+      ))}
+    </div>
+  );
+
+  /* ── loading ── */
   if (loading) {
     return (
-      <div className="bg-white rounded-sm p-6 shadow-sm">
-        <div className="flex justify-between items-start mb-6">
-          <div>
-            <h2 className="font-sf-pro text-[20px] font-semibold text-[#1F2937] mb-1">
-              Daily Loan vs Recovery
-            </h2>
-            <p className="text-[14px] text-[#667085] font-ibm-plex-sans">
-              Compares outbound lending and inbound recoveries over time.
-            </p>
-          </div>
-          <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-sm px-4 py-1.5 text-sm text-[#374151]">
-            <Image src={calender} alt="calendar" width={16} height={16} />
-            <span>This Year</span>
-          </div>
-        </div>
-
-        {/* Chart */}
-        <div style={{ height: "280px" }}>
+      <div className="bg-white rounded-sm p-4 sm:p-6 shadow-sm">
+        {header}
+        <div className="h-[200px] sm:h-[280px]">
           <canvas ref={canvasRef} />
         </div>
-
-        {/* Legend — now below chart */}
-        <div className="flex justify-center items-center gap-6 mt-4">
-          {(["loan", "recovery"] as const).map((s) => (
-            <div
-              key={s}
-              className={`flex items-center gap-2 cursor-pointer px-2 py-1 rounded-md text-sm text-[#667085] transition-opacity ${
-                hovered !== null && hovered !== s ? "opacity-30" : ""
-              }`}
-              onMouseEnter={() => setHovered(s)}
-              onMouseLeave={() => setHovered(null)}
-            >
-              <div
-                className="w-2.5 h-2.5 rounded-full"
-                style={{ background: s === "loan" ? "#8B80F9" : "#4CBFFF" }}
-              />
-              <span className="capitalize">{s}</span>
-            </div>
-          ))}
-        </div>
+        {legend}
       </div>
     );
   }
 
+  /* ── empty ── */
   if (!loading && disbursementData.length === 0 && recoveryData.length === 0) {
     return (
-      <div className="bg-white rounded-sm p-8 shadow-sm">
-        <div className="flex justify-between items-start mb-6">
-          <div>
-            <h2 className="font-sf-pro text-[20px] font-semibold text-[#1F2937] mb-1">
-              Daily Loan vs Recovery
-            </h2>
-            <p className="text-[14px] text-[#667085] font-ibm-plex-sans">
-              Compares outbound lending and inbound recoveries over time.
-            </p>
-          </div>
-          <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-sm px-4 py-1.5 text-sm text-[#374151]">
-            <Image src={calender} alt="calendar" width={16} height={16} />
-            <span>This Year</span>
-          </div>
-        </div>
-        <div className="h-82 flex items-center justify-center">
+      <div className="bg-white rounded-sm p-4 sm:p-8 shadow-sm">
+        {header}
+        <div className="h-[200px] sm:h-[280px] flex items-center justify-center">
           <div className="text-center">
             <div className="flex justify-center mb-6">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
@@ -359,7 +593,6 @@ export default function LoanRequestTrend() {
                 </svg>
               </div>
             </div>
-
             <div className="text-gray-500 text-[16px] font-ibm-plex-sans font-normal mb-1">
               No Data Available
             </div>
@@ -372,47 +605,14 @@ export default function LoanRequestTrend() {
     );
   }
 
+  /* ── main ── */
   return (
-    <div className="bg-white rounded-sm p-6 shadow-sm">
-      <div className="flex justify-between items-start mb-6">
-        <div>
-          <h2 className="font-sf-pro text-[20px] font-semibold text-[#1F2937] mb-1">
-            Daily Loan vs Recovery
-          </h2>
-          <p className="text-[14px] text-[#667085] font-ibm-plex-sans">
-            Compares outbound lending and inbound recoveries over time.
-          </p>
-        </div>
-        <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-sm px-4 py-1.5 text-sm text-[#374151]">
-          <Image src={calender} alt="calendar" width={16} height={16} />
-          <span>This Year</span>
-        </div>
-      </div>
-
-      {/* Chart */}
-      <div style={{ height: "280px" }}>
+    <div className="bg-white rounded-sm p-4 sm:p-6 shadow-sm">
+      {header}
+      <div className="h-[200px] sm:h-[280px]">
         <canvas ref={canvasRef} />
       </div>
-
-      {/* Legend — now below chart */}
-      <div className="flex justify-center items-center gap-6 mt-4">
-        {(["loan", "recovery"] as const).map((s) => (
-          <div
-            key={s}
-            className={`flex items-center gap-2 cursor-pointer px-2 py-1 rounded-md text-sm text-[#667085] transition-opacity ${
-              hovered !== null && hovered !== s ? "opacity-30" : ""
-            }`}
-            onMouseEnter={() => setHovered(s)}
-            onMouseLeave={() => setHovered(null)}
-          >
-            <div
-              className="w-2.5 h-2.5 rounded-full"
-              style={{ background: s === "loan" ? "#8B80F9" : "#4CBFFF" }}
-            />
-            <span className="capitalize">{s}</span>
-          </div>
-        ))}
-      </div>
+      {legend}
     </div>
   );
 }

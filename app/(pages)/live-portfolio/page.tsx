@@ -186,7 +186,7 @@ export default function Page() {
         subtitle="Track and manage all active, delinquent, and closed loans."
       />
       {/* ── Tabs ── */}
-      <div className="flex border border-[#DCE9F9] bg-[#EEF4FC] mt-6 mb-6 pl-1 py-1 gap-1 overflow-x-auto">
+      <div className="flex border border-[#DCE9F9] bg-[#EEF4FC] mt-6 mb-6 pl-1 py-1 gap-1 overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
         {tabs.map((t) => (
           <button
             key={t.key}

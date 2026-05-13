@@ -1,7 +1,5 @@
 "use client";
 import React, { useRef, useEffect, useState } from "react";
-import Image from "next/image";
-import { calender } from "@/constant";
 import {
   Chart,
   BarElement,
@@ -11,8 +9,7 @@ import {
   Tooltip,
   Plugin,
 } from "chart.js";
-import axiosInstance from "@/app/utils/axios";
-import { TelcoDistribution } from "@/app/utils/endpoint";
+import CalendarPicker from "../CalendarPicker";
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
@@ -28,30 +25,22 @@ function createHatchPattern(
   offscreen.width = size;
   offscreen.height = size;
   const octx = offscreen.getContext("2d")!;
-
-  // Transparent background
   octx.clearRect(0, 0, size, size);
-
-  // Draw diagonal slash lines (///)
   octx.strokeStyle = color;
   octx.lineWidth = 1.5;
   octx.globalAlpha = 0.55;
-
   octx.beginPath();
   octx.moveTo(0, size);
   octx.lineTo(size, 0);
   octx.stroke();
-
   octx.beginPath();
   octx.moveTo(-size, size);
   octx.lineTo(size, -size);
   octx.stroke();
-
   octx.beginPath();
   octx.moveTo(0, size * 2);
   octx.lineTo(size * 2, 0);
   octx.stroke();
-
   return ctx.createPattern(offscreen, "repeat");
 }
 
@@ -75,7 +64,6 @@ function roundedTopRect(
   ctx.closePath();
 }
 
-// Draws full-height ghost bars with hatch BEFORE the actual solid bars are drawn
 const ghostHatchPlugin: Plugin<"bar"> = {
   id: "ghostHatch",
   beforeDatasetsDraw(chart) {
@@ -84,35 +72,26 @@ const ghostHatchPlugin: Plugin<"bar"> = {
       chartArea: { bottom },
       scales: { y },
     } = chart;
-
     const maxY = y.getPixelForValue(y.max);
     const fullBarH = bottom - maxY;
     const r = 6;
-
     [0, 1].forEach((datasetIndex) => {
       const meta = chart.getDatasetMeta(datasetIndex);
       const color = datasetIndex === 0 ? BLUE : GREEN;
       const hatchPattern = createHatchPattern(ctx, color);
-
       meta.data.forEach((bar: any) => {
         const { x: bx, width: bw } = bar.getProps(["x", "width"], true);
         const x0 = bx - bw / 2;
-
         ctx.save();
-
-        // 1. Faint solid background (full height)
         ctx.fillStyle = color + "18";
         roundedTopRect(ctx, x0, maxY, bw, fullBarH, r);
         ctx.fill();
-
-        // 2. Diagonal hatch overlay (full height)
         if (hatchPattern) {
           roundedTopRect(ctx, x0, maxY, bw, fullBarH, r);
           ctx.clip();
           ctx.fillStyle = hatchPattern;
           ctx.fillRect(x0, maxY, bw, fullBarH);
         }
-
         ctx.restore();
       });
     });
@@ -123,31 +102,19 @@ export default function TelcoPerformance() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<Chart<"bar"> | null>(null);
   const [hovered, setHovered] = useState<"outbound" | "inbound" | null>(null);
-  const [telcoData, setTelcoData] = useState<any[]>([
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [loading] = useState(false);
+
+  const telcoData = [
     { telco: "MTN", disbursed: 35, recovered: 28 },
     { telco: "Airtel", disbursed: 28, recovered: 22 },
     { telco: "Glo", disbursed: 18, recovered: 15 },
     { telco: "9mobile", disbursed: 12, recovered: 9 },
     { telco: "Others", disbursed: 7, recovered: 5 },
-  ]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    fetchTelcoData();
-  }, []);
-
-  const fetchTelcoData = async () => {
-    try {
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching telco data:", error);
-      setLoading(false);
-    }
-  };
+  ];
 
   useEffect(() => {
     if (!canvasRef.current) return;
-
     chartRef.current = new Chart(canvasRef.current, {
       type: "bar",
       plugins: [ghostHatchPlugin],
@@ -231,75 +198,13 @@ export default function TelcoPerformance() {
     c.update("none");
   }, [hovered]);
 
-  if (loading) {
-    return (
-      <div className="bg-white rounded-sm p-6 shadow-sm">
-        <div className="flex justify-between items-start mb-6">
-          <div>
-            <h2 className="font-sf-pro text-[20px] font-semibold text-[#1F2937] mb-1">
-              Telco Performance
-            </h2>
-            <p className="text-[14px] text-[#667085] font-ibm-plex-sans">
-              Telco Distribution Mix
-            </p>
-          </div>
-        </div>
-        <div
-          className="flex items-center justify-center"
-          style={{ height: "300px" }}
-        >
-          <div className="text-gray-500">Loading...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!loading && telcoData.length === 0) {
-    return (
-      <div className="bg-white rounded-sm p-8 shadow-sm">
-        <div className="flex justify-between items-start mb-6">
-          <div>
-            <h2 className="font-sf-pro text-[20px] font-semibold text-[#1F2937] mb-1">
-              Telco Performance
-            </h2>
-            <p className="text-[14px] text-[#667085] font-ibm-plex-sans">
-              Telco Distribution Mix
-            </p>
-          </div>
-        </div>
-        <div
-          className="flex items-center justify-center"
-          style={{ height: "300px" }}
-        >
-          <div className="text-center">
-            <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                <svg
-                  className="w-8 h-8 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div className="text-gray-500 text-[16px] font-ibm-plex-sans font-normal mb-1">
-              No Data Available
-            </div>
-            <div className="text-gray-400 font-ibm-plex-sans text-sm max-w-xs mx-auto">
-              Telco distribution data will appear here
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const calendarLabel = selectedDate
+    ? selectedDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "This Year";
 
   return (
     <div className="bg-white rounded-sm p-6 shadow-sm">
@@ -312,17 +217,20 @@ export default function TelcoPerformance() {
             Telco Distribution Mix
           </p>
         </div>
-        <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-sm px-4 py-1.5 text-sm text-[#374151]">
-          <Image src={calender} alt="calendar" width={14} height={14} />
-          <span>This Year</span>
-        </div>
+
+        <CalendarPicker
+          selected={selectedDate}
+          onChange={(date: React.SetStateAction<Date | null>) =>
+            setSelectedDate(date)
+          }
+          label={calendarLabel}
+        />
       </div>
 
       <div style={{ height: "250px" }}>
         <canvas ref={canvasRef} />
       </div>
 
-      {/* Legend */}
       <div className="flex justify-center gap-6 mt-4">
         <div className="flex items-center gap-2">
           <div

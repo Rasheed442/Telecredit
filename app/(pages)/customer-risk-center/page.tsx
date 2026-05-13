@@ -1726,7 +1726,7 @@ export default function Page() {
       />
 
       {/* Main Tabs */}
-      <div className="flex border border-[#DCE9F9] bg-[#EEF4FC] rounded-sm mt-6 mb-6 pl-1 py-1 gap-1 overflow-x-auto">
+      <div className="flex border border-[#DCE9F9] bg-[#EEF4FC] rounded-sm mt-6 mb-6 pl-1 py-1 gap-1 overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
         {mainTabs.map((tab) => (
           <button
             key={tab.key}
