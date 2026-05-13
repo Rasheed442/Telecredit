@@ -179,7 +179,7 @@ function BorrowerCard({
 function TelcoCard({ stat }: { stat: TelcoStat }) {
   const barWidth = Math.min(stat.recoveryRate, 100);
   return (
-    <div className="flex-1 min-w-[160px] bg-white rounded-sm border border-gray-200 p-5">
+    <div className="flex-1 min-w-40 bg-white rounded-sm border border-gray-200 p-5">
       <div className="flex items-center gap-2 mb-4">
         <Image src={stat.logo} alt="" width={30} height={30} />
         <span className="font-semibold text-gray-800 text-sm">{stat.name}</span>

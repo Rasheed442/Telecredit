@@ -101,86 +101,90 @@ function Navbar() {
 
   return (
     <>
-      {/* ── Mobile Drawer Overlay (NO mobile header bar here) ── */}
-      {isMobileMenuOpen && (
+      {/* ── Mobile Drawer Overlay with slide animation ── */}
+      <div
+        className={`lg:hidden fixed inset-0 z-[60] transition-all duration-300 ease-in-out ${
+          isMobileMenuOpen
+            ? "bg-black/60 backdrop-blur-sm pointer-events-auto"
+            : "bg-transparent pointer-events-none"
+        }`}
+        onClick={() => setIsMobileMenuOpen(false)}
+      >
         <div
-          className="lg:hidden fixed inset-0 bg-black/60 z-50 backdrop-blur-sm"
-          onClick={() => setIsMobileMenuOpen(false)}
+          className={`bg-[#0B1F3A] h-full w-72 max-w-[82%] overflow-y-auto flex flex-col shadow-2xl transition-transform duration-300 ease-in-out ${
+            isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+          onClick={(e) => e.stopPropagation()}
         >
-          <div
-            className="bg-[#0B1F3A] h-full w-72 max-w-[82%] overflow-y-auto flex flex-col shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Drawer header with logo + close */}
-            <div className="flex items-center justify-between px-4 py-4 border-b border-white/10">
-              <Image src={logo} alt="TeleCredit" width={80} height={80} />
-              <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-[#1E3A5F] transition-colors"
-              >
-                <HiX size={22} />
-              </button>
-            </div>
+          {/* Drawer header with logo + close */}
+          <div className="flex items-center justify-between px-4 py-4 border-b border-white/10">
+            <Image src={logo} alt="TeleCredit" width={80} height={80} />
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-[#1E3A5F] transition-colors"
+            >
+              <HiX size={22} />
+            </button>
+          </div>
 
-            {/* Nav sections */}
-            <div className="flex-1 px-3 pt-4 overflow-y-auto">
-              {navSections.map((section, sectionIndex) => (
-                <div
-                  key={section.title}
-                  className={`mb-4 ${sectionIndex > 0 ? "mt-5" : ""}`}
-                >
-                  <p className="text-[10px] pl-1 text-white/40 font-light uppercase tracking-widest mb-1.5">
-                    {section.title}
-                  </p>
-                  <div className="flex flex-col gap-0.5">
-                    {section.links.map((link) => (
-                      <Link
-                        href={link.link}
-                        key={link.name}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors ${
+          {/* Nav sections */}
+          <div className="flex-1 px-3 pt-4 overflow-y-auto">
+            {navSections.map((section, sectionIndex) => (
+              <div
+                key={section.title}
+                className={`mb-4 ${sectionIndex > 0 ? "mt-5" : ""}`}
+              >
+                <p className="text-[10px] pl-1 text-white/40 font-light uppercase tracking-widest mb-1.5">
+                  {section.title}
+                </p>
+                <div className="flex flex-col gap-0.5">
+                  {section.links.map((link) => (
+                    <Link
+                      href={link.link}
+                      key={link.name}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors ${
+                        activeLink === link.name
+                          ? "bg-[#5490DE] text-white"
+                          : "text-[#D1D5DC] hover:bg-[#1E3A5F]"
+                      }`}
+                    >
+                      <Image
+                        src={link.icon}
+                        alt={link.name}
+                        width={15}
+                        height={15}
+                        className={
                           activeLink === link.name
-                            ? "bg-[#5490DE] text-white"
-                            : "text-[#D1D5DC] hover:bg-[#1E3A5F]"
-                        }`}
-                      >
-                        <Image
-                          src={link.icon}
-                          alt={link.name}
-                          width={15}
-                          height={15}
-                          className={
-                            activeLink === link.name
-                              ? "brightness-0 invert"
-                              : ""
-                          }
-                        />
-                        <p className="text-[13px] font-medium font-inter">
-                          {link.name}
-                        </p>
-                      </Link>
-                    ))}
-                  </div>
+                            ? "brightness-0 invert"
+                            : ""
+                        }
+                      />
+                      <p className="text-[13px] font-medium font-inter">
+                        {link.name}
+                      </p>
+                    </Link>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
 
-            {/* Logout */}
-            <div className="border-t border-[#374151] mx-3 mb-6 pt-3">
-              <button
-                onClick={() => {
-                  handleLogout();
-                  setIsMobileMenuOpen(false);
-                }}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#D1D5DC] hover:bg-[#1E3A5F] transition-colors"
-              >
-                <Image src={logout} alt="Logout" width={15} height={15} />
-                <p className="text-[13px] font-medium font-inter">Logout</p>
-              </button>
-            </div>
+          {/* Logout */}
+          <div className="border-t border-[#374151] mx-3 mb-6 pt-3">
+            <button
+              onClick={() => {
+                handleLogout();
+                setIsMobileMenuOpen(false);
+              }}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#D1D5DC] hover:bg-[#1E3A5F] transition-colors"
+            >
+              <Image src={logout} alt="Logout" width={15} height={15} />
+              <p className="text-[13px] font-medium font-inter">Logout</p>
+            </button>
           </div>
         </div>
-      )}
+      </div>
 
       {/* ── Desktop Sidebar only ── */}
       <div className="hidden lg:flex flex-col bg-[#0B1F3A] h-screen w-56 xl:w-60 shrink-0">
@@ -240,7 +244,7 @@ function Navbar() {
 
       {/* ── Logout Modal ── */}
       {showLogoutModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[60] px-4">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[70] px-4">
           <div className="bg-white rounded p-6 w-full max-w-sm shadow-2xl">
             <div className="flex items-center justify-center mb-4">
               <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">

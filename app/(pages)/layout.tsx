@@ -15,7 +15,7 @@ const layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar — fixed position, doesn't scroll with content */}
-      <div className="fixed left-0 top-0 h-full z-30">
+      <div className="fixed left-0 top-0 h-full z-50">
         <Navbar />
       </div>
 

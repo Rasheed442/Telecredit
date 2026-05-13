@@ -191,7 +191,7 @@ export default function Page() {
           <button
             key={t.key}
             onClick={() => setActiveTab(t.key)}
-            className={`flex items-center gap-1.5 sm:gap-2 px-2.5 rounded sm:px-4 py-2 text-[12px] sm:text-[14px] cursor-pointer font-ibm-plex-sans whitespace-nowrap transition-colors border-b-2 -mb-[1px]
+            className={`flex items-center gap-1.5 sm:gap-2 px-2.5 rounded sm:px-4 py-2 text-[12px] sm:text-[14px] cursor-pointer font-ibm-plex-sans whitespace-nowrap transition-colors border-b-2 -mb-px
               ${
                 activeTab === t.key
                   ? "bg-[#243B6B] text-white font-semibold"
@@ -219,7 +219,7 @@ export default function Page() {
         {activeTab !== "aging" && (
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3 px-4 sm:px-5 py-4 border-b border-[#F3F4F6] flex-wrap">
             {/* Search */}
-            <div className="flex items-center gap-2 border border-[#E5E7EB] bg-[#FAFAFA] rounded-sm px-3 h-10 w-full sm:w-auto sm:min-w-[260px]">
+            <div className="flex items-center gap-2 border border-[#E5E7EB] bg-[#FAFAFA] rounded-sm px-3 h-10 w-full sm:w-auto sm:min-w-65">
               <IoSearch size={19} className="text-gray-500 shrink-0" />
               <input
                 value={search}
