@@ -136,10 +136,10 @@ export default function LoanTable() {
     <div className="bg-white rounded-sm shadow-sm overflow-hidden border border-[#DCE9F9] mt-6">
       <div className="flex items-center justify-between p-4 pb-6">
         <div>
-          <h2 className="font-sf-pro text-[20px] font-semibold text-[#1F2937] mb-1">
+          <h2 className="font-sf-pro text-[15px] lg:text-[20px] font-semibold text-[#1F2937] mb-1">
             Recents Transactions
           </h2>
-          <p className="text-[14px] text-[#667085] font-ibm-plex-sans">
+          <p className="text-[10px] lg:text-[14px] text-[#667085] font-ibm-plex-sans">
             Latest fulfllments and recoveries
           </p>
         </div>
