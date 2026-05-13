@@ -521,7 +521,7 @@ export default function LoanRequestTrend() {
   const header = (
     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-6">
       <div className="min-w-0">
-        <h2 className="font-sf-pro text-[16px] sm:text-[18px] lg:text-[20px] font-semibold text-[#1F2937] mb-1">
+        <h2 className="font-sf-pro text-[14px] sm:text-[18px] lg:text-[20px] font-semibold text-[#1F2937] mb-1">
           Daily Loan vs Recovery
         </h2>
         <p className="text-[12px] lg:text-[14px] text-[#667085] font-ibm-plex-sans">
