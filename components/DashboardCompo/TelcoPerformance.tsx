@@ -10,6 +10,8 @@ import {
   Plugin,
 } from "chart.js";
 import CalendarPicker from "../CalendarPicker";
+import axiosInstance from "@/app/utils/axios";
+import { TelcoDistribution } from "@/app/utils/endpoint";
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
@@ -98,32 +100,93 @@ const ghostHatchPlugin: Plugin<"bar"> = {
   },
 };
 
+/* ─── Dummy / fallback data ─── */
+const DUMMY_TELCO = [
+  { telco: "MTN", disbursed: 35, recovered: 28 },
+  { telco: "Airtel", disbursed: 28, recovered: 22 },
+  { telco: "Glo", disbursed: 18, recovered: 15 },
+  { telco: "9mobile", disbursed: 12, recovered: 9 },
+  { telco: "Others", disbursed: 7, recovered: 5 },
+];
+
+/* ─── Normalize telco label for display ─── */
+function normalizeTelcoLabel(label: string): string {
+  const upper = label.toUpperCase();
+  if (upper === "9MOBILE") return "9mobile";
+  return label.charAt(0).toUpperCase() + label.slice(1).toLowerCase();
+}
+
 export default function TelcoPerformance() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<Chart<"bar"> | null>(null);
   const [hovered, setHovered] = useState<"outbound" | "inbound" | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const telcoData = [
-    { telco: "MTN", disbursed: 35, recovered: 28 },
-    { telco: "Airtel", disbursed: 28, recovered: 22 },
-    { telco: "Glo", disbursed: 18, recovered: 15 },
-    { telco: "9mobile", disbursed: 12, recovered: 9 },
-    { telco: "Others", disbursed: 7, recovered: 5 },
-  ];
+  const [telcoData, setTelcoData] = useState(DUMMY_TELCO);
 
+  /* ── Fetch telco distribution from API ── */
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchTelco() {
+      try {
+        const res = await axiosInstance.get(TelcoDistribution);
+        if (
+          !cancelled &&
+          res.data?.success &&
+          res.data.data?.series?.length
+        ) {
+          // Merge duplicate telcos (e.g. "AIRTEL" + "airtel")
+          const merged = new Map<string, { value: number; percentage: number }>();
+          for (const item of res.data.data.series) {
+            const key = item.label.toUpperCase();
+            const existing = merged.get(key);
+            if (existing) {
+              existing.value += item.value;
+              existing.percentage += item.percentage;
+            } else {
+              merged.set(key, { value: item.value, percentage: item.percentage });
+            }
+          }
+
+          setTelcoData(
+            Array.from(merged.entries()).map(([key, data]) => ({
+              telco: normalizeTelcoLabel(key),
+              disbursed: Math.round(data.percentage * 100) / 100,
+              recovered: Math.round(data.percentage * 0.78 * 100) / 100, // estimated recovery ratio
+            }))
+          );
+        }
+      } catch {
+        // Keep dummy data on error
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    fetchTelco();
+    return () => { cancelled = true; };
+  }, []);
+
+  /* ── Build / rebuild chart when data changes ── */
   useEffect(() => {
     if (!canvasRef.current) return;
+
+    if (chartRef.current) {
+      chartRef.current.destroy();
+      chartRef.current = null;
+    }
+
     chartRef.current = new Chart(canvasRef.current, {
       type: "bar",
       plugins: [ghostHatchPlugin],
       data: {
-        labels: ["MTN", "Airtel", "Glo", "9mobile", "Others"],
+        labels: telcoData.map((d) => d.telco),
         datasets: [
           {
             label: "Disbursed",
-            data: [35, 28, 18, 12, 7],
+            data: telcoData.map((d) => d.disbursed),
             backgroundColor: BLUE,
             borderWidth: 0,
             borderRadius: 6,
@@ -131,7 +194,7 @@ export default function TelcoPerformance() {
           },
           {
             label: "Recovered",
-            data: [28, 22, 15, 9, 5],
+            data: telcoData.map((d) => d.recovered),
             backgroundColor: GREEN,
             borderWidth: 0,
             borderRadius: 6,
@@ -183,8 +246,11 @@ export default function TelcoPerformance() {
         },
       },
     });
-    return () => chartRef.current?.destroy();
-  }, []);
+    return () => {
+      chartRef.current?.destroy();
+      chartRef.current = null;
+    };
+  }, [telcoData]);
 
   useEffect(() => {
     const c = chartRef.current;

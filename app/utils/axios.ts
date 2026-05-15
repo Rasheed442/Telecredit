@@ -7,4 +7,16 @@ const axiosInstance = axios.create({
   },
 });
 
+// Attach auth token to every request
+axiosInstance.interceptors.request.use((config) => {
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('token');
+    const tokenType = localStorage.getItem('tokenType') || 'Bearer';
+    if (token) {
+      config.headers.Authorization = `${tokenType} ${token}`;
+    }
+  }
+  return config;
+});
+
 export default axiosInstance;

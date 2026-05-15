@@ -11,20 +11,65 @@ export default function Home() {
   const route = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [loginMode] = useState<"admin" | "org">("admin");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
+  // Auto-dismiss error toast after 4 seconds
+  useEffect(() => {
+    if (!errorMsg) return;
+    const timer = setTimeout(() => setErrorMsg(null), 4000);
+    return () => clearTimeout(timer);
+  }, [errorMsg]);
+
   const handleSubmit = async (
     values: { username: string; password: string },
     { setSubmitting }: any,
   ) => {
-    route.push("/dashboard");
+    setErrorMsg(null);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API}/auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: values.username,
+            password: values.password,
+          }),
+        },
+      );
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setErrorMsg(data.message || "Login failed. Please try again.");
+        setSubmitting(false);
+        return;
+      }
+
+      // Store auth data
+      localStorage.setItem("token", data.data.token);
+      localStorage.setItem("tokenType", data.data.tokenType);
+      localStorage.setItem("user", JSON.stringify(data.data.user));
+
+      route.push("/dashboard");
+    } catch (error) {
+      setErrorMsg("Network error. Please check your connection.");
+      setSubmitting(false);
+    }
   };
 
   return (
-    <div className="min-h-screen w-full bg-white flex flex-col lg:grid lg:grid-cols-2">
+    <div className="min-h-screen w-full bg-white flex flex-col lg:grid lg:grid-cols-2 relative">
+      {/* Error toast */}
+      {errorMsg && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] bg-red-600 text-white px-5 py-3 rounded-lg shadow-lg text-sm font-medium animate-[slideDown_0.3s_ease-out] max-w-[90%] text-center">
+          {errorMsg}
+        </div>
+      )}
       {/* ── Left panel — hidden on mobile, shown lg+ ── */}
       <div className="hidden lg:flex bg-[#131E35] h-full flex-col">
         <div className="flex gap-3 p-4 pt-8 pl-8">

@@ -1,153 +1,142 @@
 // page.tsx
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import SubMenu from "@/components/SubMenu";
 import DataTable, { LoanRow } from "@/components/DataTable";
 import Dropdown from "@/components/Dropdown";
 import DPDAnalysisChart from "@/components/LivePortfolio/DPDAnalysisChart";
 import { IoFilterSharp, IoSearch } from "react-icons/io5";
 import LoanDetailView from "@/components/LivePortfolio/LoanDetailView";
+import axiosInstance from "@/app/utils/axios";
+import { RecentLoans } from "@/app/utils/endpoint";
+import { AlertCircle } from "lucide-react";
+import ComponentLoadingSpinner from "@/components/ui/loading-spinner";
 
 type TabKey = "open" | "delinquent" | "closed" | "watchlist" | "aging";
 
-const rows: LoanRow[] = [
-  {
-    loanId: "ATL_CORE_010",
-    msisdn: "07086022674",
-    telco: "AIRTEL",
-    amount: "₦500",
-    outstanding: "₦68",
-    recovered: "₦432",
-    aging: "DP 31",
-    fraudRisk: "High",
-    score: 86,
-    created: "18/03/2026",
-  },
-  {
-    loanId: "MTN_CORE_045",
-    msisdn: "08123456789",
-    telco: "MTN",
-    amount: "₦1,000",
-    outstanding: "₦418",
-    recovered: "₦582",
-    aging: "DP 17",
-    fraudRisk: "Medium",
-    score: 81,
-    created: "18/03/2026",
-  },
-  {
-    loanId: "GLO_CORE_089",
-    msisdn: "09087654321",
-    telco: "GLO",
-    amount: "₦1,000",
-    outstanding: "₦212",
-    recovered: "₦788",
-    aging: "DP 0",
-    fraudRisk: "Low",
-    score: 41,
-    created: "18/03/2026",
-  },
-  {
-    loanId: "GLO_CORE_089",
-    msisdn: "07012345678",
-    telco: "9 MOBILE",
-    amount: "₦1,000",
-    outstanding: "₦330",
-    recovered: "₦670",
-    aging: "DP 31",
-    fraudRisk: "High",
-    score: 20,
-    created: "18/03/2026",
-  },
-  {
-    loanId: "9MOB_CORE_034",
-    msisdn: "08098765432",
-    telco: "AIRTEL",
-    amount: "₦200",
-    outstanding: "₦186",
-    recovered: "₦14",
-    aging: "DP 17",
-    fraudRisk: "Medium",
-    score: 11,
-    created: "18/03/2026",
-  },
-  {
-    loanId: "ATL_CORE_010",
-    msisdn: "07086022674",
-    telco: "MTN",
-    amount: "₦500",
-    outstanding: "₦17",
-    recovered: "₦483",
-    aging: "DP 0",
-    fraudRisk: "Low",
-    score: 13,
-    created: "18/03/2026",
-  },
-  {
-    loanId: "MTN_CORE_045",
-    msisdn: "08123456789",
-    telco: "GLO",
-    amount: "₦100",
-    outstanding: "₦88",
-    recovered: "₦12",
-    aging: "DP 31",
-    fraudRisk: "High",
-    score: 20,
-    created: "18/03/2026",
-  },
-  {
-    loanId: "GLO_CORE_089",
-    msisdn: "09087654321",
-    telco: "9 MOBILE",
-    amount: "₦50",
-    outstanding: "₦28",
-    recovered: "₦22",
-    aging: "DP 17",
-    fraudRisk: "Medium",
-    score: 49,
-    created: "18/03/2026",
-  },
-  {
-    loanId: "9MOB_CORE_034",
-    msisdn: "07012345678",
-    telco: "AIRTEL",
-    amount: "₦1,000",
-    outstanding: "₦444",
-    recovered: "₦556",
-    aging: "DP 0",
-    fraudRisk: "Low",
-    score: 80,
-    created: "18/03/2026",
-  },
-  {
-    loanId: "ATL_CORE_010",
-    msisdn: "08098765432",
-    telco: "MTN",
-    amount: "₦50",
-    outstanding: "₦40",
-    recovered: "₦10",
-    aging: "DP 31",
-    fraudRisk: "High",
-    score: 89,
-    created: "18/03/2026",
-  },
-];
+interface RecentLoanApiRow {
+  loanId: number;
+  partnerLoanId?: string;
+  transactionRef?: string;
+  msisdn: string;
+  telco: string;
+  amount: number;
+  recoveredAmount: number;
+  outstandingAmount: number;
+  agingBucket: string;
+  delinquent: boolean;
+  closed: boolean;
+  behavioralRiskScore: number;
+  status: string;
+  createdAt: string;
+}
+
+interface RecentLoansResponse {
+  success: boolean;
+  data?: {
+    data?: RecentLoanApiRow[];
+    totalElements?: number;
+  };
+}
 
 const tabs: { key: TabKey; label: string; count?: number }[] = [
-  { key: "open", label: "Open Loans", count: 542 },
-  { key: "delinquent", label: "Delinquent Loans", count: 89 },
-  { key: "closed", label: "Closed Loans", count: 616 },
+  { key: "open", label: "Open Loans" },
+  { key: "delinquent", label: "Delinquent Loans" },
+  { key: "closed", label: "Closed Loans" },
   { key: "watchlist", label: "Portfolio Watchlist", count: 2 },
   { key: "aging", label: "Aging Buckets Analysis" },
 ];
+
+const formatCurrency = (value: number) =>
+  new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    maximumFractionDigits: 0,
+  }).format(value || 0);
+
+const formatDate = (value: string) => {
+  if (!value) return "N/A";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("en-GB").format(date);
+};
+
+const formatAgingBucket = (bucket: string) => {
+  const labels: Record<string, string> = {
+    DPD_0: "DP 0",
+    DPD_1_7: "DP 1-7",
+    DPD_8_30: "DP 8-30",
+    DPD_31_PLUS: "DP 31+",
+  };
+  return labels[bucket] ?? bucket.replace(/^DPD_/, "DP ").replaceAll("_", "-");
+};
+
+const riskFromScore = (score: number) => {
+  if (score >= 70) return "High";
+  if (score >= 40) return "Medium";
+  return "Low";
+};
+
+const mapRecentLoan = (loan: RecentLoanApiRow): LoanRow => ({
+  loanId:
+    loan.partnerLoanId || loan.transactionRef || String(loan.loanId ?? "N/A"),
+  msisdn: loan.msisdn,
+  telco: loan.telco?.toUpperCase() ?? "N/A",
+  amount: formatCurrency(loan.amount),
+  outstanding: formatCurrency(loan.outstandingAmount),
+  recovered: formatCurrency(loan.recoveredAmount),
+  aging: formatAgingBucket(loan.agingBucket),
+  fraudRisk: riskFromScore(loan.behavioralRiskScore),
+  score: loan.behavioralRiskScore ?? 0,
+  created: formatDate(loan.createdAt),
+  status: loan.status,
+  closed: loan.closed,
+  delinquent: loan.delinquent,
+});
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState<TabKey>("open");
   const [search, setSearch] = useState("");
   const [telco, setTelco] = useState("All Telcos");
   const [status, setStatus] = useState("All Statuses");
-  const [page, setPage] = useState(1);
   const [selectedLoan, setSelectedLoan] = useState<LoanRow | null>(null);
+  const [loans, setLoans] = useState<LoanRow[]>([]);
+  const [openTotal, setOpenTotal] = useState(0);
+  const [loadingLoans, setLoadingLoans] = useState(true);
+  const [loanError, setLoanError] = useState("");
+
+  useEffect(() => {
+    const fetchRecentLoans = async () => {
+      setLoadingLoans(true);
+      setLoanError("");
+
+      try {
+        const token =
+          localStorage.getItem("jwt_token") || localStorage.getItem("token");
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const response = await axiosInstance.get<RecentLoansResponse>(
+          RecentLoans,
+          {
+            headers,
+            params: { page: 0, size: 20 },
+          },
+        );
+        const payload = response.data.data;
+        const mappedLoans = (payload?.data ?? []).map(mapRecentLoan);
+
+        setLoans(mappedLoans);
+        setOpenTotal(payload?.totalElements ?? mappedLoans.length);
+      } catch {
+        setLoanError("Unable to load open loans right now.");
+        setLoans([]);
+        setOpenTotal(0);
+      } finally {
+        setLoadingLoans(false);
+      }
+    };
+
+    fetchRecentLoans();
+  }, []);
 
   const telcoOptions = [
     { value: "All Telcos", label: "All Telcos" },
@@ -164,11 +153,36 @@ export default function Page() {
     { value: "Closed", label: "Closed" },
   ];
 
-  const filtered = rows.filter(
-    (r) =>
-      r.msisdn.includes(search) ||
-      r.loanId.toLowerCase().includes(search.toLowerCase()),
+  const tabCounts = useMemo(
+    () => ({
+      open: openTotal,
+      delinquent: loans.filter((loan) => loan.delinquent).length,
+      closed: loans.filter((loan) => loan.closed).length,
+    }),
+    [loans, openTotal],
   );
+
+  const filtered = loans.filter((r) => {
+    const matchesSearch =
+      r.msisdn.includes(search) ||
+      r.loanId.toLowerCase().includes(search.toLowerCase());
+    const matchesTelco = telco === "All Telcos" || r.telco === telco;
+    const matchesStatus =
+      status === "All Statuses" ||
+      (status === "Active" && !r.closed) ||
+      (status === "Delinquent" && Boolean(r.delinquent)) ||
+      (status === "Closed" && Boolean(r.closed));
+    const matchesTab =
+      activeTab === "open"
+        ? !r.closed
+        : activeTab === "delinquent"
+          ? Boolean(r.delinquent)
+          : activeTab === "closed"
+            ? Boolean(r.closed)
+            : true;
+
+    return matchesSearch && matchesTelco && matchesStatus && matchesTab;
+  });
 
   if (selectedLoan) {
     return (
@@ -199,7 +213,7 @@ export default function Page() {
               }`}
           >
             {t.label}
-            {t.count !== undefined && (
+            {(t.count !== undefined || t.key in tabCounts) && (
               <span
                 className={`text-[11px] sm:text-[12px] font-semibold px-1.5 sm:px-2 py-0.5 rounded
                   ${
@@ -208,7 +222,7 @@ export default function Page() {
                       : "bg-gray-50 text-gray-700"
                   }`}
               >
-                {t.count}
+                {t.count ?? tabCounts[t.key as keyof typeof tabCounts]}
               </span>
             )}
           </button>
@@ -223,10 +237,7 @@ export default function Page() {
               <IoSearch size={19} className="text-gray-500 shrink-0" />
               <input
                 value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
-                }}
+                onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search MSISDN"
                 className="flex-1 min-w-0 placeholder:text-[16px] text-[#374151] font-ibm-plex-sans outline-none placeholder:font-ibm-plex-sans placeholder:text-gray-500 bg-transparent"
               />
@@ -257,6 +268,27 @@ export default function Page() {
         {/* ── Content ── */}
         {activeTab === "aging" ? (
           <DPDAnalysisChart />
+        ) : loadingLoans ? (
+          <div className="relative min-h-80 overflow-hidden bg-black/30 z-70 inset-0">
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 backdrop-blur-[2px]">
+              <div className="flex h-20 w-20 items-center justify-center rounded-sm border border-[#DCE9F9] bg-white shadow-sm">
+                <ComponentLoadingSpinner height="h-auto" size="md" />
+                <span className="sr-only">Loading loans</span>
+              </div>
+            </div>
+          </div>
+        ) : loanError ? (
+          <div className="flex flex-col items-center justify-center px-5 py-14 text-center">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-red-100 bg-red-50 text-red-600">
+              <AlertCircle size={24} strokeWidth={1.8} />
+            </div>
+            <h3 className="font-sf-pro text-[16px] font-semibold text-[#1F2937]">
+              Open loans could not be loaded
+            </h3>
+            <p className="mt-1 max-w-md font-ibm-plex-sans text-[13px] leading-5 text-[#667085]">
+              Please check your connection or try refreshing this page.
+            </p>
+          </div>
         ) : (
           <DataTable
             searchable={false}

@@ -1,14 +1,9 @@
 import React, { useState } from "react";
-import {
-  ChevronUp,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { IoMdArrowDown } from "react-icons/io";
 
 // ── Types ──────────────────────────────────────────────────────────────
-export type Aging = "DP 0" | "DP 17" | "DP 31";
+export type Aging = string;
 export type FraudRisk = "Low" | "Medium" | "High";
 
 export interface LoanRow {
@@ -22,6 +17,9 @@ export interface LoanRow {
   fraudRisk: FraudRisk;
   score: number;
   created: string;
+  status?: string;
+  closed?: boolean;
+  delinquent?: boolean;
 }
 
 export interface TableColumn {
@@ -45,10 +43,13 @@ export interface DataTableProps {
 }
 
 // ── Badge helpers ──────────────────────────────────────────────────────
-const agingStyles: Record<Aging, string> = {
+const agingStyles: Record<string, string> = {
   "DP 0": "bg-green-50  text-green-700  border border-green-200",
+  "DP 1-7": "bg-yellow-50 text-yellow-700 border border-yellow-200",
+  "DP 8-30": "bg-orange-50 text-orange-600 border border-orange-200",
   "DP 17": "bg-orange-50 text-orange-600 border border-orange-200",
   "DP 31": "bg-red-50    text-red-600    border border-red-200",
+  "DP 31+": "bg-red-50    text-red-600    border border-red-200",
 };
 
 const riskStyles: Record<FraudRisk, string> = {
@@ -70,7 +71,10 @@ const defaultColumns: TableColumn[] = [
     label: "Aging",
     render: (row) => (
       <span
-        className={`text-[12px] font-medium px-2.5 py-1   ${agingStyles[row.aging]}`}
+        className={`text-[12px] font-medium px-2.5 py-1   ${
+          agingStyles[row.aging] ??
+          "bg-gray-50 text-gray-600 border border-gray-200"
+        }`}
       >
         {row.aging}
       </span>
@@ -120,8 +124,8 @@ export default function DataTable({
   const sorted = [...filtered].sort((a, b) => {
     if (!sortColumn) return 0;
 
-    const aValue = a[sortColumn as keyof LoanRow];
-    const bValue = b[sortColumn as keyof LoanRow];
+    const aValue = a[sortColumn as keyof LoanRow] ?? "";
+    const bValue = b[sortColumn as keyof LoanRow] ?? "";
 
     if (aValue < bValue) return sortDirection === "asc" ? -1 : 1;
     if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
@@ -226,22 +230,33 @@ export default function DataTable({
             </tr>
           </thead>
           <tbody>
-            {paginatedData.map((row, index) => (
-              <tr
-                key={index}
-                className={`border-b border-[#F3F4F6] hover:bg-[#FAFAFA] transition-colors ${onRowClick ? "cursor-pointer" : ""}`}
-                onClick={() => onRowClick?.(row)}
-              >
-                {columns.map((column) => (
-                  <td
-                    key={column.key as string}
-                    className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap"
-                  >
-                    {renderCell(column, row)}
-                  </td>
-                ))}
+            {paginatedData.length > 0 ? (
+              paginatedData.map((row, index) => (
+                <tr
+                  key={`${row.loanId}-${index}`}
+                  className={`border-b border-[#F3F4F6] hover:bg-[#FAFAFA] transition-colors ${onRowClick ? "cursor-pointer" : ""}`}
+                  onClick={() => onRowClick?.(row)}
+                >
+                  {columns.map((column) => (
+                    <td
+                      key={column.key as string}
+                      className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap"
+                    >
+                      {renderCell(column, row)}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={columns.length}
+                  className="px-5 py-12 text-center text-sm text-gray-500"
+                >
+                  No loans found
+                </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

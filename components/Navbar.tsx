@@ -155,9 +155,7 @@ function Navbar() {
                         width={15}
                         height={15}
                         className={
-                          activeLink === link.name
-                            ? "brightness-0 invert"
-                            : ""
+                          activeLink === link.name ? "brightness-0 invert" : ""
                         }
                       />
                       <p className="text-[13px] font-medium font-inter">
@@ -244,7 +242,7 @@ function Navbar() {
 
       {/* ── Logout Modal ── */}
       {showLogoutModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[70] px-4">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-70 px-4">
           <div className="bg-white rounded p-6 w-full max-w-sm shadow-2xl">
             <div className="flex items-center justify-center mb-4">
               <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">

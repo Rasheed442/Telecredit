@@ -358,44 +358,111 @@ function CalendarDropdown({
 /* ════════════════════════════════════════
    Main component
 ════════════════════════════════════════ */
+/* ─── Dummy / fallback data ─── */
+const DUMMY_DISBURSEMENT = [
+  { date: "Jan", value: 4200 },
+  { date: "Feb", value: 1900 },
+  { date: "Mar", value: 1500 },
+  { date: "Apr", value: 2100 },
+  { date: "May", value: 2400 },
+  { date: "Jun", value: 1800 },
+  { date: "Jul", value: 2200 },
+  { date: "Aug", value: 2000 },
+  { date: "Sep", value: 2300 },
+  { date: "Oct", value: 1900 },
+  { date: "Nov", value: 2100 },
+  { date: "Dec", value: 2500 },
+];
+
+const DUMMY_RECOVERY = [
+  { date: "Jan", value: 3800 },
+  { date: "Feb", value: 1200 },
+  { date: "Mar", value: 900 },
+  { date: "Apr", value: 1400 },
+  { date: "May", value: 1600 },
+  { date: "Jun", value: 1100 },
+  { date: "Jul", value: 1300 },
+  { date: "Aug", value: 1500 },
+  { date: "Sep", value: 1700 },
+  { date: "Oct", value: 1400 },
+  { date: "Nov", value: 1600 },
+  { date: "Dec", value: 1800 },
+];
+
+/* ─── Helper: convert API label like "2026-02" to short month ─── */
+const SHORT_MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function labelToMonth(label: string): string {
+  const parts = label.split("-");
+  if (parts.length >= 2) {
+    const monthIdx = parseInt(parts[1], 10) - 1;
+    if (monthIdx >= 0 && monthIdx < 12) return SHORT_MONTHS[monthIdx];
+  }
+  return label;
+}
+
 export default function LoanRequestTrend() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<Chart<"line"> | null>(null);
   const [hovered, setHovered] = useState<"loan" | "recovery" | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const [disbursementData] = useState([
-    { date: "Jan", value: 4200 },
-    { date: "Feb", value: 1900 },
-    { date: "Mar", value: 1500 },
-    { date: "Apr", value: 2100 },
-    { date: "May", value: 2400 },
-    { date: "Jun", value: 1800 },
-    { date: "Jul", value: 2200 },
-    { date: "Aug", value: 2000 },
-    { date: "Sep", value: 2300 },
-    { date: "Oct", value: 1900 },
-    { date: "Nov", value: 2100 },
-    { date: "Dec", value: 2500 },
-  ]);
+  const [disbursementData, setDisbursementData] = useState(DUMMY_DISBURSEMENT);
+  const [recoveryData, setRecoveryData] = useState(DUMMY_RECOVERY);
 
-  const [recoveryData] = useState([
-    { date: "Jan", value: 3800 },
-    { date: "Feb", value: 1200 },
-    { date: "Mar", value: 900 },
-    { date: "Apr", value: 1400 },
-    { date: "May", value: 1600 },
-    { date: "Jun", value: 1100 },
-    { date: "Jul", value: 1300 },
-    { date: "Aug", value: 1500 },
-    { date: "Sep", value: 1700 },
-    { date: "Oct", value: 1400 },
-    { date: "Nov", value: 1600 },
-    { date: "Dec", value: 1800 },
-  ]);
+  /* ── Fetch real data from API (falls back to dummy on failure) ── */
+  useEffect(() => {
+    let cancelled = false;
 
-  /* ── build chart ONCE on mount ── */
+    async function fetchTrends() {
+      try {
+        const [disbRes, recRes] = await Promise.allSettled([
+          axiosInstance.get(DisbursementTrend),
+          axiosInstance.get(RecoveryTrend),
+        ]);
+
+        if (!cancelled) {
+          // Disbursement
+          if (
+            disbRes.status === "fulfilled" &&
+            disbRes.value.data?.success &&
+            disbRes.value.data.data?.series?.length
+          ) {
+            setDisbursementData(
+              disbRes.value.data.data.series.map((s: { label: string; value: number }) => ({
+                date: labelToMonth(s.label),
+                value: s.value,
+              }))
+            );
+          }
+
+          // Recovery — flat array of { period, count }
+          if (recRes.status === "fulfilled") {
+            const recData = recRes.value.data;
+            // Handle both wrapped and flat array responses
+            const items = Array.isArray(recData) ? recData : recData?.data;
+            if (Array.isArray(items) && items.length) {
+              setRecoveryData(
+                items.map((s: { period: string; count: number }) => ({
+                  date: labelToMonth(s.period),
+                  value: Math.round(s.count),
+                }))
+              );
+            }
+          }
+        }
+      } catch {
+        // Keep dummy data on error
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    fetchTrends();
+    return () => { cancelled = true; };
+  }, []);
+
+  /* ── build / rebuild chart when data changes ── */
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -404,6 +471,14 @@ export default function LoanRequestTrend() {
       chartRef.current.destroy();
       chartRef.current = null;
     }
+
+    // Dynamic y-axis max
+    const allValues = [
+      ...disbursementData.map((d) => d.value),
+      ...recoveryData.map((d) => d.value),
+    ];
+    const maxVal = Math.max(...allValues, 0);
+    const yMax = Math.ceil(maxVal * 1.25); // 25% headroom
 
     chartRef.current = new Chart(canvas, {
       type: "line",
@@ -477,7 +552,7 @@ export default function LoanRequestTrend() {
           },
           y: {
             min: 0,
-            max: 5500,
+            max: yMax,
             grid: { color: "rgba(0,0,0,0.055)", drawTicks: false },
             border: { display: false, dash: [4, 4] },
             afterFit(scale) {
@@ -488,7 +563,12 @@ export default function LoanRequestTrend() {
               color: "#9CA3AF",
               padding: 16,
               maxTicksLimit: 6,
-              callback: (v) => (Number(v) >= 1000 ? Number(v) / 1000 + "k" : v),
+              callback: (v) => {
+                const n = Number(v);
+                if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
+                if (n >= 1000) return (n / 1000).toFixed(0) + "k";
+                return v;
+              },
             },
           },
         },
@@ -499,8 +579,7 @@ export default function LoanRequestTrend() {
       chartRef.current?.destroy();
       chartRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [disbursementData, recoveryData]);
 
   /* ── hover dim effect ── */
   useEffect(() => {
