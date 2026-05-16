@@ -36,6 +36,10 @@ export interface DataTableProps {
   searchPlaceholder?: string;
   paginated?: boolean;
   itemsPerPage?: number;
+  serverPagination?: boolean;
+  totalElements?: number;
+  currentPage?: number;
+  onPageChange?: (page: number) => void;
   onRowClick?: (row: LoanRow) => void;
   onActionClick?: (row: LoanRow) => void;
   actionLabel?: string;
@@ -103,6 +107,10 @@ export default function DataTable({
   searchPlaceholder = "Search MSISDN",
   paginated = true,
   itemsPerPage = 10,
+  serverPagination = false,
+  totalElements,
+  currentPage = 1,
+  onPageChange,
   onRowClick,
   onActionClick,
   actionLabel = "View",
@@ -133,10 +141,24 @@ export default function DataTable({
   });
 
   // Pagination
-  const totalPages = Math.ceil(sorted.length / itemsPerPage);
-  const paginatedData = paginated
-    ? sorted.slice((page - 1) * itemsPerPage, page * itemsPerPage)
-    : sorted;
+  const activePage = serverPagination ? currentPage : page;
+  const totalPages = serverPagination && totalElements !== undefined
+    ? Math.ceil(totalElements / itemsPerPage)
+    : Math.ceil(sorted.length / itemsPerPage);
+
+  const paginatedData = serverPagination
+    ? sorted
+    : paginated
+      ? sorted.slice((page - 1) * itemsPerPage, page * itemsPerPage)
+      : sorted;
+
+  const handlePageChange = (newPage: number) => {
+    if (serverPagination) {
+      onPageChange?.(newPage);
+    } else {
+      setPage(newPage);
+    }
+  };
 
   const handleSort = (columnKey: string) => {
     if (sortColumn === columnKey) {
@@ -265,19 +287,19 @@ export default function DataTable({
       {paginated && totalPages > 1 && (
         <div className="flex justify-between items-center px-5 py-4 border-t border-[#F3F4F6]">
           <button
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
+            onClick={() => handlePageChange(Math.max(1, activePage - 1))}
+            disabled={activePage === 1}
             className="flex items-center gap-2 border border-[#E5E7EB] rounded-lg px-4 py-2 text-[13px] text-[#374151] hover:bg-[#F9FAFB] disabled:opacity-40 transition-colors"
           >
             <ChevronLeft size={14} />
             Previous
           </button>
           <span className="text-[13px] text-[#6B7280]">
-            Page {page} of {totalPages}
+            Page {activePage} of {totalPages}
           </span>
           <button
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={page >= totalPages}
+            onClick={() => handlePageChange(Math.min(totalPages, activePage + 1))}
+            disabled={activePage >= totalPages}
             className="flex items-center gap-2 border border-[#E5E7EB] rounded-lg px-4 py-2 text-[13px] text-[#374151] hover:bg-[#F9FAFB] disabled:opacity-40 transition-colors"
           >
             Next

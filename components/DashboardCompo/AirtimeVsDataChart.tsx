@@ -25,11 +25,15 @@ const renderLabel = ({
   midAngle,
   innerRadius,
   outerRadius,
-  value,
+  percent,
 }: any) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  
+  // Don't render text if the slice is too small to fit the label
+  if (percent < 0.05) return null;
+
   return (
     <text
       x={x}
@@ -41,7 +45,7 @@ const renderLabel = ({
       fontWeight={600}
       fontFamily="sans-serif"
     >
-      {`${value}%`}
+      {`${(percent * 100).toFixed(1)}%`}
     </text>
   );
 };
@@ -79,17 +83,17 @@ const AgingBucketChart = () => {
 
   const fetchAgingData = async () => {
     try {
-      const token = localStorage.getItem("jwt_token");
-      if (!token) {
-        return;
-      }
+      const token = localStorage.getItem("token");
+      if (!token) return;
 
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-
+      const headers = { Authorization: `Bearer ${token}` };
       const response = await axiosInstance.get(AgingDistribution, { headers });
-      const apiData = response.data;
+      
+      const apiData = response.data?.data?.series || response.data?.series || response.data;
+      
+      if (!Array.isArray(apiData)) {
+        throw new Error("Invalid API response structure");
+      }
 
       // Transform API data to chart format
       const chartData = apiData.map((item: any) => ({

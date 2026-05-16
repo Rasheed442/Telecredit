@@ -3,119 +3,20 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { IoMdArrowDown } from "react-icons/io";
-import Image from "next/image";
-import { AiOutlineDown } from "react-icons/ai";
-import { calender } from "@/constant";
 import CalendarPopup from "@/components/ui/CalendarPopup";
 
-const allRows = [
-  {
-    event: "Loan",
-    msisdn: "08115322207",
-    telco: "MTN",
-    amount: "₦500.00",
-    status: "Failed",
-    timestamp: "23/09/26, 09:11:04",
-  },
-  {
-    event: "Recovery",
-    msisdn: "08108762779",
-    telco: "Glo",
-    amount: "₦750.00",
-    status: "Success",
-    timestamp: "23/09/26, 09:11:04",
-  },
-  {
-    event: "Loan",
-    msisdn: "09087622779",
-    telco: "9 Mobile",
-    amount: "₦200.00",
-    status: "Pending",
-    timestamp: "23/09/26, 09:11:04",
-  },
-  {
-    event: "Recovery",
-    msisdn: "07087627729",
-    telco: "Airtel",
-    amount: "₦150.00",
-    status: "Success",
-    timestamp: "23/09/26, 09:11:04",
-  },
-  {
-    event: "Loan",
-    msisdn: "08125322248",
-    telco: "MTN",
-    amount: "₦250.00",
-    status: "Failed",
-    timestamp: "23/09/26, 09:11:04",
-  },
-  {
-    event: "Recovery",
-    msisdn: "08115322017",
-    telco: "Glo",
-    amount: "₦1000.00",
-    status: "Pending",
-    timestamp: "23/09/26, 09:11:04",
-  },
-  {
-    event: "Loan",
-    msisdn: "08108762779",
-    telco: "9 Mobile",
-    amount: "₦950.00",
-    status: "Success",
-    timestamp: "23/09/26, 09:11:04",
-  },
-  {
-    event: "Recovery",
-    msisdn: "08108762779",
-    telco: "Airtel",
-    amount: "₦300.00",
-    status: "Failed",
-    timestamp: "23/09/26, 09:11:04",
-  },
-  {
-    event: "Loan",
-    msisdn: "08108762779",
-    telco: "MTN",
-    amount: "₦200.00",
-    status: "Success",
-    timestamp: "23/09/26, 09:11:04",
-  },
-  {
-    event: "Recovery",
-    msisdn: "08108762779",
-    telco: "Glo",
-    amount: "₦250.00",
-    status: "Pending",
-    timestamp: "23/09/26, 09:11:04",
-  },
-];
-
 function StatusBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    Success: "bg-green-100 text-green-700 border border-green-200",
-    Failed: "bg-red-100 text-red-600 border border-red-200",
-    Pending: "bg-yellow-100 text-yellow-700 border border-yellow-200",
-  };
   return (
-    <span
-      className={`inline-flex items-center gap-1 text-[12px] font-semibold px-2.5 py-1 ${styles[status]}`}
-    >
-      {status}
+    <span className="inline-flex items-center gap-1 text-[12px] font-semibold px-2.5 py-1 bg-gray-100 text-gray-700 border border-gray-200">
+      {status || "N/A"}
     </span>
   );
 }
 
 function EventBadge({ event }: { event: string }) {
-  const styles: Record<string, string> = {
-    Loan: "bg-[#DBEAFE] text-[#1447E6] border border-blue-200",
-    Recovery: "bg-green-100 text-green-700 border border-green-200",
-  };
   return (
-    <span
-      className={`inline-flex items-center gap-1 text-[13px] font-semibold px-2.5 py-1 ${styles[event]}`}
-    >
-      {event}
+    <span className="inline-flex items-center gap-1 text-[13px] font-semibold px-2.5 py-1 bg-gray-100 text-gray-700 border border-gray-200">
+      {event || "N/A"}
     </span>
   );
 }
@@ -128,9 +29,11 @@ export default function LoanTable() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [selectedDate, setSelectedDate] = useState("This Year");
-  const total = allRows.length;
-  const rows = allRows.slice((page - 1) * perPage, page * perPage);
-  const totalPages = Math.ceil(total / perPage);
+
+  // Since there is no endpoint, just keep it empty
+  const rows: any[] = [];
+  const total = 0;
+  const totalPages = 1;
 
   return (
     <div className="bg-white rounded-sm shadow-sm overflow-hidden border border-[#DCE9F9] mt-6">
@@ -149,7 +52,7 @@ export default function LoanTable() {
         />
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto relative">
         <table className="w-full text-[13px] border-collapse">
           <thead>
             <tr className="border-b border-[#F3F4F6] bg-gray-50">
@@ -220,7 +123,7 @@ export default function LoanTable() {
       {/* Footer */}
       <div className="flex justify-between items-center px-4 py-3 border-t border-[#F3F4F6] text-[13px] text-[#667085]">
         <span className="hidden lg:block">
-          Showing {(page - 1) * perPage + 1}–{Math.min(page * perPage, total)}{" "}
+          Showing {total === 0 ? 0 : (page - 1) * perPage + 1}–{Math.min(page * perPage, total)}{" "}
           of {total} entries
         </span>
         <div className="flex items-center justify-between lg:justify-start gap-2">
@@ -250,7 +153,7 @@ export default function LoanTable() {
           </div>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={page === totalPages}
+            disabled={page >= totalPages}
             className="w-7 h-7 rounded-md border border-[#E5E7EB] flex items-center justify-center disabled:opacity-40 hover:bg-[#F9FAFB]"
           >
             <ChevronRight size={14} />
@@ -260,3 +163,4 @@ export default function LoanTable() {
     </div>
   );
 }
+

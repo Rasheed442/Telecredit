@@ -89,7 +89,7 @@ const FraudPanel = ({ fraudData }: { fraudData: any }) => (
                 Unauthorized Callbacks
               </span>
               <span className="text-[13px] font-medium text-red-500">
-                {fraudData.rejectedUnauthorizedCallbacks || 0}
+                {fraudData.unauthorizedCallbacks ?? 0}
               </span>
             </div>
             <div className="mt-1">
@@ -104,7 +104,7 @@ const FraudPanel = ({ fraudData }: { fraudData: any }) => (
                 Duplicate Callbacks
               </span>
               <span className="text-[13px] font-medium text-orange-500">
-                {fraudData.duplicateCallbacksRejected || 0}
+                {fraudData.duplicateCallbacks ?? 0}
               </span>
             </div>
             <div className="mt-1">
@@ -146,7 +146,7 @@ const DelinquentPanel = ({ delinquentData }: { delinquentData: any[] }) => (
     <PanelHeader title="New Delinquent Account" />
     <div className="flex flex-col gap-3">
       {delinquentData.length > 0 ? (
-        delinquentData.map((item, i) => (
+        delinquentData.slice(0, 3).map((item, i) => (
           <Row key={i}>
             <div className="flex justify-between items-center">
               <span className="text-[14px] font-semibold font-sf-pro text-[#1F2937]">
@@ -155,7 +155,7 @@ const DelinquentPanel = ({ delinquentData }: { delinquentData: any[] }) => (
               <div className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#9CA3AF] inline-block" />
                 <span className="text-[13px] text-[#9CA3AF]">
-                  ₦{item.outstandingBalance}
+                  ₦{Number(item.outstandingBalance || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
                 </span>
               </div>
             </div>
@@ -194,8 +194,8 @@ export default function RiskPanel() {
     { msisdn: "08111222333", riskFlag: "HIGH_RISK" },
   ]);
   const [fraudData, setFraudData] = useState<any>({
-    rejectedUnauthorizedCallbacks: 5,
-    duplicateCallbacksRejected: 12,
+    unauthorizedCallbacks: 5,
+    duplicateCallbacks: 12,
   });
   const [delinquentData, setDelinquentData] = useState<any[]>([
     { msisdn: "07086022674", outstandingBalance: 60 },
@@ -207,16 +207,12 @@ export default function RiskPanel() {
     fetchRiskData();
   }, []);
 
-  const fetchRiskData = async () => {
+    const fetchRiskData = async () => {
     try {
-      const token = localStorage.getItem("jwt_token");
-      if (!token) {
-        return;
-      }
+      const token = localStorage.getItem("token");
+      if (!token) return;
 
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
+      const headers = { Authorization: `Bearer ${token}` };
 
       // Fetch all three endpoints
       const [legacyRiskResponse, fraudResponse, delinquentResponse] =
@@ -226,9 +222,13 @@ export default function RiskPanel() {
           axiosInstance.get(DelinquentCustomers, { headers }),
         ]);
 
-      setLegacyRiskData(legacyRiskResponse.data);
-      setFraudData(fraudResponse.data);
-      setDelinquentData(delinquentResponse.data);
+      const legacyData = legacyRiskResponse.data?.data?.data || legacyRiskResponse.data?.data || legacyRiskResponse.data;
+      const fraudData = fraudResponse.data?.data || fraudResponse.data;
+      const delData = delinquentResponse.data?.data?.data || delinquentResponse.data?.data || delinquentResponse.data;
+
+      setLegacyRiskData(Array.isArray(legacyData) ? legacyData : []);
+      setFraudData(fraudData);
+      setDelinquentData(Array.isArray(delData) ? delData : []);
     } catch (error) {
       console.error("Error fetching risk data:", error);
       // Set fallback data on error
@@ -237,8 +237,8 @@ export default function RiskPanel() {
         { msisdn: "08111222333", riskFlag: "HIGH_RISK" },
       ]);
       setFraudData({
-        rejectedUnauthorizedCallbacks: 5,
-        duplicateCallbacksRejected: 12,
+        unauthorizedCallbacks: 5,
+        duplicateCallbacks: 12,
       });
       setDelinquentData([
         { msisdn: "07086022674", outstandingBalance: 60 },

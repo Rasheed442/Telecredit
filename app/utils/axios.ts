@@ -19,4 +19,17 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
+// Handle 401 responses
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('session-expired'));
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default axiosInstance;

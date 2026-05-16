@@ -8,7 +8,7 @@ import DPDAnalysisChart from "@/components/LivePortfolio/DPDAnalysisChart";
 import { IoFilterSharp, IoSearch } from "react-icons/io5";
 import LoanDetailView from "@/components/LivePortfolio/LoanDetailView";
 import axiosInstance from "@/app/utils/axios";
-import { RecentLoans } from "@/app/utils/endpoint";
+import { RecentLoans, PortfolioWatchlist } from "@/app/utils/endpoint";
 import { AlertCircle } from "lucide-react";
 import ComponentLoadingSpinner from "@/components/ui/loading-spinner";
 
@@ -43,7 +43,7 @@ const tabs: { key: TabKey; label: string; count?: number }[] = [
   { key: "open", label: "Open Loans" },
   { key: "delinquent", label: "Delinquent Loans" },
   { key: "closed", label: "Closed Loans" },
-  { key: "watchlist", label: "Portfolio Watchlist", count: 2 },
+  { key: "watchlist", label: "Portfolio Watchlist" },
   { key: "aging", label: "Aging Buckets Analysis" },
 ];
 
@@ -102,6 +102,7 @@ export default function Page() {
   const [selectedLoan, setSelectedLoan] = useState<LoanRow | null>(null);
   const [loans, setLoans] = useState<LoanRow[]>([]);
   const [openTotal, setOpenTotal] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loadingLoans, setLoadingLoans] = useState(true);
   const [loanError, setLoanError] = useState("");
 
@@ -114,11 +115,15 @@ export default function Page() {
         const token =
           localStorage.getItem("jwt_token") || localStorage.getItem("token");
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const params: any = { page: currentPage - 1, size: 20 };
+
+        const endpoint = activeTab === "watchlist" ? PortfolioWatchlist : RecentLoans;
+
         const response = await axiosInstance.get<RecentLoansResponse>(
-          RecentLoans,
+          endpoint,
           {
             headers,
-            params: { page: 0, size: 20 },
+            params,
           },
         );
         const payload = response.data.data;
@@ -136,7 +141,7 @@ export default function Page() {
     };
 
     fetchRecentLoans();
-  }, []);
+  }, [currentPage, activeTab]);
 
   const telcoOptions = [
     { value: "All Telcos", label: "All Telcos" },
@@ -155,11 +160,12 @@ export default function Page() {
 
   const tabCounts = useMemo(
     () => ({
-      open: openTotal,
-      delinquent: loans.filter((loan) => loan.delinquent).length,
-      closed: loans.filter((loan) => loan.closed).length,
+      open: activeTab === "open" ? openTotal : undefined,
+      delinquent: activeTab === "delinquent" ? openTotal : undefined,
+      closed: activeTab === "closed" ? openTotal : undefined,
+      watchlist: activeTab === "watchlist" ? openTotal : undefined,
     }),
-    [loans, openTotal],
+    [activeTab, openTotal],
   );
 
   const filtered = loans.filter((r) => {
@@ -213,18 +219,22 @@ export default function Page() {
               }`}
           >
             {t.label}
-            {(t.count !== undefined || t.key in tabCounts) && (
-              <span
-                className={`text-[11px] sm:text-[12px] font-semibold px-1.5 sm:px-2 py-0.5 rounded
-                  ${
-                    activeTab === t.key
-                      ? "bg-white text-gray-700 font-bold"
-                      : "bg-gray-50 text-gray-700"
-                  }`}
-              >
-                {t.count ?? tabCounts[t.key as keyof typeof tabCounts]}
-              </span>
-            )}
+            {(() => {
+              const count = t.count ?? tabCounts[t.key as keyof typeof tabCounts];
+              if (count === undefined) return null;
+              return (
+                <span
+                  className={`text-[11px] sm:text-[12px] font-semibold px-1.5 sm:px-2 py-0.5 rounded
+                    ${
+                      activeTab === t.key
+                        ? "bg-white text-gray-700 font-bold"
+                        : "bg-gray-50 text-gray-700"
+                    }`}
+                >
+                  {count}
+                </span>
+              );
+            })()}
           </button>
         ))}
       </div>
@@ -295,6 +305,11 @@ export default function Page() {
             data={filtered}
             onActionClick={(row) => setSelectedLoan(row)}
             className="border-t-0"
+            serverPagination={true}
+            totalElements={openTotal}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            itemsPerPage={20}
           />
         )}
       </div>

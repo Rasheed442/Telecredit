@@ -7,6 +7,7 @@ import LoanRequestTrend from "@/components/DashboardCompo/LoanRequestTrend";
 import RiskPanel from "@/components/DashboardCompo/RiskPanel";
 import MetricsCard from "@/components/DashboardCompo/MetricsCard";
 import CalendarPopup from "@/components/ui/CalendarPopup";
+import ComponentLoadingSpinner from "@/components/ui/loading-spinner";
 import {
   calender,
   activeb,
@@ -94,68 +95,70 @@ function page() {
 
   const fetchDashboardData = async () => {
     try {
-      const token = localStorage.getItem("jwt_token");
+      const token = localStorage.getItem("token");
       if (!token) return;
 
+      console.log("Fetching dashboard data from:", DashboardSummary);
       const summaryResponse = await axiosInstance.get(DashboardSummary, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const d = summaryResponse.data;
+      const d = summaryResponse.data.data || summaryResponse.data;
+      console.log("API Response:", d);
 
       setMetricsData([
         {
           title: "Total Loans Disbursed",
-          value: `₦${(d.totalDisbursed || 2500000).toLocaleString()}`,
-          change: 8.2,
+          value: `₦${Number(d.totalDisbursed).toLocaleString()}`,
+          change: 0,
           changeText: "vs Last Month",
           icon: money,
         },
         {
           title: "Total Recoveries",
-          value: `₦${(d.totalRecovered || 1850000).toLocaleString()}`,
-          change: 12.5,
+          value: `₦${Number(d.totalRecovered).toLocaleString()}`,
+          change: 0,
           changeText: "vs Last Month",
           icon: trending,
         },
         {
           title: "Outstanding Balance",
-          value: `₦${(d.outstandingPortfolio || 650000).toLocaleString()}`,
-          change: 6.4,
+          value: `₦${Number(d.outstandingPortfolio).toLocaleString()}`,
+          change: 0,
           changeText: "vs Last Month",
           icon: outstanding,
         },
         {
           title: "Portfolio Revenue",
-          value: `₦${(d.totalRevenue || 420000).toLocaleString()}`,
-          change: 15.2,
+          value: `₦${Number(d.totalRevenue).toLocaleString()}`,
+          change: 0,
           changeText: "vs Last Month",
           icon: profit,
         },
         {
-          title: "Active Borrowers",
-          value: (d.activeBorrowers || 1247).toString(),
-          change: -5.8,
+          title: "Active Loans",
+          value: d.activeLoans?.toString() || "0",
+          change: 0,
           changeText: "vs Last Month",
           icon: activeb,
         },
         {
-          title: "Delinquent Borrowers",
-          value: (d.delinquentBorrowers || 89).toString(),
-          change: 3.2,
+          title: "Closed Loans",
+          value: d.closedLoans?.toString() || "0",
+          change: 0,
           changeText: "vs Last Month",
           icon: deliquent,
         },
         {
-          title: "Hard Block Customers",
-          value: (d.blockedCustomers || 156).toString(),
-          change: 18.7,
+          title: "Recovery Rate",
+          value: `₦${Number(d.recoveryRate).toLocaleString()}`,
+          change: 0,
           changeText: "vs Last Month",
           icon: blocked,
         },
         {
-          title: "Avg Behavioral Risk",
-          value: `${(d.behavioralRisk || 23.5).toFixed(1)}%`,
-          change: 15.2,
+          title: "Avg Ticket Size",
+          value: `₦${Number(d.avgTicketSize).toFixed(2)}`,
+          change: 0,
           changeText: "vs Last Month",
           icon: behav,
         },
@@ -169,8 +172,9 @@ function page() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-lg text-gray-500">Loading dashboard...</div>
+      <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
+        <ComponentLoadingSpinner height="h-auto" size="lg" />
+        <div className="text-[15px] font-ibm-plex-sans text-[#667085]">Loading dashboard...</div>
       </div>
     );
   }

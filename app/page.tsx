@@ -12,6 +12,7 @@ export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
   const [loginMode] = useState<"admin" | "org">("admin");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
@@ -23,6 +24,13 @@ export default function Home() {
     const timer = setTimeout(() => setErrorMsg(null), 4000);
     return () => clearTimeout(timer);
   }, [errorMsg]);
+
+  // Auto-dismiss success toast after 4 seconds
+  useEffect(() => {
+    if (!successMsg) return;
+    const timer = setTimeout(() => setSuccessMsg(null), 4000);
+    return () => clearTimeout(timer);
+  }, [successMsg]);
 
   const handleSubmit = async (
     values: { username: string; password: string },
@@ -55,7 +63,10 @@ export default function Home() {
       localStorage.setItem("tokenType", data.data.tokenType);
       localStorage.setItem("user", JSON.stringify(data.data.user));
 
-      route.push("/dashboard");
+      setSuccessMsg("Login successful! Redirecting...");
+      setTimeout(() => {
+        route.push("/dashboard");
+      }, 1000);
     } catch (error) {
       setErrorMsg("Network error. Please check your connection.");
       setSubmitting(false);
@@ -68,6 +79,12 @@ export default function Home() {
       {errorMsg && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] bg-red-600 text-white px-5 py-3 rounded-lg shadow-lg text-sm font-medium animate-[slideDown_0.3s_ease-out] max-w-[90%] text-center">
           {errorMsg}
+        </div>
+      )}
+      {/* Success toast */}
+      {successMsg && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] bg-green-600 text-white px-5 py-3 rounded-lg shadow-lg text-sm font-medium animate-[slideDown_0.3s_ease-out] max-w-[90%] text-center">
+          {successMsg}
         </div>
       )}
       {/* ── Left panel — hidden on mobile, shown lg+ ── */}
@@ -155,10 +172,17 @@ export default function Home() {
 
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="cursor-pointer w-full transition-[0.2s] text-[16px] text-ibm-flex-sans font-medium bg-[#243B6B] lg:bg-[#243B6B] border border-white/20 lg:border-transparent text-white text-center my-4 p-3 rounded-md disabled:opacity-50"
+                  disabled={isSubmitting || !!successMsg}
+                  className="cursor-pointer w-full transition-[0.2s] text-[16px] text-ibm-flex-sans font-medium bg-[#243B6B] lg:bg-[#243B6B] border border-white/20 lg:border-transparent text-white text-center my-4 p-3 rounded-md disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  Sign In
+                  {isSubmitting || successMsg ? (
+                    <>
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                      Signing In...
+                    </>
+                  ) : (
+                    "Sign In"
+                  )}
                 </button>
               </Form>
             )}
