@@ -12,6 +12,7 @@ import {
 import CalendarPicker from "../CalendarPicker";
 import axiosInstance from "@/app/utils/axios";
 import { TelcoDistribution } from "@/app/utils/endpoint";
+import ComponentLoadingSpinner from "@/components/ui/loading-spinner";
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
@@ -271,6 +272,55 @@ export default function TelcoPerformance() {
         year: "numeric",
       })
     : "This Year";
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-sm p-6 shadow-sm">
+        <div className="flex justify-between items-start mb-6 flex-wrap gap-3">
+          <div>
+            <h2 className="font-sf-pro text-[20px] font-semibold text-[#1F2937] mb-1">
+              Telco Performance
+            </h2>
+            <p className="text-[14px] text-[#667085] font-ibm-plex-sans">
+              Telco Distribution Mix
+            </p>
+          </div>
+
+          <CalendarPicker
+            selected={selectedDate}
+            onChange={(date: React.SetStateAction<Date | null>) =>
+              setSelectedDate(date)
+            }
+            label={calendarLabel}
+          />
+        </div>
+
+        <div style={{ height: "250px" }} className="flex flex-col items-center justify-center gap-3">
+          <ComponentLoadingSpinner height="h-auto" size="md" />
+          <div className="text-[14px] font-ibm-plex-sans text-[#667085] animate-pulse">
+            Loading telco distribution data...
+          </div>
+        </div>
+
+        <div className="flex justify-center gap-6 mt-4 opacity-50">
+          <div className="flex items-center gap-2">
+            <div
+              className="w-2.5 h-2.5 rounded-full"
+              style={{ background: BLUE }}
+            />
+            <span className="text-sm text-[#374151]">Disbursed %</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div
+              className="w-2.5 h-2.5 rounded-full"
+              style={{ background: GREEN }}
+            />
+            <span className="text-sm text-[#374151]">Recovered %</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-sm p-6 shadow-sm">

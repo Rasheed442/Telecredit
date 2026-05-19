@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SubMenu from "@/components/SubMenu";
 import { IoMdArrowDown } from "react-icons/io";
+import axiosInstance from "@/app/utils/axios";
 
-const PER_PAGE = 5;
+const PER_PAGE = 20;
 
 function Pagination({
   total,
@@ -85,129 +86,85 @@ function Pagination({
 }
 
 // ── Types ──────────────────────────────────────────────────────────────
-type TabKey = "fulfillment" | "recovery" | "duplicate" | "unauthorized";
-type StatusValue = "Success" | "Failed" | "Pending";
+type TabKey = "recent" | "recovery" | "duplicate" | "unauthorized";
+type BooleanStatus = boolean | null;
 
+// Recent/Duplicate/Unauthorized callback type
 type CallbackRow = {
-  fingerprint: string;
-  requestType: "Fulfilment" | "Recovery";
-  transactionRef: string;
-  partnerLoanId: string;
-  recoveryId: string;
-  authorized: StatusValue;
-  processed: StatusValue;
-  duplicateRejected: StatusValue;
+  id: number;
+  callbackType: string | null;
+  partnerReference: string | null;
+  partnerName: string | null;
+  msisdn: string;
+  sourceIp: string;
+  authorized: BooleanStatus;
+  duplicateRejected: BooleanStatus;
+  processed: BooleanStatus;
+  processingStatus: string | null;
+  responseCode: string | null;
   responseMessage: string;
-  receivedAt: string;
+  createdAt: string | null;
 };
 
-// ── Mock data ──────────────────────────────────────────────────────────
-const rows: CallbackRow[] = [
-  {
-    fingerprint: "FP_4NV3IV.8LH",
-    requestType: "Fulfilment",
-    transactionRef: "TXN_00001",
-    partnerLoanId: "ATL_CORE_0001",
-    recoveryId: "REC_00001",
-    authorized: "Failed",
-    processed: "Failed",
-    duplicateRejected: "Failed",
-    responseMessage: "Unauthorized signature",
-    receivedAt: "18/03/2026",
-  },
-  {
-    fingerprint: "FP_4OGWMW.C9P",
-    requestType: "Recovery",
-    transactionRef: "TXN_00002",
-    partnerLoanId: "ATL_CORE_0002",
-    recoveryId: "REC_00002",
-    authorized: "Pending",
-    processed: "Pending",
-    duplicateRejected: "Pending",
-    responseMessage: "Duplicate fingerprint",
-    receivedAt: "18/03/2026",
-  },
-  {
-    fingerprint: "FP_D7MJV7.11B",
-    requestType: "Fulfilment",
-    transactionRef: "TXN_00003",
-    partnerLoanId: "ATL_CORE_0003",
-    recoveryId: "REC_00003",
-    authorized: "Success",
-    processed: "Success",
-    duplicateRejected: "Success",
-    responseMessage: "Unauthorized signature",
-    receivedAt: "18/03/2026",
-  },
-  {
-    fingerprint: "FP_A7PHDT.DL6",
-    requestType: "Recovery",
-    transactionRef: "TXN_00004",
-    partnerLoanId: "ATL_CORE_0004",
-    recoveryId: "REC_00004",
-    authorized: "Failed",
-    processed: "Failed",
-    duplicateRejected: "Failed",
-    responseMessage: "Duplicate fingerprint",
-    receivedAt: "18/03/2026",
-  },
-  {
-    fingerprint: "FP_95SGS3.C5G",
-    requestType: "Fulfilment",
-    transactionRef: "TXN_00005",
-    partnerLoanId: "ATL_CORE_0005",
-    recoveryId: "REC_00005",
-    authorized: "Pending",
-    processed: "Pending",
-    duplicateRejected: "Pending",
-    responseMessage: "Unauthorized signature",
-    receivedAt: "18/03/2026",
-  },
-  {
-    fingerprint: "FP_95JLTL.P1D",
-    requestType: "Recovery",
-    transactionRef: "TXN_00005",
-    partnerLoanId: "ATL_CORE_0006",
-    recoveryId: "REC_00006",
-    authorized: "Success",
-    processed: "Success",
-    duplicateRejected: "Success",
-    responseMessage: "Duplicate fingerprint",
-    receivedAt: "18/03/2026",
-  },
-  {
-    fingerprint: "FP_3EMKVV.QMH",
-    requestType: "Fulfilment",
-    transactionRef: "TXN_00006",
-    partnerLoanId: "ATL_CORE_0007",
-    recoveryId: "REC_00007",
-    authorized: "Failed",
-    processed: "Failed",
-    duplicateRejected: "Failed",
-    responseMessage: "Unauthorized signature",
-    receivedAt: "18/03/2026",
-  },
-];
+// Recovery/Parked recoveries type
+type RecoveryRow = {
+  id: number;
+  msisdn: string;
+  telco: string;
+  transactionRef: string;
+  loanId: string;
+  recoveryId: string;
+  transactionType: string;
+  amount: number;
+  daBalance: number;
+  applied: boolean;
+  appliedAt: string | null;
+  createdAt: string;
+};
 
-const tabs: { key: TabKey; label: string; count: number }[] = [
-  { key: "fulfillment", label: "Fulfillment Callback Log", count: 80 },
-  { key: "recovery", label: "Recovery Callback Log", count: 89 },
-  { key: "duplicate", label: "Duplicate Rejections", count: 60 },
-  { key: "unauthorized", label: "Unauthorized Attempts", count: 12 },
+type TabData = {
+  data: (CallbackRow | RecoveryRow)[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  hasNext: boolean;
+};
+
+// ── Mock data – will be replaced by API calls ──────────────────────────
+const tabs: { key: TabKey; label: string; endpoint: string }[] = [
+  { key: "recent", label: "Recent Callbacks", endpoint: "admin/callback-audit/recent" },
+  { key: "recovery", label: "Parked Recoveries", endpoint: "admin/callback-audit/parked-recoveries" },
+  { key: "duplicate", label: "Duplicate Rejections", endpoint: "admin/callback-audit/duplicates" },
+  { key: "unauthorized", label: "Unauthorized Attempts", endpoint: "admin/callback-audit/unauthorized" },
 ];
 
 // ── Status Badge ───────────────────────────────────────────────────────
-function StatusBadge({ status }: { status: StatusValue }) {
-  const styles: Record<StatusValue, string> = {
-    Success: "bg-green-50 text-green-700  border border-green-200",
-    Failed: "bg-[#FEF3F2] text-[#B42318] border border-red-200",
-    Pending: "bg-[#F9F5E7] text-[#D76603] border border-orange-200",
-  };
+function StatusBadge({ value }: { value: BooleanStatus | string }) {
+  if (typeof value === "boolean") {
+    const status = value ? "Success" : "Failed";
+    const styles: Record<string, string> = {
+      Success: "bg-green-50 text-green-700  border border-green-200",
+      Failed: "bg-[#FEF3F2] text-[#B42318] border border-red-200",
+    };
+    return (
+      <span className={`inline-flex items-center px-3 py-1 text-[13px] font-semibold ${styles[status]}`}>
+        {status}
+      </span>
+    );
+  }
+  
+  if (value === null) {
+    return (
+      <span className="inline-flex items-center px-3 py-1 text-[13px] font-semibold bg-gray-50 text-gray-600 border border-gray-200">
+        N/A
+      </span>
+    );
+  }
+  
   return (
-    <span
-      className={`inline-flex items-center px-3 py-1 text-[13px] font-semibold ${styles[status]}`}
-    >
-      {status}
+    <span className="inline-flex items-center px-3 py-1 text-[13px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+      {value}
     </span>
   );
 }
@@ -224,22 +181,106 @@ function SortableTh({ children }: { children: React.ReactNode }) {
   );
 }
 
-const statusKeys: (keyof CallbackRow)[] = [
-  "authorized",
-  "processed",
-  "duplicateRejected",
-];
+// ── Helper: Format date ────────────────────────────────────────────────
+function formatDate(date: string | null): string {
+  if (!date) return "N/A";
+  try {
+    return new Date(date).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  } catch {
+    return date;
+  }
+}
+
+// ── Empty State Component ──────────────────────────────────────────────
+function EmptyState({ tab }: { tab: TabKey }) {
+  const emptyStates: Record<TabKey, { icon: string; message: string; description: string }> = {
+    recent: {
+      icon: "📞",
+      message: "No Recent Callbacks",
+      description: "There are no recent callback records to display at the moment.",
+    },
+    recovery: {
+      icon: "💰",
+      message: "No Parked Recoveries",
+      description: "All recovery transactions have been processed.",
+    },
+    duplicate: {
+      icon: "⚠️",
+      message: "No Duplicate Rejections",
+      description: "There are no duplicate callbacks detected.",
+    },
+    unauthorized: {
+      icon: "🔒",
+      message: "No Unauthorized Attempts",
+      description: "All callback requests have been authorized.",
+    },
+  };
+
+  const state = emptyStates[tab];
+
+  return (
+    <div className="flex flex-col items-center justify-center py-12 px-6">
+      <div className="text-5xl mb-4">{state.icon}</div>
+      <h3 className="text-lg font-semibold text-gray-700 mb-2">{state.message}</h3>
+      <p className="text-sm text-gray-500 text-center max-w-sm">{state.description}</p>
+    </div>
+  );
+}
 
 // ── Page ───────────────────────────────────────────────────────────────
 export default function Page() {
-  const [activeTab, setActiveTab] = useState<TabKey>("fulfillment");
+  const [activeTab, setActiveTab] = useState<TabKey>("recent");
   const [page, setPage] = useState(1);
+  const [tabData, setTabData] = useState<Record<TabKey, TabData>>({
+    recent: { data: [], page: 0, size: 20, totalElements: 0, totalPages: 0, hasNext: false },
+    recovery: { data: [], page: 0, size: 20, totalElements: 0, totalPages: 0, hasNext: false },
+    duplicate: { data: [], page: 0, size: 20, totalElements: 0, totalPages: 0, hasNext: false },
+    unauthorized: { data: [], page: 0, size: 20, totalElements: 0, totalPages: 0, hasNext: false },
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch data for the active tab
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const endpoint = tabs.find(t => t.key === activeTab)?.endpoint;
+        if (!endpoint) return;
+
+        const response = await axiosInstance.get(endpoint, {
+          params: { page: page - 1, size: PER_PAGE }
+        });
+
+        if (response.data?.success && response.data?.data) {
+          setTabData(prev => ({
+            ...prev,
+            [activeTab]: response.data.data
+          }));
+        }
+      } catch (err) {
+        console.error("Error fetching callback data:", err);
+        setError("Failed to load data. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [activeTab, page]);
 
   const handleTabChange = (key: TabKey) => {
     setActiveTab(key);
     setPage(1);
   };
-  const sliced = rows.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+
+  const currentData = tabData[activeTab];
+  const sliced = currentData.data;
 
   return (
     <div className="p-6">
@@ -266,66 +307,143 @@ export default function Page() {
               className={`text-[12px] font-semibold px-2 py-0.5 rounded
               ${activeTab === t.key ? "bg-white text-gray-700 font-bold" : "bg-gray-50 text-gray-700"}`}
             >
-              {t.count}
+              {currentData.totalElements}
             </span>
           </button>
         ))}
       </div>
 
+      {/* ── Error Message ── */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+          {error}
+        </div>
+      )}
+
       {/* ── Table Card ── */}
       <div className="mt-6 bg-white border border-gray-100 rounded-sm shadow-sm overflow-x-auto">
-        <table className="w-full text-[13px] font-ibm-plex-sans">
-          <thead>
-            <tr className="border-b border-[#F3F4F6] bg-gray-50">
-              <SortableTh>Callback Fingerprint</SortableTh>
-              <SortableTh>Request Type</SortableTh>
-              <SortableTh>Transaction Ref</SortableTh>
-              <SortableTh>Partner Loan ID</SortableTh>
-              <SortableTh>Recovery ID</SortableTh>
-              <SortableTh>Authorized</SortableTh>
-              <SortableTh>Processed</SortableTh>
-              <SortableTh>Duplicate Rejected</SortableTh>
-              <SortableTh>Response Message</SortableTh>
-              <SortableTh>Received At</SortableTh>
-            </tr>
-          </thead>
-          <tbody>
-            {sliced.map((row, i) => (
-              <tr
-                key={i}
-                className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
-              >
-                <td className="px-5 py-4 font-semibold text-[#111827] whitespace-nowrap">
-                  {row.fingerprint}
-                </td>
-                <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
-                  {row.requestType}
-                </td>
-                <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
-                  {row.transactionRef}
-                </td>
-                <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
-                  {row.partnerLoanId}
-                </td>
-                <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
-                  {row.recoveryId}
-                </td>
-                {statusKeys.map((key) => (
-                  <td key={key} className="px-5 py-4 whitespace-nowrap">
-                    <StatusBadge status={row[key] as StatusValue} />
-                  </td>
-                ))}
-                <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
-                  {row.responseMessage}
-                </td>
-                <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
-                  {row.receivedAt}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <Pagination total={rows.length} page={page} onPage={setPage} />
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-gray-500">Loading...</div>
+          </div>
+        ) : sliced.length === 0 ? (
+          <EmptyState tab={activeTab} />
+        ) : (
+          <>
+            <table className="w-full text-[13px] font-ibm-plex-sans">
+              <thead>
+                <tr className="border-b border-[#F3F4F6] bg-gray-50">
+                  {activeTab === "recovery" ? (
+                    <>
+                      <SortableTh>MSISDN</SortableTh>
+                      <SortableTh>Telco</SortableTh>
+                      <SortableTh>Transaction Ref</SortableTh>
+                      <SortableTh>Loan ID</SortableTh>
+                      <SortableTh>Recovery ID</SortableTh>
+                      <SortableTh>Transaction Type</SortableTh>
+                      <SortableTh>Amount</SortableTh>
+                      <SortableTh>DA Balance</SortableTh>
+                      <SortableTh>Applied</SortableTh>
+                      <SortableTh>Created At</SortableTh>
+                    </>
+                  ) : (
+                    <>
+                      <SortableTh>ID</SortableTh>
+                      <SortableTh>MSISDN</SortableTh>
+                      <SortableTh>Partner Name</SortableTh>
+                      <SortableTh>Authorized</SortableTh>
+                      <SortableTh>Processed</SortableTh>
+                      <SortableTh>Duplicate Rejected</SortableTh>
+                      <SortableTh>Response Message</SortableTh>
+                      <SortableTh>Created At</SortableTh>
+                    </>
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {sliced.map((row, i) => {
+                  const isRecovery = activeTab === "recovery";
+                  const recoveryRow = row as RecoveryRow;
+                  const callbackRow = row as CallbackRow;
+
+                  return (
+                    <tr
+                      key={i}
+                      className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                    >
+                      {isRecovery ? (
+                        <>
+                          <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                            {recoveryRow.msisdn}
+                          </td>
+                          <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                            {recoveryRow.telco}
+                          </td>
+                          <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                            {recoveryRow.transactionRef}
+                          </td>
+                          <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                            {recoveryRow.loanId}
+                          </td>
+                          <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                            {recoveryRow.recoveryId}
+                          </td>
+                          <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                            {recoveryRow.transactionType}
+                          </td>
+                          <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                            {recoveryRow.amount}
+                          </td>
+                          <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                            {recoveryRow.daBalance}
+                          </td>
+                          <td className="px-5 py-4 whitespace-nowrap">
+                            <StatusBadge value={recoveryRow.applied} />
+                          </td>
+                          <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                            {formatDate(recoveryRow.createdAt)}
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td className="px-5 py-4 font-semibold text-[#111827] whitespace-nowrap">
+                            {callbackRow.id}
+                          </td>
+                          <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                            {callbackRow.msisdn}
+                          </td>
+                          <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                            {callbackRow.partnerName || "N/A"}
+                          </td>
+                          <td className="px-5 py-4 whitespace-nowrap">
+                            <StatusBadge value={callbackRow.authorized} />
+                          </td>
+                          <td className="px-5 py-4 whitespace-nowrap">
+                            <StatusBadge value={callbackRow.processed} />
+                          </td>
+                          <td className="px-5 py-4 whitespace-nowrap">
+                            <StatusBadge value={callbackRow.duplicateRejected} />
+                          </td>
+                          <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                            {callbackRow.responseMessage}
+                          </td>
+                          <td className="px-5 py-4 text-[#374151] whitespace-nowrap">
+                            {formatDate(callbackRow.createdAt)}
+                          </td>
+                        </>
+                      )}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            <Pagination
+              total={currentData.totalElements}
+              page={page}
+              onPage={setPage}
+            />
+          </>
+        )}
       </div>
     </div>
   );

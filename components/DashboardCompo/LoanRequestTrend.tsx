@@ -15,6 +15,7 @@ import {
 } from "chart.js";
 import axiosInstance from "@/app/utils/axios";
 import { DisbursementTrend, RecoveryTrend } from "@/app/utils/endpoint";
+import ComponentLoadingSpinner from "@/components/ui/loading-spinner";
 
 Chart.register(
   LineElement,
@@ -640,8 +641,11 @@ export default function LoanRequestTrend() {
     return (
       <div className="bg-white rounded-sm p-4 sm:p-6 shadow-sm">
         {header}
-        <div className="h-[200px] sm:h-[280px]">
-          <canvas ref={canvasRef} />
+        <div className="h-[200px] sm:h-[280px] flex flex-col items-center justify-center gap-3">
+          <ComponentLoadingSpinner height="h-auto" size="md" />
+          <div className="text-[14px] font-ibm-plex-sans text-[#667085] animate-pulse">
+            Loading trend data...
+          </div>
         </div>
         {legend}
       </div>

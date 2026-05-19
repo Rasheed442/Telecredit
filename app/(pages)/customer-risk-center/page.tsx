@@ -5,6 +5,8 @@ import { IoSearch } from "react-icons/io5";
 import { AiOutlineSearch } from "react-icons/ai";
 import { IoMdArrowDown } from "react-icons/io";
 import Image from "next/image";
+import axiosInstance from "@/app/utils/axios";
+import { CustomerProfile } from "@/app/utils/endpoint";
 import {
   deliquent,
   activeb,
@@ -45,7 +47,8 @@ interface CustomerMetrics {
   eligibilityStatus: string;
 }
 
-// ── Mock Data ──────────────────────────────────────────────────────────
+// ── Commented Out Dummy Data ──────────────────────────────────────────
+/*
 const mockCustomerMetrics: CustomerMetrics = {
   totalBorrowed: "₦500",
   totalRecovered: "₦432",
@@ -99,6 +102,7 @@ const mockLoanHistory = [
     agingColor: "green",
   },
 ];
+*/
 
 const mockRecoveryHistory = [
   {
@@ -623,7 +627,7 @@ const MetricCard = ({
 );
 
 // ── Sub-tab content ────────────────────────────────────────────────────
-const LoanHistoryTab = () => (
+const LoanHistoryTab = ({ data }: { data: any[] }) => (
   <TableWrapper>
     <thead>
       <tr className="border-y border-[#F3F4F6] bg-gray-50">
@@ -680,25 +684,33 @@ const LoanHistoryTab = () => (
       </tr>
     </thead>
     <tbody>
-      {mockLoanHistory.map((row, i) => (
-        <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
-          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-            {row.loanId}
-          </td>
-          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-            {row.amount}
-          </td>
-          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-            {row.outstanding}
-          </td>
-          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-            {row.date}
-          </td>
-          <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-            {agingBadge(row.aging, row.agingColor)}
+      {data.length === 0 ? (
+        <tr>
+          <td colSpan={5} className="px-5 py-8 text-center text-gray-500 font-ibm-plex-sans">
+            No loan history found for this customer.
           </td>
         </tr>
-      ))}
+      ) : (
+        data.map((row, i) => (
+          <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.loanId}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.amount}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.outstanding}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {row.date}
+            </td>
+            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+              {agingBadge(row.aging, row.agingColor)}
+            </td>
+          </tr>
+        ))
+      )}
     </tbody>
   </TableWrapper>
 );
@@ -948,16 +960,36 @@ const SectionHeader = ({
   </div>
 );
 
+const SkeletonMetricCard = () => (
+  <div className="bg-white rounded-sm py-4 px-4 border border-gray-200 animate-pulse">
+    <div className="flex items-center gap-2 mb-4">
+      <div className="w-[18px] h-[18px] bg-gray-200 rounded-full animate-pulse" />
+      <div className="h-3 w-24 bg-gray-200 rounded animate-pulse" />
+    </div>
+    <div className="h-8 w-32 bg-gray-200 rounded mt-2 animate-pulse" />
+  </div>
+);
+
 const CustomerSearchSection = ({
   search,
   setSearch,
   activeSubTab,
   setActiveSubTab,
+  customerMetrics,
+  loadingProfile,
+  errorProfile,
+  onSearch,
+  loanHistory,
 }: {
   search: string;
   setSearch: (v: string) => void;
   activeSubTab: SubTabKey;
   setActiveSubTab: (v: SubTabKey) => void;
+  customerMetrics: CustomerMetrics | null;
+  loadingProfile: boolean;
+  errorProfile: string | null;
+  onSearch: () => void;
+  loanHistory: any[];
 }) => (
   <div>
     {/* Search bar */}
@@ -967,87 +999,148 @@ const CustomerSearchSection = ({
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              onSearch();
+            }
+          }}
           placeholder="Search MSISDN (e.g 07015322207)"
           className="flex-1 text-[13px] text-[#374151] font-ibm-plex-sans outline-none placeholder:text-gray-400 bg-transparent"
         />
       </div>
-      <button className="flex items-center lg:gap-2 bg-[#243B6B] px-3 lg:px-4 h-10 rounded-sm w-auto lg:w-auto text-[10px] lg:text-[13px] text-white font-medium hover:bg-[#1E3A5F] transition-colors">
-        <span className="hidden lg:block">
-          <AiOutlineSearch size={16} />
-        </span>
-        Search Customer
+      <button 
+        onClick={onSearch}
+        disabled={loadingProfile}
+        className="flex items-center lg:gap-2 bg-[#243B6B] px-3 lg:px-4 h-10 rounded-sm w-auto lg:w-auto text-[10px] lg:text-[13px] text-white font-medium hover:bg-[#1E3A5F] transition-colors disabled:opacity-50"
+      >
+        {loadingProfile ? (
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent mr-1"></div>
+        ) : (
+          <span className="hidden lg:block">
+            <AiOutlineSearch size={16} />
+          </span>
+        )}
+        {loadingProfile ? "Searching..." : "Search Customer"}
       </button>
     </div>
 
-    {/* Metric cards */}
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 px-4">
-      <MetricCard
-        title="Total Borrowed"
-        value={mockCustomerMetrics.totalBorrowed}
-        icon={money}
-      />
-      <MetricCard
-        title="Total Recovered"
-        value={mockCustomerMetrics.totalRecovered}
-        icon={trending}
-      />
-      <MetricCard
-        title="Outstanding Balance"
-        value={mockCustomerMetrics.outstandingBalance}
-        icon={outstanding}
-      />
-      <MetricCard
-        title="Active Loans"
-        value={mockCustomerMetrics.activeLoans}
-        icon={moneyin}
-      />
-      <MetricCard
-        title="Lifetime Defaults"
-        value={mockCustomerMetrics.lifetimeDefaults}
-        icon={deliquent}
-      />
-      <MetricCard
-        title="Behavioral Risk Score"
-        value={mockCustomerMetrics.behaviouralRiskScore}
-        icon={blocked}
-      />
-      <MetricCard
-        title="Hard Block Status"
-        value={mockCustomerMetrics.hardBlockStatus}
-        status={mockCustomerMetrics.hardBlockStatus}
-        icon={profit}
-      />
-      <MetricCard
-        title="Eligibility Status"
-        value={mockCustomerMetrics.eligibilityStatus}
-        status={mockCustomerMetrics.eligibilityStatus}
-        icon={behav}
-      />
-    </div>
+    {/* Error Profile Banner */}
+    {errorProfile && (
+      <div className="mx-4 mb-6 p-4 bg-red-50 border border-red-200 text-red-700 text-[14px] rounded-sm font-ibm-plex-sans flex items-center gap-2 animate-[fadeIn_0.3s_ease]">
+        <svg className="w-5 h-5 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <span>{errorProfile}</span>
+      </div>
+    )}
 
-    {/* Sub tabs */}
-    <div className="flex gap-6 border-b border-[#F3F4F6] mb-4 px-6 pt-6">
-      {subTabs.map((tab) => (
-        <button
-          key={tab.key}
-          onClick={() => setActiveSubTab(tab.key)}
-          className={`pb-2 text-[14px] font-ibm-plex-sans transition-colors border-b-2 -mb-px ${
-            activeSubTab === tab.key
-              ? "border-[#5490DE] text-[#5490DE] font-medium"
-              : "border-transparent text-[#6B7280] hover:text-[#374151]"
-          }`}
-        >
-          {tab.label}
-        </button>
-      ))}
-    </div>
+    {/* Metric cards & sub tabs */}
+    {loadingProfile ? (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 px-4">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <SkeletonMetricCard key={i} />
+        ))}
+      </div>
+    ) : !customerMetrics ? (
+      <div className="mx-4 mb-6 py-16 px-4 border border-dashed border-gray-300 rounded-sm bg-gray-50 flex flex-col items-center justify-center text-center">
+        <div className="w-16 h-16 bg-[#EEF4FC] text-[#243B6B] rounded-full flex items-center justify-center mb-4 border border-[#DCE9F9] shadow-sm">
+          <AiOutlineSearch size={32} />
+        </div>
+        <h3 className="text-[16px] font-semibold text-gray-700 font-ibm-plex-sans">Search Customer Profile</h3>
+        <p className="text-[13px] text-gray-500 max-w-sm mt-2 font-ibm-plex-sans leading-relaxed">
+          Enter a customer's MSISDN in the search bar above to fetch and analyze their lending metrics, risk profile, and loan history.
+        </p>
+      </div>
+    ) : (
+      <>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 px-4">
+          <MetricCard
+            title="Total Borrowed"
+            value={customerMetrics.totalBorrowed}
+            icon={money}
+          />
+          <MetricCard
+            title="Total Recovered"
+            value={customerMetrics.totalRecovered}
+            icon={trending}
+          />
+          <MetricCard
+            title="Outstanding Balance"
+            value={customerMetrics.outstandingBalance}
+            icon={outstanding}
+          />
+          <MetricCard
+            title="Active Loans"
+            value={customerMetrics.activeLoans}
+            icon={moneyin}
+          />
+          <MetricCard
+            title="Lifetime Defaults"
+            value={customerMetrics.lifetimeDefaults}
+            icon={deliquent}
+          />
+          <MetricCard
+            title="Behavioral Risk Score"
+            value={customerMetrics.behaviouralRiskScore}
+            icon={blocked}
+          />
+          <MetricCard
+            title="Hard Block Status"
+            value={customerMetrics.hardBlockStatus}
+            status={customerMetrics.hardBlockStatus}
+            icon={profit}
+          />
+          <MetricCard
+            title="Eligibility Status"
+            value={customerMetrics.eligibilityStatus}
+            status={customerMetrics.eligibilityStatus}
+            icon={behav}
+          />
+        </div>
 
-    {/* Sub tab content */}
-    {activeSubTab === "loan-history" && <LoanHistoryTab />}
-    {activeSubTab === "recovery-history" && <RecoveryHistoryTab />}
-    {activeSubTab === "fraud-decisions" && <FraudDecisionsTab />}
-    {activeSubTab === "callback-audit" && <CallbackAuditTab />}
+        {/* Sub tabs */}
+        <div className="flex gap-6 border-b border-[#F3F4F6] mb-4 px-6 pt-6">
+          {subTabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveSubTab(tab.key)}
+              className={`pb-2 text-[14px] font-ibm-plex-sans transition-colors border-b-2 -mb-px ${
+                activeSubTab === tab.key
+                  ? "border-[#5490DE] text-[#5490DE] font-medium"
+                  : "border-transparent text-[#6B7280] hover:text-[#374151]"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Sub tab content */}
+        {activeSubTab === "loan-history" && <LoanHistoryTab data={loanHistory} />}
+        {activeSubTab === "recovery-history" && <RecoveryHistoryTab />}
+        {activeSubTab === "fraud-decisions" && <FraudDecisionsTab />}
+        {activeSubTab === "callback-audit" && <CallbackAuditTab />}
+      </>
+    )}
   </div>
+);
+
+const EmptyTableState = ({ colSpan, message }: { colSpan: number; message: string }) => (
+  <tr>
+    <td colSpan={colSpan} className="px-5 py-12 text-center text-gray-500 font-ibm-plex-sans bg-white border-b border-[#F9FAFB]">
+      <div className="flex flex-col items-center justify-center gap-3 py-6">
+        <div className="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center border border-gray-100 shadow-sm text-gray-400">
+          <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-3.586a1 1 0 00-.707.293l-1.414 1.414a1 1 0 01-.707.293h-2.122a1 1 0 01-.707-.293l-1.414-1.414A1 1 0 007.586 13H4" />
+          </svg>
+        </div>
+        <div className="text-[15px] font-semibold text-gray-700 mt-1">{message}</div>
+        <div className="text-[12px] text-gray-400 max-w-xs mx-auto">
+          No matching records were found. Try adjusting your search keywords or check back later.
+        </div>
+      </div>
+    </td>
+  </tr>
 );
 
 const ExposureLedgerSection = ({
@@ -1150,31 +1243,35 @@ const ExposureLedgerSection = ({
         </tr>
       </thead>
       <tbody>
-        {filteredData.map((row: any, i) => (
-          <tr
-            key={i}
-            className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA] transition-colors"
-          >
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.msisdn}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.telco}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.activeLoans}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.disbursed}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.recovered}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.outstanding}
-            </td>
-          </tr>
-        ))}
+        {filteredData.length === 0 ? (
+          <EmptyTableState colSpan={6} message="No exposure ledger records found" />
+        ) : (
+          filteredData.map((row: any, i) => (
+            <tr
+              key={i}
+              className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA] transition-colors"
+            >
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.msisdn}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.telco}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.activeLoans}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.disbursed}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.recovered}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.outstanding}
+              </td>
+            </tr>
+          ))
+        )}
       </tbody>
     </TableWrapper>
   </div>
@@ -1260,22 +1357,26 @@ const DelinquentCustomerSection = ({
         </tr>
       </thead>
       <tbody>
-        {filteredData.map((row, i) => (
-          <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.msisdn}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.activeLoans}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.outstanding}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {fraudRiskBadge(row.fraudRisk)}
-            </td>
-          </tr>
-        ))}
+        {filteredData.length === 0 ? (
+          <EmptyTableState colSpan={4} message="No delinquent customers found" />
+        ) : (
+          filteredData.map((row, i) => (
+            <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.msisdn}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.activeLoans}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.outstanding}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {fraudRiskBadge(row.fraudRisk)}
+              </td>
+            </tr>
+          ))
+        )}
       </tbody>
     </TableWrapper>
   </div>
@@ -1361,22 +1462,26 @@ const LegalRiskCustomerSection = ({
         </tr>
       </thead>
       <tbody>
-        {filteredData.map((row, i) => (
-          <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.msisdn}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.legacyDefaults}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.lastSeen}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.source}
-            </td>
-          </tr>
-        ))}
+        {filteredData.length === 0 ? (
+          <EmptyTableState colSpan={4} message="No legacy risk customers found" />
+        ) : (
+          filteredData.map((row, i) => (
+            <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.msisdn}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.legacyDefaults}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.lastSeen}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.source}
+              </td>
+            </tr>
+          ))
+        )}
       </tbody>
     </TableWrapper>
   </div>
@@ -1482,28 +1587,32 @@ const BehaviouralRiskSection = ({
         </tr>
       </thead>
       <tbody>
-        {filteredData.map((row: any, i) => (
-          <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.msisdn}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.telco}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.loan}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.defaults}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.averageRisk}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {fraudRiskBadge(row.fraudRisk)}
-            </td>
-          </tr>
-        ))}
+        {filteredData.length === 0 ? (
+          <EmptyTableState colSpan={6} message="No behavioural risk records found" />
+        ) : (
+          filteredData.map((row: any, i) => (
+            <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.msisdn}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.telco}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.loan}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.defaults}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.averageRisk}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {fraudRiskBadge(row.fraudRisk)}
+              </td>
+            </tr>
+          ))
+        )}
       </tbody>
     </TableWrapper>
   </div>
@@ -1589,22 +1698,26 @@ const HardBlockedSection = ({
         </tr>
       </thead>
       <tbody>
-        {filteredData.map((row: any, i) => (
-          <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.msisdn}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.reason}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.rule}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.lastSeen}
-            </td>
-          </tr>
-        ))}
+        {filteredData.length === 0 ? (
+          <EmptyTableState colSpan={4} message="No hard blocked customers found" />
+        ) : (
+          filteredData.map((row: any, i) => (
+            <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.msisdn}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.reason}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.rule}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.lastSeen}
+              </td>
+            </tr>
+          ))
+        )}
       </tbody>
     </TableWrapper>
   </div>
@@ -1690,22 +1803,26 @@ const WhitelistedSection = ({
         </tr>
       </thead>
       <tbody>
-        {filteredData.map((row: any, i) => (
-          <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.msisdn}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.reason}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.source}
-            </td>
-            <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
-              {row.createdDate}
-            </td>
-          </tr>
-        ))}
+        {filteredData.length === 0 ? (
+          <EmptyTableState colSpan={4} message="No whitelisted customers found" />
+        ) : (
+          filteredData.map((row: any, i) => (
+            <tr key={i} className="border-b border-[#F9FAFB] hover:bg-[#FAFAFA]">
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.msisdn}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.reason}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.source}
+              </td>
+              <td className="px-5 py-4 text-[13px] font-ibm-plex-sans text-[#374151] whitespace-nowrap">
+                {row.createdDate}
+              </td>
+            </tr>
+          ))
+        )}
       </tbody>
     </TableWrapper>
   </div>
@@ -1717,6 +1834,59 @@ export default function Page() {
     useState<MainTabKey>("customer-search");
   const [activeSubTab, setActiveSubTab] = useState<SubTabKey>("loan-history");
   const [search, setSearch] = useState("");
+
+  const [customerMetrics, setCustomerMetrics] = useState<CustomerMetrics | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState(false);
+  const [errorProfile, setErrorProfile] = useState<string | null>(null);
+  const [loanHistory, setLoanHistory] = useState<any[]>([]);
+
+  const fetchCustomerProfile = async (msisdn: string) => {
+    if (!msisdn) return;
+    setLoadingProfile(true);
+    setErrorProfile(null);
+    try {
+      const response = await axiosInstance.get(CustomerProfile(msisdn));
+      const resData = response.data;
+      if (resData && resData.success && resData.data) {
+        const d = resData.data;
+        const mappedMetrics: CustomerMetrics = {
+          totalBorrowed: `₦${Number(d.totalDisbursed || 0).toLocaleString()}`,
+          totalRecovered: `₦${Number(d.totalRecovered || 0).toLocaleString()}`,
+          outstandingBalance: `₦${Number(d.outstandingBalance || 0).toLocaleString()}`,
+          activeLoans: d.activeLoanCount || 0,
+          lifetimeDefaults: d.totalDefaults || 0,
+          behaviouralRiskScore: d.behavioralRiskScore || 0,
+          hardBlockStatus: d.hardBlocked ? "Restricted" : "Active",
+          eligibilityStatus: (d.blacklisted || d.hardBlocked || d.riskCategory === "HIGH") ? "Restricted" : "Active",
+        };
+        setCustomerMetrics(mappedMetrics);
+        
+        if (Array.isArray(d.recentLoans)) {
+          if (d.recentLoans.length > 0) {
+            setLoanHistory(
+              d.recentLoans.map((loan: any) => ({
+                loanId: loan.loanId || loan.id || "N/A",
+                amount: `₦${Number(loan.amount || 0).toLocaleString()}`,
+                outstanding: `₦${Number(loan.outstandingBalance || 0).toLocaleString()}`,
+                date: loan.createdAt ? new Date(loan.createdAt).toLocaleDateString("en-GB") : "N/A",
+                aging: loan.agingBucket || "CURRENT",
+                agingColor: loan.agingBucket === "CURRENT" ? "green" : "red",
+              }))
+            );
+          } else {
+            setLoanHistory([]);
+          }
+        }
+      } else {
+        setErrorProfile(resData.message || "Failed to fetch customer profile.");
+      }
+    } catch (err: any) {
+      console.error(err);
+      setErrorProfile(err.response?.data?.message || "Customer not found or network error.");
+    } finally {
+      setLoadingProfile(false);
+    }
+  };
 
   return (
     <div className="p-6">
@@ -1750,6 +1920,11 @@ export default function Page() {
             setSearch={setSearch}
             activeSubTab={activeSubTab}
             setActiveSubTab={setActiveSubTab}
+            customerMetrics={customerMetrics}
+            loadingProfile={loadingProfile}
+            errorProfile={errorProfile}
+            onSearch={() => fetchCustomerProfile(search)}
+            loanHistory={loanHistory}
           />
         )}
         {activeMainTab === "exposure-ledger" && (
